@@ -7,7 +7,7 @@ import (
 )
 
 func TestNewEmptyCellIsNotMinedAndPositionedProperly(t *testing.T) {
-	emptyCellLocation := mines.Location{1, 2}
+	emptyCellLocation := mines.Location{X: 1, Y: 2}
 	emptyCell := mines.NewEmptyCell(emptyCellLocation)
 
 	if emptyCell.Position != emptyCellLocation {
@@ -24,7 +24,7 @@ func TestNewEmptyCellIsNotMinedAndPositionedProperly(t *testing.T) {
 }
 
 func TestNewMineCellIsMinedAndPositionedProperly(t *testing.T) {
-	minedCellLocation := mines.Location{1, 2}
+	minedCellLocation := mines.Location{X: 1, Y: 2}
 	minedCell := mines.NewMinedCell(minedCellLocation)
 
 	if minedCell.Position != minedCellLocation {

@@ -7,8 +7,8 @@ import (
 )
 
 func TestLocationsWithinBoundsAreDetected(t *testing.T) {
-	size := mines.Size{10, 10}
-	location := mines.Location{2, 3}
+	size := mines.Size{Width: 10, Height: 10}
+	location := mines.Location{X: 2, Y: 3}
 
 	contains := size.Contains(location)
 
@@ -22,8 +22,8 @@ func TestLocationsWithinBoundsAreDetected(t *testing.T) {
 }
 
 func TestLocationsOutOfBoundsAreDetected(t *testing.T) {
-	size := mines.Size{10, 10}
-	location := mines.Location{11, -3}
+	size := mines.Size{Width: 10, Height: 10}
+	location := mines.Location{X: 11, Y: -3}
 
 	contains := size.Contains(location)
 

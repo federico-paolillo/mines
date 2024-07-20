@@ -7,12 +7,12 @@ import (
 )
 
 func TestAdjacentMinesRecalculateWhenPlacingNewCells(t *testing.T) {
-	board := mines.NewBoard(mines.Size{2, 2})
+	board := mines.NewBoard(mines.Size{Width: 2, Height: 2})
 
-	board.PlaceCell(mines.Location{1, 1})
-	board.PlaceMine(mines.Location{2, 1})
-	board.PlaceMine(mines.Location{1, 2})
-	board.PlaceCell(mines.Location{2, 2})
+	board.PlaceCell(mines.Location{X: 1, Y: 1})
+	board.PlaceMine(mines.Location{X: 2, Y: 1})
+	board.PlaceMine(mines.Location{X: 1, Y: 2})
+	board.PlaceCell(mines.Location{X: 2, Y: 2})
 
 	expectedMines := 2
 
@@ -28,9 +28,9 @@ func TestAdjacentMinesRecalculateWhenPlacingNewCells(t *testing.T) {
 }
 
 func TestEmptyCellsArePlaced(t *testing.T) {
-	board := mines.NewBoard(mines.Size{2, 2})
+	board := mines.NewBoard(mines.Size{Width: 2, Height: 2})
 
-	expectedLocation := mines.Location{1, 2}
+	expectedLocation := mines.Location{X: 1, Y: 2}
 
 	board.PlaceCell(expectedLocation)
 
@@ -54,9 +54,9 @@ func TestEmptyCellsArePlaced(t *testing.T) {
 }
 
 func TestMinedCellsArePlaced(t *testing.T) {
-	board := mines.NewBoard(mines.Size{2, 2})
+	board := mines.NewBoard(mines.Size{Width: 2, Height: 2})
 
-	expectedLocation := mines.Location{1, 2}
+	expectedLocation := mines.Location{X: 1, Y: 2}
 
 	board.PlaceMine(expectedLocation)
 
@@ -80,9 +80,9 @@ func TestMinedCellsArePlaced(t *testing.T) {
 }
 
 func TestCellsCanBeVoided(t *testing.T) {
-	board := mines.NewBoard(mines.Size{2, 2})
+	board := mines.NewBoard(mines.Size{Width: 2, Height: 2})
 
-	location := mines.Location{1, 2}
+	location := mines.Location{X: 1, Y: 2}
 
 	board.PlaceCell(location)
 
