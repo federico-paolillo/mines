@@ -10,6 +10,6 @@ Eventually, shall I find the time, another Desktop-only frontend will be provide
 
 ## Usage
 
-You need [Go](https://go.dev/dl/) 1.22.1. This software is meant and designed to work on Unix-like systems. I will not make any attempts at compatibility with Microsoft Windows. For the moment, this software as no third-party dependencies save the Go standard library.
+You need [Go](https://go.dev/dl/) 1.22.1. This software is meant and designed to work on Unix-like systems. I will not make any attempts at compatibility with Microsoft Windows. For the moment, this software has no third-party dependencies save the Go standard library.
 
 From the source root folder, run `go test ./...` to run tests or run `go run ./cmd/cli` to run the built-in client.
