@@ -46,3 +46,31 @@ func (board *Board) AdjacentMines(location Location) int {
 
 	return adjacentMines
 }
+
+func (board *Board) CountUnopenSafeCells() int {
+	unopenedCellsCount := 0
+
+	for _, cell := range board.cells {
+		if !cell.Mined {
+			if cell.Status != Opened {
+				unopenedCellsCount++
+			}
+		}
+	}
+
+	return unopenedCellsCount
+}
+
+func (board *Board) CountUnflaggedMines() int {
+	unflaggedMinesCount := 0
+
+	for _, cell := range board.cells {
+		if cell.Mined {
+			if cell.Status != Flagged {
+				unflaggedMinesCount++
+			}
+		}
+	}
+
+	return unflaggedMinesCount
+}

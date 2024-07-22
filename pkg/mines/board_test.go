@@ -194,3 +194,79 @@ func TestCellsCanBeVoided(t *testing.T) {
 		)
 	}
 }
+
+func TestUnopenSafeCellsCountIsCorrect(t *testing.T) {
+	board := mines.NewBoard(mines.Size{Width: 2, Height: 2})
+
+	board.PlaceCell(mines.Location{X: 1, Y: 1})
+	board.PlaceCell(mines.Location{X: 2, Y: 1})
+	board.PlaceCell(mines.Location{X: 1, Y: 2})
+	board.PlaceMine(mines.Location{X: 2, Y: 2})
+
+	// Starting all safe cells are unopen
+	unopenCells := board.CountUnopenSafeCells()
+	expectedUnopenCells := 3
+
+	if unopenCells != expectedUnopenCells {
+		t.Fatalf(
+			"expected to have %d unopen cells. we have %d instead",
+			expectedUnopenCells,
+			unopenCells,
+		)
+	}
+
+	// Opening 1,1 will reduce the unopened safe cells by one
+
+	cell := board.Retrieve(mines.Location{X: 1, Y: 1})
+
+	cell.Status = mines.Opened
+
+	unopenCells = board.CountUnopenSafeCells()
+	expectedUnopenCells = 2
+
+	if unopenCells != expectedUnopenCells {
+		t.Fatalf(
+			"expected to have %d unopen cells. we have %d instead",
+			expectedUnopenCells,
+			unopenCells,
+		)
+	}
+}
+
+func TestUnflaggedMinesCountIsCorrect(t *testing.T) {
+	board := mines.NewBoard(mines.Size{Width: 2, Height: 2})
+
+	board.PlaceCell(mines.Location{X: 1, Y: 1})
+	board.PlaceCell(mines.Location{X: 2, Y: 1})
+	board.PlaceCell(mines.Location{X: 1, Y: 2})
+	board.PlaceMine(mines.Location{X: 2, Y: 2})
+
+	// Starting all mine cells are unflagged
+	unflaggedMines := board.CountUnflaggedMines()
+	expectedUnflaggedCells := 1
+
+	if unflaggedMines != expectedUnflaggedCells {
+		t.Fatalf(
+			"expected to have %d unflagged mines. we have %d instead",
+			expectedUnflaggedCells,
+			unflaggedMines,
+		)
+	}
+
+	// Flagging 2,2 will reduce the unflagged mines to none
+
+	cell := board.Retrieve(mines.Location{X: 2, Y: 2})
+
+	cell.Status = mines.Flagged
+
+	unflaggedMines = board.CountUnflaggedMines()
+	expectedUnflaggedCells = 0
+
+	if unflaggedMines != expectedUnflaggedCells {
+		t.Fatalf(
+			"expected to have %d unflagged mines. we have %d instead",
+			expectedUnflaggedCells,
+			unflaggedMines,
+		)
+	}
+}
