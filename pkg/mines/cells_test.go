@@ -12,13 +12,13 @@ func TestNewEmptyCellIsNotMinedAndPositionedProperly(t *testing.T) {
 
 	if emptyCell.Position() != emptyCellLocation {
 		t.Errorf(
-			"expected cell to be at %v. instead is at %v", 
-			emptyCellLocation, 
+			"expected cell to be at %v. instead is at %v",
+			emptyCellLocation,
 			emptyCell.Position(),
 		)
 	}
 
-	if emptyCell.Mined() != false {
+	if emptyCell.Mined() {
 		t.Error("expected cell to be without mines")
 	}
 
@@ -33,13 +33,13 @@ func TestNewMineCellIsMinedAndPositionedProperly(t *testing.T) {
 
 	if minedCell.Position() != minedCellLocation {
 		t.Errorf(
-			"expected cell to be at %v. instead is at %v", 
-			minedCellLocation, 
+			"expected cell to be at %v. instead is at %v",
+			minedCellLocation,
 			minedCell.Position(),
 		)
 	}
 
-	if minedCell.Mined() != true {
+	if minedCell.Safe() {
 		t.Error("expected cell to be mined")
 	}
 

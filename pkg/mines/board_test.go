@@ -132,7 +132,7 @@ func TestEmptyCellsArePlaced(t *testing.T) {
 		)
 	}
 
-	if cell.Mined() != false {
+	if cell.Mined() {
 		t.Error("retrieved cell is mined")
 	}
 
@@ -158,7 +158,7 @@ func TestMinedCellsArePlaced(t *testing.T) {
 		)
 	}
 
-	if cell.Mined() != true {
+	if cell.Safe() {
 		t.Error("retrieved cell is not mined")
 	}
 

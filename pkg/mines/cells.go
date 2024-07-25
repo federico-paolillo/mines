@@ -62,7 +62,11 @@ func (cell *Cell) Status(statuses ...Cellstate) bool {
 }
 
 func (cell *Cell) Mined() bool {
-	return cell.mined
+	return cell.mined == true
+}
+
+func (cell *Cell) Safe() bool {
+	return cell.mined == false
 }
 
 func (cell *Cell) Position() Location {
