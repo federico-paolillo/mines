@@ -14,7 +14,7 @@ func TestLocationsWithinBoundsAreDetected(t *testing.T) {
 
 	if !contains {
 		t.Fatalf(
-			"expected size %v to contain location %v. it did not.",
+			"expected size %v to contain location %v",
 			size,
 			location,
 		)
@@ -29,7 +29,7 @@ func TestLocationsOutOfBoundsAreDetected(t *testing.T) {
 
 	if contains {
 		t.Fatalf(
-			"expected size %v to NOT contain location %v. it did.",
+			"expected size %v to NOT contain location %v",
 			size,
 			location,
 		)

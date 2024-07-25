@@ -31,11 +31,7 @@ func (game *Game) Flag(location mines.Location) {
 		return
 	}
 
-	if cell.Status == mines.Opened {
-		return
-	}
-
-	cell.Status = mines.Flagged
+	cell.Flag()
 
 	game.checkWinCondition()
 }
@@ -47,19 +43,15 @@ func (game *Game) Open(location mines.Location) {
 		return
 	}
 
-	if cell.Status == mines.Opened {
-		return
-	}
+	cell.Open()
 
-	if cell.Mined {
+	if cell.Mined() {
 		game.mineTripped()
 		return
 	}
 
-	cell.Status = mines.Opened
-
-	if game.Board.AdjacentMines(cell.Position) == 0 {
-		game.tryChording(cell.Position)
+	if game.Board.AdjacentMines(cell.Position()) == 0 {
+		game.tryChording(cell.Position())
 	}
 
 	game.checkWinCondition()
@@ -73,21 +65,17 @@ func (game *Game) tryChording(chordingOrigin mines.Location) {
 			continue
 		}
 
-		if candidateCell.Status == mines.Opened {
+		if candidateCell.Status(mines.Opened, mines.Flagged) {
 			continue
 		}
 
-		if candidateCell.Status == mines.Flagged {
+		if candidateCell.Mined() {
 			continue
 		}
 
-		if candidateCell.Mined {
-			continue
-		}
-
-		if game.Board.AdjacentMines(candidateCell.Position) == 0 {
-			candidateCell.Status = mines.Opened
-			game.tryChording(candidateCell.Position)
+		if game.Board.AdjacentMines(candidateCell.Position()) == 0 {
+			candidateCell.Open()
+			game.tryChording(candidateCell.Position())
 		}
 	}
 }
@@ -116,4 +104,8 @@ func (game *Game) checkWinCondition() {
 		game.Status = Won
 		return
 	}
+}
+
+func (game *Game) checkLoseCondition() {
+
 }

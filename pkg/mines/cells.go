@@ -1,5 +1,7 @@
 package mines
 
+import "math"
+
 type Cellstate int
 
 const (
@@ -10,29 +12,59 @@ const (
 )
 
 type Cell struct {
-	Position Location
-	Status   Cellstate
-	Mined    bool
+	position Location
+	status   Cellstate
+	mined    bool
 }
 
 var Void = &Cell{
-	Position: Location{-1, -1},
-	Status:   Unfathomable,
-	Mined:    false,
+	position: Location{math.MinInt32, math.MinInt32},
+	status:   Unfathomable,
+	mined:    false,
 }
 
 func NewEmptyCell(location Location) *Cell {
 	return &Cell{
-		Position: location,
-		Status:   Closed,
-		Mined:    false,
+		position: location,
+		status:   Closed,
+		mined:    false,
 	}
 }
 
 func NewMinedCell(location Location) *Cell {
 	return &Cell{
-		Position: location,
-		Status:   Closed,
-		Mined:    true,
+		position: location,
+		status:   Closed,
+		mined:    true,
 	}
+}
+
+func (cell *Cell) Open() {
+	if cell.Status(Closed, Flagged) {
+		cell.status = Opened
+	}
+}
+
+func (cell *Cell) Flag() {
+	if cell.Status(Closed) {
+		cell.status = Flagged
+	}
+}
+
+func (cell *Cell) Status(statuses ...Cellstate) bool {
+	for _, state := range statuses {
+		if cell.status == state {
+			return true
+		}
+	}
+
+	return false
+}
+
+func (cell *Cell) Mined() bool {
+	return cell.mined
+}
+
+func (cell *Cell) Position() Location {
+	return cell.position
 }

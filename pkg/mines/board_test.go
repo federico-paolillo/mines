@@ -124,19 +124,19 @@ func TestEmptyCellsArePlaced(t *testing.T) {
 
 	cell := board.Retrieve(expectedLocation)
 
-	if cell.Position != expectedLocation {
+	if cell.Position() != expectedLocation {
 		t.Errorf(
 			"retrieved cell is not in the expected position. it is %v instead of %v",
-			cell.Position,
+			cell.Position(),
 			expectedLocation,
 		)
 	}
 
-	if cell.Mined {
+	if cell.Mined() != false {
 		t.Error("retrieved cell is mined")
 	}
 
-	if cell.Status != mines.Closed {
+	if cell.Status(mines.Closed) != true {
 		t.Error("retrieved cell is not closed")
 	}
 }
@@ -150,19 +150,19 @@ func TestMinedCellsArePlaced(t *testing.T) {
 
 	cell := board.Retrieve(expectedLocation)
 
-	if cell.Position != expectedLocation {
+	if cell.Position() != expectedLocation {
 		t.Errorf(
 			"retrieved cell is not in the expected position. it is %v instead of %v",
-			cell.Position,
+			cell.Position(),
 			expectedLocation,
 		)
 	}
 
-	if !cell.Mined {
+	if cell.Mined() != true {
 		t.Error("retrieved cell is not mined")
 	}
 
-	if cell.Status != mines.Closed {
+	if cell.Status(mines.Closed) != true {
 		t.Error("retrieved cell is not closed")
 	}
 }
@@ -219,7 +219,7 @@ func TestUnopenSafeCellsCountIsCorrect(t *testing.T) {
 
 	cell := board.Retrieve(mines.Location{X: 1, Y: 1})
 
-	cell.Status = mines.Opened
+	cell.Open()
 
 	unopenCells = board.CountUnopenSafeCells()
 	expectedUnopenCells = 2
@@ -257,7 +257,7 @@ func TestUnflaggedMinesCountIsCorrect(t *testing.T) {
 
 	cell := board.Retrieve(mines.Location{X: 2, Y: 2})
 
-	cell.Status = mines.Flagged
+	cell.Flag()
 
 	unflaggedMines = board.CountUnflaggedMines()
 	expectedUnflaggedCells = 0

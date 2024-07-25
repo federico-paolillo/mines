@@ -67,14 +67,14 @@ func TestChordingOpensAppropriateCell(t *testing.T) {
 
 	for _, location := range openLocations {
 		cell := board.Retrieve(location)
-		if cell.Status != mines.Opened {
+		if cell.Status(mines.Opened) != true {
 			t.Errorf("expected cell at %v to be open", location)
 		}
 	}
 
 	for _, location := range closeLocations {
 		cell := board.Retrieve(location)
-		if cell.Status != mines.Closed {
+		if cell.Status(mines.Closed) != true {
 			t.Errorf("expected cell at %v to be closed", location)
 		}
 	}
