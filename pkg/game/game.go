@@ -101,7 +101,19 @@ func (game *Game) mineTripped() {
 }
 
 func (game *Game) checkWinCondition() {
-	// All mines are flagged
-	// OR
-	// All safe cells are open
+	unflaggedMines := game.Board.CountUnflaggedMines()
+	unopenSafeCells := game.Board.CountUnopenSafeCells()
+
+	noMissingMinesToFlag := unflaggedMines == 0
+	noMissingUnopenCells := unopenSafeCells == 0
+
+	if noMissingMinesToFlag {
+		game.Status = Won
+		return
+	}
+
+	if noMissingUnopenCells {
+		game.Status = Won
+		return
+	}
 }

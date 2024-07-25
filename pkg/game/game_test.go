@@ -79,3 +79,82 @@ func TestChordingOpensAppropriateCell(t *testing.T) {
 		}
 	}
 }
+
+func TestWhenOpeningAllSafeCellsTheGameIsWon(t *testing.T) {
+	/*
+	 * Assume a board like:
+	 * x x x
+	 * x 1 1
+	 * x 1 M
+	 * x 1 1
+	 * where x is a closed empty cell
+	 * 			 1 is a cell with adjacent mines
+	 *       M is a mined cell
+	 */
+
+	board := mines.NewBoard(mines.Size{Width: 3, Height: 4})
+
+	board.PlaceCell(mines.Location{X: 1, Y: 1})
+	board.PlaceCell(mines.Location{X: 2, Y: 1})
+	board.PlaceCell(mines.Location{X: 3, Y: 1})
+	board.PlaceCell(mines.Location{X: 1, Y: 2})
+	board.PlaceCell(mines.Location{X: 2, Y: 2})
+	board.PlaceCell(mines.Location{X: 3, Y: 2})
+	board.PlaceCell(mines.Location{X: 1, Y: 3})
+	board.PlaceCell(mines.Location{X: 2, Y: 3})
+	board.PlaceMine(mines.Location{X: 3, Y: 3})
+	board.PlaceCell(mines.Location{X: 1, Y: 4})
+	board.PlaceCell(mines.Location{X: 2, Y: 4})
+	board.PlaceCell(mines.Location{X: 3, Y: 4})
+
+	currentGame := game.NewGame(1, board)
+
+	// We can leverage chording for this board. That is why we don't need all moves
+
+	currentGame.Open(mines.Location{X: 1, Y: 1})
+	currentGame.Open(mines.Location{X: 2, Y: 2})
+	currentGame.Open(mines.Location{X: 3, Y: 2})
+	currentGame.Open(mines.Location{X: 2, Y: 3})
+	currentGame.Open(mines.Location{X: 2, Y: 4})
+	currentGame.Open(mines.Location{X: 3, Y: 4})
+
+	if currentGame.Status != game.Won {
+		t.Fatal("expected game to be won after clearing all safe empty cells")
+	}
+}
+
+func TestWhenFlaggingAllMineCellsTheGameIsWon(t *testing.T) {
+	/*
+	 * Assume a board like:
+	 * x x x
+	 * x 1 1
+	 * x 1 M
+	 * x 1 1
+	 * where x is a closed empty cell
+	 * 			 1 is a cell with adjacent mines
+	 *       M is a mined cell
+	 */
+
+	board := mines.NewBoard(mines.Size{Width: 3, Height: 4})
+
+	board.PlaceCell(mines.Location{X: 1, Y: 1})
+	board.PlaceCell(mines.Location{X: 2, Y: 1})
+	board.PlaceCell(mines.Location{X: 3, Y: 1})
+	board.PlaceCell(mines.Location{X: 1, Y: 2})
+	board.PlaceCell(mines.Location{X: 2, Y: 2})
+	board.PlaceCell(mines.Location{X: 3, Y: 2})
+	board.PlaceCell(mines.Location{X: 1, Y: 3})
+	board.PlaceCell(mines.Location{X: 2, Y: 3})
+	board.PlaceMine(mines.Location{X: 3, Y: 3})
+	board.PlaceCell(mines.Location{X: 1, Y: 4})
+	board.PlaceCell(mines.Location{X: 2, Y: 4})
+	board.PlaceCell(mines.Location{X: 3, Y: 4})
+
+	currentGame := game.NewGame(1, board)
+
+	currentGame.Flag(mines.Location{X: 3, Y: 3})
+
+	if currentGame.Status != game.Won {
+		t.Fatal("expected game to be won after flagging all mined cells")
+	}
+}
