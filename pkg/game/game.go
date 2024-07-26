@@ -1,6 +1,9 @@
 package game
 
-import "github.com/federico-paolillo/mines/pkg/mines"
+import (
+	"github.com/federico-paolillo/mines/pkg/board"
+	"github.com/federico-paolillo/mines/pkg/dimensions"
+)
 
 type GameStatus = string
 
@@ -11,12 +14,12 @@ const (
 )
 
 type Game struct {
-	Board  *mines.Board
+	Board  *board.Board
 	Lives  int
 	Status GameStatus
 }
 
-func NewGame(lives int, board *mines.Board) *Game {
+func NewGame(lives int, board *board.Board) *Game {
 	return &Game{
 		Board:  board,
 		Lives:  lives,
@@ -24,10 +27,10 @@ func NewGame(lives int, board *mines.Board) *Game {
 	}
 }
 
-func (game *Game) Flag(location mines.Location) {
+func (game *Game) Flag(location dimensions.Location) {
 	cell := game.Board.Retrieve(location)
 
-	if cell == mines.Void {
+	if cell == board.Void {
 		return
 	}
 
@@ -36,10 +39,10 @@ func (game *Game) Flag(location mines.Location) {
 	game.checkWinCondition()
 }
 
-func (game *Game) Open(location mines.Location) {
+func (game *Game) Open(location dimensions.Location) {
 	cell := game.Board.Retrieve(location)
 
-	if cell == mines.Void {
+	if cell == board.Void {
 		return
 	}
 
@@ -57,15 +60,15 @@ func (game *Game) Open(location mines.Location) {
 	game.checkWinCondition()
 }
 
-func (game *Game) tryChording(chordingOrigin mines.Location) {
+func (game *Game) tryChording(chordingOrigin dimensions.Location) {
 	for _, location := range chordingOrigin.AdjacentLocations() {
 		candidateCell := game.Board.Retrieve(location)
 
-		if candidateCell == mines.Void {
+		if candidateCell == board.Void {
 			continue
 		}
 
-		if candidateCell.Status(mines.Opened, mines.Flagged) {
+		if candidateCell.Status(board.Opened, board.Flagged) {
 			continue
 		}
 

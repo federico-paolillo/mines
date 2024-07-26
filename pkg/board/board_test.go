@@ -1,9 +1,10 @@
-package mines_test
+package board_test
 
 import (
 	"testing"
 
-	"github.com/federico-paolillo/mines/pkg/mines"
+	"github.com/federico-paolillo/mines/pkg/board"
+	"github.com/federico-paolillo/mines/pkg/dimensions"
 )
 
 func TestAdjacentMinesCalculatesProperly(t *testing.T) {
@@ -16,7 +17,7 @@ func TestAdjacentMinesCalculatesProperly(t *testing.T) {
 	 *       M is a mined cell
 	 */
 
-	bb := mines.NewBuilder(mines.Size{Width: 2, Height: 2})
+	bb := board.NewBuilder(dimensions.Size{Width: 2, Height: 2})
 
 	bb.PlaceSafe(1, 1)
 	bb.PlaceMine(2, 1)
@@ -26,13 +27,13 @@ func TestAdjacentMinesCalculatesProperly(t *testing.T) {
 	board := bb.Build()
 
 	minesExpected := [4]struct {
-		location mines.Location
+		location dimensions.Location
 		expected int
 	}{
-		{mines.Location{X: 1, Y: 1}, 2},
-		{mines.Location{X: 2, Y: 1}, 1},
-		{mines.Location{X: 1, Y: 2}, 1},
-		{mines.Location{X: 2, Y: 2}, 2},
+		{dimensions.Location{X: 1, Y: 1}, 2},
+		{dimensions.Location{X: 2, Y: 1}, 1},
+		{dimensions.Location{X: 1, Y: 2}, 1},
+		{dimensions.Location{X: 2, Y: 2}, 2},
 	}
 
 	for _, expectation := range minesExpected {
@@ -70,7 +71,7 @@ func TestAdjacentMinesCalculatesProperly2(t *testing.T) {
 	 *       M is a mined cell
 	 */
 
-	bb := mines.NewBuilder(mines.Size{Width: 3, Height: 4})
+	bb := board.NewBuilder(dimensions.Size{Width: 3, Height: 4})
 
 	bb.PlaceSafe(1, 1)
 	bb.PlaceSafe(2, 1)
@@ -88,21 +89,21 @@ func TestAdjacentMinesCalculatesProperly2(t *testing.T) {
 	board := bb.Build()
 
 	minesExpected := [12]struct {
-		location mines.Location
+		location dimensions.Location
 		expected int
 	}{
-		{mines.Location{X: 1, Y: 1}, 0},
-		{mines.Location{X: 2, Y: 1}, 0},
-		{mines.Location{X: 3, Y: 1}, 0},
-		{mines.Location{X: 1, Y: 2}, 0},
-		{mines.Location{X: 2, Y: 2}, 1},
-		{mines.Location{X: 3, Y: 2}, 1},
-		{mines.Location{X: 1, Y: 3}, 0},
-		{mines.Location{X: 2, Y: 3}, 1},
-		{mines.Location{X: 3, Y: 3}, 0},
-		{mines.Location{X: 1, Y: 4}, 0},
-		{mines.Location{X: 2, Y: 4}, 1},
-		{mines.Location{X: 3, Y: 4}, 1},
+		{dimensions.Location{X: 1, Y: 1}, 0},
+		{dimensions.Location{X: 2, Y: 1}, 0},
+		{dimensions.Location{X: 3, Y: 1}, 0},
+		{dimensions.Location{X: 1, Y: 2}, 0},
+		{dimensions.Location{X: 2, Y: 2}, 1},
+		{dimensions.Location{X: 3, Y: 2}, 1},
+		{dimensions.Location{X: 1, Y: 3}, 0},
+		{dimensions.Location{X: 2, Y: 3}, 1},
+		{dimensions.Location{X: 3, Y: 3}, 0},
+		{dimensions.Location{X: 1, Y: 4}, 0},
+		{dimensions.Location{X: 2, Y: 4}, 1},
+		{dimensions.Location{X: 3, Y: 4}, 1},
 	}
 
 	for _, expectation := range minesExpected {
@@ -120,7 +121,7 @@ func TestAdjacentMinesCalculatesProperly2(t *testing.T) {
 }
 
 func TestUnopenSafeCellsCountIsCorrect(t *testing.T) {
-	bb := mines.NewBuilder(mines.Size{Width: 2, Height: 2})
+	bb := board.NewBuilder(dimensions.Size{Width: 2, Height: 2})
 
 	bb.PlaceSafe(1, 1)
 	bb.PlaceSafe(2, 1)
@@ -143,7 +144,7 @@ func TestUnopenSafeCellsCountIsCorrect(t *testing.T) {
 
 	// Opening 1,1 will reduce the unopened safe cells by one
 
-	cell := board.Retrieve(mines.Location{X: 1, Y: 1})
+	cell := board.Retrieve(dimensions.Location{X: 1, Y: 1})
 
 	cell.Open()
 
@@ -160,7 +161,7 @@ func TestUnopenSafeCellsCountIsCorrect(t *testing.T) {
 }
 
 func TestUnflaggedMinesCountIsCorrect(t *testing.T) {
-	bb := mines.NewBuilder(mines.Size{Width: 2, Height: 2})
+	bb := board.NewBuilder(dimensions.Size{Width: 2, Height: 2})
 
 	bb.PlaceSafe(1, 1)
 	bb.PlaceSafe(2, 1)
@@ -183,7 +184,7 @@ func TestUnflaggedMinesCountIsCorrect(t *testing.T) {
 
 	// Flagging 2,2 will reduce the unflagged mines to none
 
-	cell := board.Retrieve(mines.Location{X: 2, Y: 2})
+	cell := board.Retrieve(dimensions.Location{X: 2, Y: 2})
 
 	cell.Flag()
 

@@ -1,13 +1,14 @@
-package mines_test
+package board_test
 
 import (
 	"testing"
 
-	"github.com/federico-paolillo/mines/pkg/mines"
+	"github.com/federico-paolillo/mines/pkg/board"
+	"github.com/federico-paolillo/mines/pkg/dimensions"
 )
 
 func TestBuilderBuildsBoardAccordingToInstructions(t *testing.T) {
-	bb := mines.NewBuilder(mines.Size{Width: 3, Height: 3})
+	bb := board.NewBuilder(dimensions.Size{Width: 3, Height: 3})
 
 	bb.PlaceSafe(1, 1)
 	bb.PlaceMine(2, 1)
@@ -22,18 +23,18 @@ func TestBuilderBuildsBoardAccordingToInstructions(t *testing.T) {
 	b := bb.Build()
 
 	expectations := [9]struct {
-		location mines.Location
+		location dimensions.Location
 		mined    bool
 	}{
-		{mines.Location{X: 1, Y: 1}, false},
-		{mines.Location{X: 2, Y: 1}, true},
-		{mines.Location{X: 3, Y: 1}, false},
-		{mines.Location{X: 1, Y: 2}, false},
-		{mines.Location{X: 2, Y: 2}, true},
-		{mines.Location{X: 3, Y: 2}, false},
-		{mines.Location{X: 1, Y: 3}, false},
-		{mines.Location{X: 2, Y: 3}, true},
-		{mines.Location{X: 3, Y: 3}, false},
+		{dimensions.Location{X: 1, Y: 1}, false},
+		{dimensions.Location{X: 2, Y: 1}, true},
+		{dimensions.Location{X: 3, Y: 1}, false},
+		{dimensions.Location{X: 1, Y: 2}, false},
+		{dimensions.Location{X: 2, Y: 2}, true},
+		{dimensions.Location{X: 3, Y: 2}, false},
+		{dimensions.Location{X: 1, Y: 3}, false},
+		{dimensions.Location{X: 2, Y: 3}, true},
+		{dimensions.Location{X: 3, Y: 3}, false},
 	}
 
 	for _, expectation := range expectations {

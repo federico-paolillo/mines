@@ -3,33 +3,33 @@ package game_test
 import (
 	"testing"
 
+	"github.com/federico-paolillo/mines/pkg/dimensions"
 	"github.com/federico-paolillo/mines/pkg/game"
-	"github.com/federico-paolillo/mines/pkg/mines"
 )
 
 func TestDifficultiesHaveProperSettings(t *testing.T) {
 	expectedSettings := [3]struct {
 		difficulty game.Difficulty
 		lives      int
-		size       mines.Size
+		size       dimensions.Size
 		mines      int
 	}{
 		{
 			difficulty: game.Beginner,
-			size:       mines.Size{Width: 9, Height: 9},
+			size:       dimensions.Size{Width: 9, Height: 9},
 			mines:      10,
 			lives:      2,
 		},
 		{
 			difficulty: game.Intermediate,
 			lives:      1,
-			size:       mines.Size{Width: 16, Height: 16},
+			size:       dimensions.Size{Width: 16, Height: 16},
 			mines:      40,
 		},
 		{
 			difficulty: game.Expert,
 			lives:      0,
-			size:       mines.Size{Width: 30, Height: 16},
+			size:       dimensions.Size{Width: 30, Height: 16},
 			mines:      99,
 		},
 	}

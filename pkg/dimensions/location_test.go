@@ -1,15 +1,15 @@
-package mines_test
+package dimensions_test
 
 import (
 	"testing"
 
-	"github.com/federico-paolillo/mines/pkg/mines"
+	"github.com/federico-paolillo/mines/pkg/dimensions"
 )
 
 func TestOriginAdjacentLocationsAreCorrect(t *testing.T) {
-	origin := mines.Location{X: 5, Y: 5}
+	origin := dimensions.Location{X: 5, Y: 5}
 
-	expectedLocations := [8]mines.Location{
+	expectedLocations := [8]dimensions.Location{
 		{X: 5, Y: 6},
 		{X: 6, Y: 6},
 		{X: 6, Y: 5},

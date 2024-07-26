@@ -1,4 +1,4 @@
-package mines
+package dimensions
 
 type Location struct {
 	X, Y int

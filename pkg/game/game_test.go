@@ -3,8 +3,9 @@ package game_test
 import (
 	"testing"
 
+	"github.com/federico-paolillo/mines/pkg/board"
+	"github.com/federico-paolillo/mines/pkg/dimensions"
 	"github.com/federico-paolillo/mines/pkg/game"
-	"github.com/federico-paolillo/mines/pkg/mines"
 )
 
 func TestChordingOpensAppropriateCell(t *testing.T) {
@@ -28,7 +29,7 @@ func TestChordingOpensAppropriateCell(t *testing.T) {
 	 *       M is a mined cell
 	 */
 
-	bb := mines.NewBuilder(mines.Size{Width: 3, Height: 4})
+	bb := board.NewBuilder(dimensions.Size{Width: 3, Height: 4})
 
 	bb.PlaceSafe(1, 1)
 	bb.PlaceSafe(2, 1)
@@ -43,13 +44,13 @@ func TestChordingOpensAppropriateCell(t *testing.T) {
 	bb.PlaceSafe(2, 4)
 	bb.PlaceSafe(3, 4)
 
-	board := bb.Build()
+	b := bb.Build()
 
-	game := game.NewGame(1, board)
+	game := game.NewGame(1, b)
 
-	game.Open(mines.Location{X: 1, Y: 1})
+	game.Open(dimensions.Location{X: 1, Y: 1})
 
-	openLocations := [6]mines.Location{
+	openLocations := [6]dimensions.Location{
 		{X: 1, Y: 1},
 		{X: 2, Y: 1},
 		{X: 3, Y: 1},
@@ -58,7 +59,7 @@ func TestChordingOpensAppropriateCell(t *testing.T) {
 		{X: 1, Y: 4},
 	}
 
-	closeLocations := [6]mines.Location{
+	closeLocations := [6]dimensions.Location{
 		{X: 2, Y: 2},
 		{X: 3, Y: 2},
 		{X: 2, Y: 3},
@@ -68,15 +69,15 @@ func TestChordingOpensAppropriateCell(t *testing.T) {
 	}
 
 	for _, location := range openLocations {
-		cell := board.Retrieve(location)
-		if cell.Status(mines.Opened) != true {
+		cell := b.Retrieve(location)
+		if cell.Status(board.Opened) != true {
 			t.Errorf("expected cell at %v to be open", location)
 		}
 	}
 
 	for _, location := range closeLocations {
-		cell := board.Retrieve(location)
-		if cell.Status(mines.Closed) != true {
+		cell := b.Retrieve(location)
+		if cell.Status(board.Closed) != true {
 			t.Errorf("expected cell at %v to be closed", location)
 		}
 	}
@@ -94,7 +95,7 @@ func TestWhenOpeningAllSafeCellsTheGameIsWon(t *testing.T) {
 	 *       M is a mined cell
 	 */
 
-	bb := mines.NewBuilder(mines.Size{Width: 3, Height: 4})
+	bb := board.NewBuilder(dimensions.Size{Width: 3, Height: 4})
 
 	bb.PlaceSafe(1, 1)
 	bb.PlaceSafe(2, 1)
@@ -109,18 +110,18 @@ func TestWhenOpeningAllSafeCellsTheGameIsWon(t *testing.T) {
 	bb.PlaceSafe(2, 4)
 	bb.PlaceSafe(3, 4)
 
-	board := bb.Build()
+	b := bb.Build()
 
-	currentGame := game.NewGame(1, board)
+	currentGame := game.NewGame(1, b)
 
 	// We can leverage chording for this board. That is why we don't need all moves
 
-	currentGame.Open(mines.Location{X: 1, Y: 1})
-	currentGame.Open(mines.Location{X: 2, Y: 2})
-	currentGame.Open(mines.Location{X: 3, Y: 2})
-	currentGame.Open(mines.Location{X: 2, Y: 3})
-	currentGame.Open(mines.Location{X: 2, Y: 4})
-	currentGame.Open(mines.Location{X: 3, Y: 4})
+	currentGame.Open(dimensions.Location{X: 1, Y: 1})
+	currentGame.Open(dimensions.Location{X: 2, Y: 2})
+	currentGame.Open(dimensions.Location{X: 3, Y: 2})
+	currentGame.Open(dimensions.Location{X: 2, Y: 3})
+	currentGame.Open(dimensions.Location{X: 2, Y: 4})
+	currentGame.Open(dimensions.Location{X: 3, Y: 4})
 
 	if currentGame.Status != game.Won {
 		t.Fatal("expected game to be won after clearing all safe empty cells")
@@ -139,7 +140,7 @@ func TestWhenFlaggingAllMineCellsTheGameIsWon(t *testing.T) {
 	 *       M is a mined cell
 	 */
 
-	bb := mines.NewBuilder(mines.Size{Width: 3, Height: 4})
+	bb := board.NewBuilder(dimensions.Size{Width: 3, Height: 4})
 
 	bb.PlaceSafe(1, 1)
 	bb.PlaceSafe(2, 1)
@@ -154,11 +155,11 @@ func TestWhenFlaggingAllMineCellsTheGameIsWon(t *testing.T) {
 	bb.PlaceSafe(2, 4)
 	bb.PlaceSafe(3, 4)
 
-	board := bb.Build()
+	b := bb.Build()
 
-	currentGame := game.NewGame(1, board)
+	currentGame := game.NewGame(1, b)
 
-	currentGame.Flag(mines.Location{X: 3, Y: 3})
+	currentGame.Flag(dimensions.Location{X: 3, Y: 3})
 
 	if currentGame.Status != game.Won {
 		t.Fatal("expected game to be won after flagging all mined cells")

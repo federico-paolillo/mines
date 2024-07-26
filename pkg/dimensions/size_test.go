@@ -1,14 +1,14 @@
-package mines_test
+package dimensions_test
 
 import (
 	"testing"
 
-	"github.com/federico-paolillo/mines/pkg/mines"
+	"github.com/federico-paolillo/mines/pkg/dimensions"
 )
 
 func TestLocationsWithinBoundsAreDetected(t *testing.T) {
-	size := mines.Size{Width: 10, Height: 10}
-	location := mines.Location{X: 2, Y: 3}
+	size := dimensions.Size{Width: 10, Height: 10}
+	location := dimensions.Location{X: 2, Y: 3}
 
 	contains := size.Contains(location)
 
@@ -22,8 +22,8 @@ func TestLocationsWithinBoundsAreDetected(t *testing.T) {
 }
 
 func TestLocationsOutOfBoundsAreDetected(t *testing.T) {
-	size := mines.Size{Width: 10, Height: 10}
-	location := mines.Location{X: 11, Y: -3}
+	size := dimensions.Size{Width: 10, Height: 10}
+	location := dimensions.Location{X: 11, Y: -3}
 
 	contains := size.Contains(location)
 

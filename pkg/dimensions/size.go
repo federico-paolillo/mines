@@ -1,4 +1,4 @@
-package mines
+package dimensions
 
 type Size struct {
 	Width, Height int

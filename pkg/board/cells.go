@@ -1,6 +1,10 @@
-package mines
+package board
 
-import "math"
+import (
+	"math"
+
+	"github.com/federico-paolillo/mines/pkg/dimensions"
+)
 
 type Cellstate int
 
@@ -12,18 +16,18 @@ const (
 )
 
 type Cell struct {
-	position Location
+	position dimensions.Location
 	status   Cellstate
 	mined    bool
 }
 
 var Void = &Cell{
-	position: Location{math.MinInt32, math.MinInt32},
+	position: dimensions.Location{X: math.MinInt32, Y: math.MinInt32},
 	status:   Unfathomable,
 	mined:    false,
 }
 
-func NewSafeCell(location Location) *Cell {
+func NewSafeCell(location dimensions.Location) *Cell {
 	return &Cell{
 		position: location,
 		status:   Closed,
@@ -31,7 +35,7 @@ func NewSafeCell(location Location) *Cell {
 	}
 }
 
-func NewMineCell(location Location) *Cell {
+func NewMineCell(location dimensions.Location) *Cell {
 	return &Cell{
 		position: location,
 		status:   Closed,
@@ -69,6 +73,6 @@ func (cell *Cell) Safe() bool {
 	return cell.mined == false
 }
 
-func (cell *Cell) Position() Location {
+func (cell *Cell) Position() dimensions.Location {
 	return cell.position
 }

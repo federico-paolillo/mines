@@ -1,14 +1,15 @@
-package mines_test
+package board_test
 
 import (
 	"testing"
 
-	"github.com/federico-paolillo/mines/pkg/mines"
+	"github.com/federico-paolillo/mines/pkg/board"
+	"github.com/federico-paolillo/mines/pkg/dimensions"
 )
 
 func TestNewSafeCellIsNotMinedAndPositionedProperly(t *testing.T) {
-	emptyCellLocation := mines.Location{X: 1, Y: 2}
-	emptyCell := mines.NewSafeCell(emptyCellLocation)
+	emptyCellLocation := dimensions.Location{X: 1, Y: 2}
+	emptyCell := board.NewSafeCell(emptyCellLocation)
 
 	if emptyCell.Position() != emptyCellLocation {
 		t.Errorf(
@@ -22,14 +23,14 @@ func TestNewSafeCellIsNotMinedAndPositionedProperly(t *testing.T) {
 		t.Error("expected cell to be without mines")
 	}
 
-	if emptyCell.Status(mines.Closed) != true {
+	if emptyCell.Status(board.Closed) != true {
 		t.Error("expected cell to be closed")
 	}
 }
 
 func TestNewMineCellIsMinedAndPositionedProperly(t *testing.T) {
-	minedCellLocation := mines.Location{X: 1, Y: 2}
-	minedCell := mines.NewMineCell(minedCellLocation)
+	minedCellLocation := dimensions.Location{X: 1, Y: 2}
+	minedCell := board.NewMineCell(minedCellLocation)
 
 	if minedCell.Position() != minedCellLocation {
 		t.Errorf(
@@ -43,7 +44,7 @@ func TestNewMineCellIsMinedAndPositionedProperly(t *testing.T) {
 		t.Error("expected cell to be mined")
 	}
 
-	if minedCell.Status(mines.Closed) != true {
+	if minedCell.Status(board.Closed) != true {
 		t.Error("expected cell to be closed")
 	}
 }

@@ -1,6 +1,6 @@
 package game
 
-import "github.com/federico-paolillo/mines/pkg/mines"
+import "github.com/federico-paolillo/mines/pkg/dimensions"
 
 type Difficulty = string
 
@@ -11,13 +11,13 @@ const (
 )
 
 type DifficultySettings struct {
-	BoardSize     mines.Size
+	BoardSize     dimensions.Size
 	NumberOfMines int
 	Lives         int
 }
 
 var beginnerSettings = DifficultySettings{
-	BoardSize: mines.Size{
+	BoardSize: dimensions.Size{
 		Width:  9,
 		Height: 9,
 	},
@@ -26,7 +26,7 @@ var beginnerSettings = DifficultySettings{
 }
 
 var intermediateSettings = DifficultySettings{
-	BoardSize: mines.Size{
+	BoardSize: dimensions.Size{
 		Width:  16,
 		Height: 16,
 	},
@@ -35,7 +35,7 @@ var intermediateSettings = DifficultySettings{
 }
 
 var expertSettings = DifficultySettings{
-	BoardSize: mines.Size{
+	BoardSize: dimensions.Size{
 		Width:  30,
 		Height: 16,
 	},

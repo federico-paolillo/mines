@@ -1,6 +1,8 @@
-package mines
+package board
 
-type Cellmap = map[Location]*Cell
+import "github.com/federico-paolillo/mines/pkg/dimensions"
+
+type Cellmap = map[dimensions.Location]*Cell
 
 type Board struct {
 	cells Cellmap
@@ -12,7 +14,7 @@ func newBoard(cells Cellmap) *Board {
 	}
 }
 
-func (board *Board) Retrieve(location Location) *Cell {
+func (board *Board) Retrieve(location dimensions.Location) *Cell {
 	maybeCell, ok := board.cells[location]
 
 	if ok {
@@ -22,7 +24,7 @@ func (board *Board) Retrieve(location Location) *Cell {
 	return Void
 }
 
-func (board *Board) AdjacentMines(location Location) int {
+func (board *Board) AdjacentMines(location dimensions.Location) int {
 	adjacentLocations := location.AdjacentLocations()
 	adjacentMines := 0
 
