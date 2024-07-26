@@ -16,12 +16,14 @@ func TestAdjacentMinesCalculatesProperly(t *testing.T) {
 	 *       M is a mined cell
 	 */
 
-	board := mines.NewBoard(mines.Size{Width: 2, Height: 2})
+	bb := mines.NewBuilder(mines.Size{Width: 2, Height: 2})
 
-	board.PlaceCell(mines.Location{X: 1, Y: 1})
-	board.PlaceMine(mines.Location{X: 2, Y: 1})
-	board.PlaceMine(mines.Location{X: 1, Y: 2})
-	board.PlaceCell(mines.Location{X: 2, Y: 2})
+	bb.PlaceSafe(1, 1)
+	bb.PlaceMine(2, 1)
+	bb.PlaceMine(1, 2)
+	bb.PlaceSafe(2, 2)
+
+	board := bb.Build()
 
 	minesExpected := [4]struct {
 		location mines.Location
@@ -68,20 +70,22 @@ func TestAdjacentMinesCalculatesProperly2(t *testing.T) {
 	 *       M is a mined cell
 	 */
 
-	board := mines.NewBoard(mines.Size{Width: 3, Height: 4})
+	bb := mines.NewBuilder(mines.Size{Width: 3, Height: 4})
 
-	board.PlaceCell(mines.Location{X: 1, Y: 1})
-	board.PlaceCell(mines.Location{X: 2, Y: 1})
-	board.PlaceCell(mines.Location{X: 3, Y: 1})
-	board.PlaceCell(mines.Location{X: 1, Y: 2})
-	board.PlaceCell(mines.Location{X: 2, Y: 2})
-	board.PlaceCell(mines.Location{X: 3, Y: 2})
-	board.PlaceCell(mines.Location{X: 1, Y: 3})
-	board.PlaceCell(mines.Location{X: 2, Y: 3})
-	board.PlaceMine(mines.Location{X: 3, Y: 3})
-	board.PlaceCell(mines.Location{X: 1, Y: 4})
-	board.PlaceCell(mines.Location{X: 2, Y: 4})
-	board.PlaceCell(mines.Location{X: 3, Y: 4})
+	bb.PlaceSafe(1, 1)
+	bb.PlaceSafe(2, 1)
+	bb.PlaceSafe(3, 1)
+	bb.PlaceSafe(1, 2)
+	bb.PlaceSafe(2, 2)
+	bb.PlaceSafe(3, 2)
+	bb.PlaceSafe(1, 3)
+	bb.PlaceSafe(2, 3)
+	bb.PlaceMine(3, 3)
+	bb.PlaceSafe(1, 4)
+	bb.PlaceSafe(2, 4)
+	bb.PlaceSafe(3, 4)
+
+	board := bb.Build()
 
 	minesExpected := [12]struct {
 		location mines.Location
@@ -115,93 +119,15 @@ func TestAdjacentMinesCalculatesProperly2(t *testing.T) {
 	}
 }
 
-func TestEmptyCellsArePlaced(t *testing.T) {
-	board := mines.NewBoard(mines.Size{Width: 2, Height: 2})
-
-	expectedLocation := mines.Location{X: 1, Y: 2}
-
-	board.PlaceCell(expectedLocation)
-
-	cell := board.Retrieve(expectedLocation)
-
-	if cell.Position() != expectedLocation {
-		t.Errorf(
-			"retrieved cell is not in the expected position. it is %v instead of %v",
-			cell.Position(),
-			expectedLocation,
-		)
-	}
-
-	if cell.Mined() {
-		t.Error("retrieved cell is mined")
-	}
-
-	if cell.Status(mines.Closed) != true {
-		t.Error("retrieved cell is not closed")
-	}
-}
-
-func TestMinedCellsArePlaced(t *testing.T) {
-	board := mines.NewBoard(mines.Size{Width: 2, Height: 2})
-
-	expectedLocation := mines.Location{X: 1, Y: 2}
-
-	board.PlaceMine(expectedLocation)
-
-	cell := board.Retrieve(expectedLocation)
-
-	if cell.Position() != expectedLocation {
-		t.Errorf(
-			"retrieved cell is not in the expected position. it is %v instead of %v",
-			cell.Position(),
-			expectedLocation,
-		)
-	}
-
-	if cell.Safe() {
-		t.Error("retrieved cell is not mined")
-	}
-
-	if cell.Status(mines.Closed) != true {
-		t.Error("retrieved cell is not closed")
-	}
-}
-
-func TestCellsCanBeVoided(t *testing.T) {
-	board := mines.NewBoard(mines.Size{Width: 2, Height: 2})
-
-	location := mines.Location{X: 1, Y: 2}
-
-	board.PlaceCell(location)
-
-	cell := board.Retrieve(location)
-
-	if cell == mines.Void {
-		t.Fatalf(
-			"should have been a cell at %v",
-			location,
-		)
-	}
-
-	board.PlaceVoid(location)
-
-	cell = board.Retrieve(location)
-
-	if cell != mines.Void {
-		t.Fatalf(
-			"should NOT have been a cell at %v",
-			location,
-		)
-	}
-}
-
 func TestUnopenSafeCellsCountIsCorrect(t *testing.T) {
-	board := mines.NewBoard(mines.Size{Width: 2, Height: 2})
+	bb := mines.NewBuilder(mines.Size{Width: 2, Height: 2})
 
-	board.PlaceCell(mines.Location{X: 1, Y: 1})
-	board.PlaceCell(mines.Location{X: 2, Y: 1})
-	board.PlaceCell(mines.Location{X: 1, Y: 2})
-	board.PlaceMine(mines.Location{X: 2, Y: 2})
+	bb.PlaceSafe(1, 1)
+	bb.PlaceSafe(2, 1)
+	bb.PlaceSafe(1, 2)
+	bb.PlaceMine(2, 2)
+
+	board := bb.Build()
 
 	// Starting all safe cells are unopen
 	unopenCells := board.CountUnopenSafeCells()
@@ -234,12 +160,14 @@ func TestUnopenSafeCellsCountIsCorrect(t *testing.T) {
 }
 
 func TestUnflaggedMinesCountIsCorrect(t *testing.T) {
-	board := mines.NewBoard(mines.Size{Width: 2, Height: 2})
+	bb := mines.NewBuilder(mines.Size{Width: 2, Height: 2})
 
-	board.PlaceCell(mines.Location{X: 1, Y: 1})
-	board.PlaceCell(mines.Location{X: 2, Y: 1})
-	board.PlaceCell(mines.Location{X: 1, Y: 2})
-	board.PlaceMine(mines.Location{X: 2, Y: 2})
+	bb.PlaceSafe(1, 1)
+	bb.PlaceSafe(2, 1)
+	bb.PlaceSafe(1, 2)
+	bb.PlaceMine(2, 2)
+
+	board := bb.Build()
 
 	// Starting all mine cells are unflagged
 	unflaggedMines := board.CountUnflaggedMines()

@@ -28,20 +28,22 @@ func TestChordingOpensAppropriateCell(t *testing.T) {
 	 *       M is a mined cell
 	 */
 
-	board := mines.NewBoard(mines.Size{Width: 3, Height: 4})
+	bb := mines.NewBuilder(mines.Size{Width: 3, Height: 4})
 
-	board.PlaceCell(mines.Location{X: 1, Y: 1})
-	board.PlaceCell(mines.Location{X: 2, Y: 1})
-	board.PlaceCell(mines.Location{X: 3, Y: 1})
-	board.PlaceCell(mines.Location{X: 1, Y: 2})
-	board.PlaceCell(mines.Location{X: 2, Y: 2})
-	board.PlaceCell(mines.Location{X: 3, Y: 2})
-	board.PlaceCell(mines.Location{X: 1, Y: 3})
-	board.PlaceCell(mines.Location{X: 2, Y: 3})
-	board.PlaceMine(mines.Location{X: 3, Y: 3})
-	board.PlaceCell(mines.Location{X: 1, Y: 4})
-	board.PlaceCell(mines.Location{X: 2, Y: 4})
-	board.PlaceCell(mines.Location{X: 3, Y: 4})
+	bb.PlaceSafe(1, 1)
+	bb.PlaceSafe(2, 1)
+	bb.PlaceSafe(3, 1)
+	bb.PlaceSafe(1, 2)
+	bb.PlaceSafe(2, 2)
+	bb.PlaceSafe(3, 2)
+	bb.PlaceSafe(1, 3)
+	bb.PlaceSafe(2, 3)
+	bb.PlaceMine(3, 3)
+	bb.PlaceSafe(1, 4)
+	bb.PlaceSafe(2, 4)
+	bb.PlaceSafe(3, 4)
+
+	board := bb.Build()
 
 	game := game.NewGame(1, board)
 
@@ -92,20 +94,22 @@ func TestWhenOpeningAllSafeCellsTheGameIsWon(t *testing.T) {
 	 *       M is a mined cell
 	 */
 
-	board := mines.NewBoard(mines.Size{Width: 3, Height: 4})
+	bb := mines.NewBuilder(mines.Size{Width: 3, Height: 4})
 
-	board.PlaceCell(mines.Location{X: 1, Y: 1})
-	board.PlaceCell(mines.Location{X: 2, Y: 1})
-	board.PlaceCell(mines.Location{X: 3, Y: 1})
-	board.PlaceCell(mines.Location{X: 1, Y: 2})
-	board.PlaceCell(mines.Location{X: 2, Y: 2})
-	board.PlaceCell(mines.Location{X: 3, Y: 2})
-	board.PlaceCell(mines.Location{X: 1, Y: 3})
-	board.PlaceCell(mines.Location{X: 2, Y: 3})
-	board.PlaceMine(mines.Location{X: 3, Y: 3})
-	board.PlaceCell(mines.Location{X: 1, Y: 4})
-	board.PlaceCell(mines.Location{X: 2, Y: 4})
-	board.PlaceCell(mines.Location{X: 3, Y: 4})
+	bb.PlaceSafe(1, 1)
+	bb.PlaceSafe(2, 1)
+	bb.PlaceSafe(3, 1)
+	bb.PlaceSafe(1, 2)
+	bb.PlaceSafe(2, 2)
+	bb.PlaceSafe(3, 2)
+	bb.PlaceSafe(1, 3)
+	bb.PlaceSafe(2, 3)
+	bb.PlaceMine(3, 3)
+	bb.PlaceSafe(1, 4)
+	bb.PlaceSafe(2, 4)
+	bb.PlaceSafe(3, 4)
+
+	board := bb.Build()
 
 	currentGame := game.NewGame(1, board)
 
@@ -135,20 +139,22 @@ func TestWhenFlaggingAllMineCellsTheGameIsWon(t *testing.T) {
 	 *       M is a mined cell
 	 */
 
-	board := mines.NewBoard(mines.Size{Width: 3, Height: 4})
+	bb := mines.NewBuilder(mines.Size{Width: 3, Height: 4})
 
-	board.PlaceCell(mines.Location{X: 1, Y: 1})
-	board.PlaceCell(mines.Location{X: 2, Y: 1})
-	board.PlaceCell(mines.Location{X: 3, Y: 1})
-	board.PlaceCell(mines.Location{X: 1, Y: 2})
-	board.PlaceCell(mines.Location{X: 2, Y: 2})
-	board.PlaceCell(mines.Location{X: 3, Y: 2})
-	board.PlaceCell(mines.Location{X: 1, Y: 3})
-	board.PlaceCell(mines.Location{X: 2, Y: 3})
-	board.PlaceMine(mines.Location{X: 3, Y: 3})
-	board.PlaceCell(mines.Location{X: 1, Y: 4})
-	board.PlaceCell(mines.Location{X: 2, Y: 4})
-	board.PlaceCell(mines.Location{X: 3, Y: 4})
+	bb.PlaceSafe(1, 1)
+	bb.PlaceSafe(2, 1)
+	bb.PlaceSafe(3, 1)
+	bb.PlaceSafe(1, 2)
+	bb.PlaceSafe(2, 2)
+	bb.PlaceSafe(3, 2)
+	bb.PlaceSafe(1, 3)
+	bb.PlaceSafe(2, 3)
+	bb.PlaceMine(3, 3)
+	bb.PlaceSafe(1, 4)
+	bb.PlaceSafe(2, 4)
+	bb.PlaceSafe(3, 4)
+
+	board := bb.Build()
 
 	currentGame := game.NewGame(1, board)
 

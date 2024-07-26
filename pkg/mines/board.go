@@ -6,28 +6,10 @@ type Board struct {
 	cells Cellmap
 }
 
-func NewBoard(size Size) *Board {
-	return &Board{
-		cells: make(map[Location]*Cell, size.Width*size.Height),
-	}
-}
-
 func newBoard(cells Cellmap) *Board {
 	return &Board{
 		cells,
 	}
-}
-
-func (board *Board) PlaceCell(location Location) {
-	board.cells[location] = NewSafeCell(location)
-}
-
-func (board *Board) PlaceMine(location Location) {
-	board.cells[location] = NewMineCell(location)
-}
-
-func (board *Board) PlaceVoid(location Location) {
-	delete(board.cells, location)
 }
 
 func (board *Board) Retrieve(location Location) *Cell {
