@@ -35,18 +35,20 @@ func (builder *Builder) PlaceVoid(x, y int) {
 }
 
 func (builder *Builder) Build() *Board {
-	board := NewBoard(builder.size)
+	cells := make(Cellmap, builder.size.Width*builder.size.Height)
 
 	for location, cellkind := range builder.placements {
 		switch cellkind {
 		case mine:
-			board.PlaceMine(location)
+			cells[location] = NewMineCell(location)
 		case safe:
-			board.PlaceCell(location)
+			cells[location] = NewSafeCell(location)
 		default:
-			board.PlaceVoid(location)
+			continue
 		}
 	}
+
+	board := newBoard(cells)
 
 	return board
 }

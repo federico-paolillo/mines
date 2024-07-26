@@ -1,12 +1,20 @@
 package mines
 
+type Cellmap = map[Location]*Cell
+
 type Board struct {
-	cells map[Location]*Cell
+	cells Cellmap
 }
 
 func NewBoard(size Size) *Board {
 	return &Board{
 		cells: make(map[Location]*Cell, size.Width*size.Height),
+	}
+}
+
+func newBoard(cells Cellmap) *Board {
+	return &Board{
+		cells,
 	}
 }
 
