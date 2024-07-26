@@ -23,7 +23,7 @@ var Void = &Cell{
 	mined:    false,
 }
 
-func NewEmptyCell(location Location) *Cell {
+func NewSafeCell(location Location) *Cell {
 	return &Cell{
 		position: location,
 		status:   Closed,
@@ -31,7 +31,7 @@ func NewEmptyCell(location Location) *Cell {
 	}
 }
 
-func NewMinedCell(location Location) *Cell {
+func NewMineCell(location Location) *Cell {
 	return &Cell{
 		position: location,
 		status:   Closed,

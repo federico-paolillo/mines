@@ -6,9 +6,9 @@ import (
 	"github.com/federico-paolillo/mines/pkg/mines"
 )
 
-func TestNewEmptyCellIsNotMinedAndPositionedProperly(t *testing.T) {
+func TestNewSafeCellIsNotMinedAndPositionedProperly(t *testing.T) {
 	emptyCellLocation := mines.Location{X: 1, Y: 2}
-	emptyCell := mines.NewEmptyCell(emptyCellLocation)
+	emptyCell := mines.NewSafeCell(emptyCellLocation)
 
 	if emptyCell.Position() != emptyCellLocation {
 		t.Errorf(
@@ -29,7 +29,7 @@ func TestNewEmptyCellIsNotMinedAndPositionedProperly(t *testing.T) {
 
 func TestNewMineCellIsMinedAndPositionedProperly(t *testing.T) {
 	minedCellLocation := mines.Location{X: 1, Y: 2}
-	minedCell := mines.NewMinedCell(minedCellLocation)
+	minedCell := mines.NewMineCell(minedCellLocation)
 
 	if minedCell.Position() != minedCellLocation {
 		t.Errorf(

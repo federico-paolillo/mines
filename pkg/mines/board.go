@@ -11,11 +11,11 @@ func NewBoard(size Size) *Board {
 }
 
 func (board *Board) PlaceCell(location Location) {
-	board.cells[location] = NewEmptyCell(location)
+	board.cells[location] = NewSafeCell(location)
 }
 
 func (board *Board) PlaceMine(location Location) {
-	board.cells[location] = NewMinedCell(location)
+	board.cells[location] = NewMineCell(location)
 }
 
 func (board *Board) PlaceVoid(location Location) {
