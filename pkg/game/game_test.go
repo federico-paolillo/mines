@@ -48,7 +48,7 @@ func TestChordingOpensAppropriateCell(t *testing.T) {
 
 	game := game.NewGame(1, b)
 
-	game.Open(dimensions.Location{X: 1, Y: 1})
+	game.Open(1, 1)
 
 	openLocations := [6]dimensions.Location{
 		{X: 1, Y: 1},
@@ -116,12 +116,12 @@ func TestWhenOpeningAllSafeCellsTheGameIsWon(t *testing.T) {
 
 	// We can leverage chording for this board. That is why we don't need all moves
 
-	currentGame.Open(dimensions.Location{X: 1, Y: 1})
-	currentGame.Open(dimensions.Location{X: 2, Y: 2})
-	currentGame.Open(dimensions.Location{X: 3, Y: 2})
-	currentGame.Open(dimensions.Location{X: 2, Y: 3})
-	currentGame.Open(dimensions.Location{X: 2, Y: 4})
-	currentGame.Open(dimensions.Location{X: 3, Y: 4})
+	currentGame.Open(1, 1)
+	currentGame.Open(2, 2)
+	currentGame.Open(3, 2)
+	currentGame.Open(2, 3)
+	currentGame.Open(2, 4)
+	currentGame.Open(3, 4)
 
 	if currentGame.Status != game.Won {
 		t.Fatal("expected game to be won after clearing all safe empty cells")
@@ -159,7 +159,7 @@ func TestWhenFlaggingAllMineCellsTheGameIsWon(t *testing.T) {
 
 	currentGame := game.NewGame(1, b)
 
-	currentGame.Flag(dimensions.Location{X: 3, Y: 3})
+	currentGame.Flag(3, 3)
 
 	if currentGame.Status != game.Won {
 		t.Fatal("expected game to be won after flagging all mined cells")

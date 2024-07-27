@@ -27,8 +27,8 @@ func NewGame(lives int, board *board.Board) *Game {
 	}
 }
 
-func (game *Game) Flag(location dimensions.Location) {
-	cell := game.Board.Retrieve(location)
+func (game *Game) Flag(x, y int) {
+	cell := game.Board.Retrieve(dimensions.Location{X: x, Y: y})
 
 	if cell == board.Void {
 		return
@@ -39,8 +39,8 @@ func (game *Game) Flag(location dimensions.Location) {
 	game.checkWinCondition()
 }
 
-func (game *Game) Open(location dimensions.Location) {
-	cell := game.Board.Retrieve(location)
+func (game *Game) Open(x, y int) {
+	cell := game.Board.Retrieve(dimensions.Location{X: x, Y: y})
 
 	if cell == board.Void {
 		return

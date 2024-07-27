@@ -69,7 +69,7 @@ func TestPrintsBoardProperlyWithDefaultSymbols2(t *testing.T) {
 
 	game := game.NewGame(1, b)
 
-	game.Open(dimensions.Location{X: 1, Y: 1})
+	game.Open(1, 1)
 
 	printer := printers.NewAsciiPrinter()
 
@@ -117,8 +117,8 @@ func TestAsciiPrinterPrintsUsingCustomSymbols(t *testing.T) {
 
 	game := game.NewGame(1, b)
 
-	game.Open(dimensions.Location{X: 1, Y: 1})
-	game.Flag(dimensions.Location{X: 3, Y: 3})
+	game.Open(1, 1)
+	game.Flag(3, 3)
 
 	printer := printers.NewAsciiPrinter()
 
