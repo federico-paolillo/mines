@@ -53,7 +53,7 @@ func (game *Game) Open(location dimensions.Location) {
 		return
 	}
 
-	if game.Board.AdjacentMines(cell.Position()) == 0 {
+	if cell.AdjacentMines() == 0 {
 		game.tryChording(cell.Position())
 	}
 
@@ -76,7 +76,7 @@ func (game *Game) tryChording(chordingOrigin dimensions.Location) {
 			continue
 		}
 
-		if game.Board.AdjacentMines(candidateCell.Position()) == 0 {
+		if candidateCell.AdjacentMines() == 0 {
 			candidateCell.Open()
 			game.tryChording(candidateCell.Position())
 		}

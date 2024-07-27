@@ -24,16 +24,6 @@ func (board *Board) Retrieve(location dimensions.Location) *Cell {
 	return Void
 }
 
-func (board *Board) AdjacentMines(location dimensions.Location) int {
-	cell := board.Retrieve(location)
-
-	if cell == Void {
-		return 0
-	}
-
-	return cell.AdjacentMines()
-}
-
 func (board *Board) CountUnopenSafeCells() int {
 	unopenedCellsCount := 0
 
