@@ -50,7 +50,7 @@ func (builder *Builder) Build() *Board {
 		}
 	}
 
-	board := newBoard(cells)
+	board := newBoard(builder.size, cells)
 
 	return board
 }

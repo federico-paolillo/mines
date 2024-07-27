@@ -5,11 +5,13 @@ import "github.com/federico-paolillo/mines/pkg/dimensions"
 type Cellmap = map[dimensions.Location]*Cell
 
 type Board struct {
+	size  dimensions.Size
 	cells Cellmap
 }
 
-func newBoard(cells Cellmap) *Board {
+func newBoard(size dimensions.Size, cells Cellmap) *Board {
 	return &Board{
+		size,
 		cells,
 	}
 }
@@ -50,4 +52,8 @@ func (board *Board) CountUnflaggedMines() int {
 	}
 
 	return unflaggedMinesCount
+}
+
+func (board *Board) Size() dimensions.Size {
+	return board.size
 }
