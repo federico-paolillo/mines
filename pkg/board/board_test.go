@@ -15,10 +15,10 @@ func TestUnopenSafeCellsCountIsCorrect(t *testing.T) {
 	bb.PlaceSafe(1, 2)
 	bb.PlaceMine(2, 2)
 
-	board := bb.Build()
+	b := bb.Build()
 
 	// Starting all safe cells are unopen
-	unopenCells := board.CountUnopenSafeCells()
+	unopenCells := b.CountUnopenSafeCells()
 	expectedUnopenCells := 3
 
 	if unopenCells != expectedUnopenCells {
@@ -31,11 +31,11 @@ func TestUnopenSafeCellsCountIsCorrect(t *testing.T) {
 
 	// Opening 1,1 will reduce the unopened safe cells by one
 
-	cell := board.Retrieve(dimensions.Location{X: 1, Y: 1})
+	cell := b.Retrieve(dimensions.Location{X: 1, Y: 1})
 
 	cell.Open()
 
-	unopenCells = board.CountUnopenSafeCells()
+	unopenCells = b.CountUnopenSafeCells()
 	expectedUnopenCells = 2
 
 	if unopenCells != expectedUnopenCells {
@@ -55,10 +55,10 @@ func TestUnflaggedMinesCountIsCorrect(t *testing.T) {
 	bb.PlaceSafe(1, 2)
 	bb.PlaceMine(2, 2)
 
-	board := bb.Build()
+	b := bb.Build()
 
 	// Starting all mine cells are unflagged
-	unflaggedMines := board.CountUnflaggedMines()
+	unflaggedMines := b.CountUnflaggedMines()
 	expectedUnflaggedCells := 1
 
 	if unflaggedMines != expectedUnflaggedCells {
@@ -71,11 +71,11 @@ func TestUnflaggedMinesCountIsCorrect(t *testing.T) {
 
 	// Flagging 2,2 will reduce the unflagged mines to none
 
-	cell := board.Retrieve(dimensions.Location{X: 2, Y: 2})
+	cell := b.Retrieve(dimensions.Location{X: 2, Y: 2})
 
 	cell.Flag()
 
-	unflaggedMines = board.CountUnflaggedMines()
+	unflaggedMines = b.CountUnflaggedMines()
 	expectedUnflaggedCells = 0
 
 	if unflaggedMines != expectedUnflaggedCells {
