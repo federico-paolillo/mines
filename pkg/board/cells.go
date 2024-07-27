@@ -16,9 +16,10 @@ const (
 )
 
 type Cell struct {
-	position dimensions.Location
-	status   Cellstate
-	mined    bool
+	position      dimensions.Location
+	status        Cellstate
+	mined         bool
+	adjacentMines int
 }
 
 var Void = &Cell{
@@ -27,19 +28,27 @@ var Void = &Cell{
 	mined:    false,
 }
 
-func NewSafeCell(location dimensions.Location) *Cell {
+func NewSafeCell(
+	location dimensions.Location,
+	adjacentMines int,
+) *Cell {
 	return &Cell{
-		position: location,
-		status:   Closed,
-		mined:    false,
+		position:      location,
+		status:        Closed,
+		mined:         false,
+		adjacentMines: adjacentMines,
 	}
 }
 
-func NewMineCell(location dimensions.Location) *Cell {
+func NewMineCell(
+	location dimensions.Location,
+	adjacentMines int,
+) *Cell {
 	return &Cell{
-		position: location,
-		status:   Closed,
-		mined:    true,
+		position:      location,
+		status:        Closed,
+		mined:         true,
+		adjacentMines: adjacentMines,
 	}
 }
 
@@ -75,4 +84,8 @@ func (cell *Cell) Safe() bool {
 
 func (cell *Cell) Position() dimensions.Location {
 	return cell.position
+}
+
+func (cell *Cell) AdjacentMines() int {
+	return cell.adjacentMines
 }

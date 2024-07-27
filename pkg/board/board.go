@@ -25,18 +25,13 @@ func (board *Board) Retrieve(location dimensions.Location) *Cell {
 }
 
 func (board *Board) AdjacentMines(location dimensions.Location) int {
-	adjacentLocations := location.AdjacentLocations()
-	adjacentMines := 0
+	cell := board.Retrieve(location)
 
-	for _, adjacentLocation := range adjacentLocations {
-		adjacentCell := board.Retrieve(adjacentLocation)
-
-		if adjacentCell.Mined() {
-			adjacentMines++
-		}
+	if cell == Void {
+		return 0
 	}
 
-	return adjacentMines
+	return cell.AdjacentMines()
 }
 
 func (board *Board) CountUnopenSafeCells() int {

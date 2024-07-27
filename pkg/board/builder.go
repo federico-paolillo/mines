@@ -42,9 +42,9 @@ func (builder *Builder) Build() *Board {
 	for location, cellkind := range builder.placements {
 		switch cellkind {
 		case mine:
-			cells[location] = NewMineCell(location)
+			cells[location] = NewMineCell(location, builder.countAdjacentMines(location))
 		case safe:
-			cells[location] = NewSafeCell(location)
+			cells[location] = NewSafeCell(location, builder.countAdjacentMines(location))
 		default:
 			continue
 		}
@@ -53,4 +53,19 @@ func (builder *Builder) Build() *Board {
 	board := newBoard(cells)
 
 	return board
+}
+
+func (builder *Builder) countAdjacentMines(location dimensions.Location) int {
+	adjacentLocations := location.AdjacentLocations()
+	minesCount := 0
+
+	for _, adjacentLocation := range adjacentLocations {
+		if val, ok := builder.placements[adjacentLocation]; ok {
+			if val == mine {
+				minesCount++
+			}
+		}
+	}
+
+	return minesCount
 }

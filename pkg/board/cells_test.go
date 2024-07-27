@@ -8,29 +8,33 @@ import (
 )
 
 func TestNewSafeCellIsNotMinedAndPositionedProperly(t *testing.T) {
-	emptyCellLocation := dimensions.Location{X: 1, Y: 2}
-	emptyCell := board.NewSafeCell(emptyCellLocation)
+	safeCellLocation := dimensions.Location{X: 1, Y: 2}
+	safeCell := board.NewSafeCell(safeCellLocation, 11)
 
-	if emptyCell.Position() != emptyCellLocation {
+	if safeCell.Position() != safeCellLocation {
 		t.Errorf(
 			"expected cell to be at %v. instead is at %v",
-			emptyCellLocation,
-			emptyCell.Position(),
+			safeCellLocation,
+			safeCell.Position(),
 		)
 	}
 
-	if emptyCell.Mined() {
+	if safeCell.Mined() {
 		t.Error("expected cell to be without mines")
 	}
 
-	if emptyCell.Status(board.Closed) != true {
+	if safeCell.Status(board.Closed) != true {
 		t.Error("expected cell to be closed")
+	}
+
+	if safeCell.AdjacentMines() != 11 {
+		t.Errorf("expected cell to have %d adjacent mines. instead it has %d", 11, safeCell.AdjacentMines())
 	}
 }
 
 func TestNewMineCellIsMinedAndPositionedProperly(t *testing.T) {
 	minedCellLocation := dimensions.Location{X: 1, Y: 2}
-	minedCell := board.NewMineCell(minedCellLocation)
+	minedCell := board.NewMineCell(minedCellLocation, 14)
 
 	if minedCell.Position() != minedCellLocation {
 		t.Errorf(
@@ -46,5 +50,9 @@ func TestNewMineCellIsMinedAndPositionedProperly(t *testing.T) {
 
 	if minedCell.Status(board.Closed) != true {
 		t.Error("expected cell to be closed")
+	}
+
+	if minedCell.AdjacentMines() != 14 {
+		t.Errorf("expected cell to have %d adjacent mines. instead it has %d", 14, minedCell.AdjacentMines())
 	}
 }
