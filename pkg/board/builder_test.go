@@ -186,3 +186,23 @@ func TestAdjacentMinesCalculatesProperly2(t *testing.T) {
 		}
 	}
 }
+
+func TestBuilderDoesNotAllowOutOfBoundsLocations(t *testing.T) {
+	b := board.NewBuilder(dimensions.Size{Width: 2, Height: 2})
+
+	err := b.PlaceSafe(123, 23)
+
+	if err == nil {
+		t.Fatalf("expected builder to reject out of bounds placement. it did not")
+	}
+}
+
+func TestBuilderDoesNotAllowOutOfBoundsLocations2(t *testing.T) {
+	b := board.NewBuilder(dimensions.Size{Width: 2, Height: 2})
+
+	err := b.PlaceSafe(0, 0)
+
+	if err == nil {
+		t.Fatalf("expected builder to reject out of bounds placement. it did not")
+	}
+}

@@ -7,8 +7,6 @@ type Location struct {
 // This function returns all the adjacent locations around an origin.
 //
 // An adjacent location is a location that is ± 1 away from the origin.
-// It is assumed that the coordinate system has origin 0,0 at bottom-left of the screen,
-// as if it was the 1st quadrant of Cartesian Plane.
 func (origin Location) AdjacentLocations() [8]Location {
 	// From 12 o-clock, clockwise
 	return [8]Location{

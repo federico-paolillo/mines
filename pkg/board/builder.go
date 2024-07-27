@@ -1,6 +1,11 @@
 package board
 
-import "github.com/federico-paolillo/mines/pkg/dimensions"
+import (
+	"errors"
+	"fmt"
+
+	"github.com/federico-paolillo/mines/pkg/dimensions"
+)
 
 type Cellkind = string
 
@@ -17,6 +22,8 @@ type Builder struct {
 	placements Placements
 }
 
+var ErrOutOfBounds = errors.New("placement is out of bounds")
+
 func NewBuilder(boardSize dimensions.Size) *Builder {
 	return &Builder{
 		size:       boardSize,
@@ -24,16 +31,55 @@ func NewBuilder(boardSize dimensions.Size) *Builder {
 	}
 }
 
-func (builder *Builder) PlaceSafe(x, y int) {
-	builder.placements[dimensions.Location{X: x, Y: y}] = safe
+func (builder *Builder) PlaceSafe(x, y int) error {
+	location := dimensions.Location{X: x, Y: y}
+
+	if !builder.size.Contains(location) {
+		return fmt.Errorf(
+			"%v is out of bounds for size %v. %w",
+			location,
+			builder.size,
+			ErrOutOfBounds,
+		)
+	}
+
+	builder.placements[location] = safe
+
+	return nil
 }
 
-func (builder *Builder) PlaceMine(x, y int) {
-	builder.placements[dimensions.Location{X: x, Y: y}] = mine
+func (builder *Builder) PlaceMine(x, y int) error {
+	location := dimensions.Location{X: x, Y: y}
+
+	if !builder.size.Contains(location) {
+		return fmt.Errorf(
+			"%v is out of bounds for size %v. %w",
+			location,
+			builder.size,
+			ErrOutOfBounds,
+		)
+	}
+
+	builder.placements[location] = mine
+
+	return nil
 }
 
-func (builder *Builder) PlaceVoid(x, y int) {
-	builder.placements[dimensions.Location{X: x, Y: y}] = void
+func (builder *Builder) PlaceVoid(x, y int) error {
+	location := dimensions.Location{X: x, Y: y}
+
+	if !builder.size.Contains(location) {
+		return fmt.Errorf(
+			"%v is out of bounds for size %v. %w",
+			location,
+			builder.size,
+			ErrOutOfBounds,
+		)
+	}
+
+	builder.placements[location] = void
+
+	return nil
 }
 
 func (builder *Builder) Build() *Board {
