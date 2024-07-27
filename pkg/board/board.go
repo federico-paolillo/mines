@@ -51,3 +51,9 @@ func (board *Board) CountUnflaggedMines() int {
 
 	return unflaggedMinesCount
 }
+
+func (board *Board) Accept(visitor Visitor) {
+	for _, cell := range board.cells {
+		visitor.Visit(cell)
+	}
+}
