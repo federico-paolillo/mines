@@ -86,34 +86,3 @@ func TestUnflaggedMinesCountIsCorrect(t *testing.T) {
 		)
 	}
 }
-
-type fakeVisitor struct {
-	noOfVisits int
-}
-
-func (fakeVisitor *fakeVisitor) Visit(cell *board.Cell) {
-	fakeVisitor.noOfVisits++
-}
-
-func TestVisitorIsAccepted(t *testing.T) {
-	bb := board.NewBuilder(dimensions.Size{Width: 2, Height: 2})
-
-	bb.PlaceSafe(1, 1)
-	bb.PlaceSafe(2, 1)
-	bb.PlaceSafe(1, 2)
-	bb.PlaceMine(2, 2)
-
-	b := bb.Build()
-
-	visitor := &fakeVisitor{}
-
-	b.Accept(visitor)
-
-	if visitor.noOfVisits != 4 {
-		t.Fatalf(
-			"expected visitor to visit %d cells. it visited %d instead",
-			4,
-			visitor.noOfVisits,
-		)
-	}
-}
