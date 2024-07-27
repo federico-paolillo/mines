@@ -131,22 +131,3 @@ func asSymbol(cell *board.Cell) CellRenderKind {
 		return OpenSafe
 	}
 }
-
-func insertAt(slice []CellRenderKind, index int, item CellRenderKind) []CellRenderKind {
-	if index < len(slice) {
-		slice[index] = item
-		return slice
-	}
-
-	if index >= len(slice) {
-		newSlice := make([]CellRenderKind, index+1)
-
-		copy(newSlice, slice)
-
-		newSlice[index] = item
-
-		return newSlice
-	}
-
-	return slice
-}

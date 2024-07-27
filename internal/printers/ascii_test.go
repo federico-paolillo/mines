@@ -96,3 +96,54 @@ func TestPrintsBoardProperlyWithDefaultSymbols2(t *testing.T) {
 		)
 	}
 }
+
+func TestAsciiPrinterPrintsUsingCustomSymbols(t *testing.T) {
+	bb := board.NewBuilder(dimensions.Size{Width: 3, Height: 4})
+
+	bb.PlaceSafe(1, 1)
+	bb.PlaceSafe(2, 1)
+	bb.PlaceSafe(3, 1)
+	bb.PlaceSafe(1, 2)
+	bb.PlaceSafe(2, 2)
+	bb.PlaceSafe(3, 2)
+	bb.PlaceSafe(1, 3)
+	bb.PlaceSafe(2, 3)
+	bb.PlaceMine(3, 3)
+	bb.PlaceSafe(1, 4)
+	bb.PlaceSafe(2, 4)
+	bb.PlaceSafe(3, 4)
+
+	b := bb.Build()
+
+	game := game.NewGame(1, b)
+
+	game.Open(dimensions.Location{X: 1, Y: 1})
+	game.Flag(dimensions.Location{X: 3, Y: 3})
+
+	printer := printers.NewAsciiPrinter()
+
+	printer.MapSymbol(printers.Flagged, "⛳️")
+
+	expected :=
+		`000
+0oo
+0o⛳️
+0oo
+`
+	result, err := printer.Render(b)
+
+	if err != nil {
+		t.Fatalf(
+			"rendering board has failed. %v",
+			err,
+		)
+	}
+
+	if result != expected {
+		t.Fatalf(
+			"board was rendered as %s. we wanted %s",
+			result,
+			expected,
+		)
+	}
+}
