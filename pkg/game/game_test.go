@@ -82,7 +82,7 @@ func TestCascadingOpensAppropriateCell(t *testing.T) {
 	}
 }
 
-func TestWhenOpeningAllSafeCellsTheGameIsWon(t *testing.T) {
+func TestGameCanBeWon(t *testing.T) {
 	/*
 	 * Assume a board like:
 	 * x x x
@@ -131,20 +131,40 @@ func TestWhenOpeningAllSafeCellsTheGameIsWon(t *testing.T) {
 	currentGame.Open(1, 1)
 	currentGame.Open(3, 4)
 
-	if currentGame.Status != game.Won {
-		t.Fatal("expected game to be won after clearing all safe empty cells")
+	if currentGame.Status() != game.Won {
+		t.Fatal("expected game to be won after opening all safe empty cells")
 	}
 }
 
-func TestWhenFlaggingAllMineCellsTheGameIsWon(t *testing.T) {
+func TestGameCanBeLost(t *testing.T) {
+	bb := board.NewBuilder(dimensions.Size{Width: 2, Height: 2})
+
+	bb.PlaceSafe(1, 1)
+	bb.PlaceSafe(2, 1)
+	bb.PlaceSafe(1, 2)
+	bb.PlaceMine(2, 2)
+
+	b := bb.Build()
+
+	currentGame := game.NewGame(0, b)
+
+	// Opening a mine without lives loses the game
+
+	currentGame.Open(2, 2)
+
+	if currentGame.Status() != game.Lost {
+		t.Fatal("expected game to be lost after tripping a mine")
+	}
+}
+
+func TestGameDoesNotAllowFurtherMovesOnceGameIsWon(t *testing.T) {
 	/*
 	 * Assume a board like:
 	 * x x x
-	 * x 1 1
-	 * x 1 M
-	 * x 1 1
+	 * x x x
+	 * x x M
+	 * x x x
 	 * where x is a closed empty cell
-	 * 			 1 is a cell with adjacent mines
 	 *       M is a mined cell
 	 */
 
@@ -167,9 +187,73 @@ func TestWhenFlaggingAllMineCellsTheGameIsWon(t *testing.T) {
 
 	currentGame := game.NewGame(1, b)
 
-	currentGame.Flag(3, 3)
+	// We can leverage cascading for this board. That is why we don't need all moves
 
-	if currentGame.Status != game.Won {
-		t.Fatal("expected game to be won after flagging all mined cells")
+	currentGame.Open(1, 1)
+	currentGame.Open(3, 4)
+
+	if currentGame.Status() != game.Won {
+		t.Fatal("expected game to be won after opening all safe empty cells")
+	}
+
+	currentGame.Open(3, 3)
+
+	cell := b.Retrieve(dimensions.Location{X: 3, Y: 3})
+
+	if cell.Status(board.Opened) {
+		t.Fatalf(
+			"cell at %v should not have been openable because the game was won",
+			cell.Position(),
+		)
+	}
+}
+
+func TestGameDoesNotAllowFurtherMovesOnceGameIsLost(t *testing.T) {
+	/*
+	 * Assume a board like:
+	 * x x x
+	 * x x x
+	 * x x M
+	 * x x x
+	 * where x is a closed empty cell
+	 *       M is a mined cell
+	 */
+
+	bb := board.NewBuilder(dimensions.Size{Width: 3, Height: 4})
+
+	bb.PlaceSafe(1, 1)
+	bb.PlaceSafe(2, 1)
+	bb.PlaceSafe(3, 1)
+	bb.PlaceSafe(1, 2)
+	bb.PlaceSafe(2, 2)
+	bb.PlaceSafe(3, 2)
+	bb.PlaceSafe(1, 3)
+	bb.PlaceSafe(2, 3)
+	bb.PlaceMine(3, 3)
+	bb.PlaceSafe(1, 4)
+	bb.PlaceSafe(2, 4)
+	bb.PlaceSafe(3, 4)
+
+	b := bb.Build()
+
+	currentGame := game.NewGame(0, b)
+
+	currentGame.Open(3, 3)
+
+	if currentGame.Status() != game.Lost {
+		t.Fatal("expected game to be won after opening all safe empty cells")
+	}
+
+	// We can leverage cascading for this board. That is why we don't need all moves
+
+	currentGame.Open(1, 1)
+
+	cell := b.Retrieve(dimensions.Location{X: 1, Y: 1})
+
+	if cell.Status(board.Opened) {
+		t.Fatalf(
+			"cell at %v should not have been openable because the game was lost",
+			cell.Position(),
+		)
 	}
 }

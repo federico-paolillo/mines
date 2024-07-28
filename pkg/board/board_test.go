@@ -47,7 +47,7 @@ func TestUnopenSafeCellsCountIsCorrect(t *testing.T) {
 	}
 }
 
-func TestUnflaggedMinesCountIsCorrect(t *testing.T) {
+func TestUnopenSafeCellsCountIsCorrect2(t *testing.T) {
 	bb := board.NewBuilder(dimensions.Size{Width: 2, Height: 2})
 
 	bb.PlaceSafe(1, 1)
@@ -57,32 +57,32 @@ func TestUnflaggedMinesCountIsCorrect(t *testing.T) {
 
 	b := bb.Build()
 
-	// Starting all mine cells are unflagged
-	unflaggedMines := b.CountUnflaggedMines()
-	expectedUnflaggedCells := 1
+	// Starting all safe cells are unopen
+	unopenCells := b.CountUnopenSafeCells()
+	expectedUnopenCells := 3
 
-	if unflaggedMines != expectedUnflaggedCells {
+	if unopenCells != expectedUnopenCells {
 		t.Fatalf(
-			"expected to have %d unflagged mines. we have %d instead",
-			expectedUnflaggedCells,
-			unflaggedMines,
+			"expected to have %d unopen cells. we have %d instead",
+			expectedUnopenCells,
+			unopenCells,
 		)
 	}
 
-	// Flagging 2,2 will reduce the unflagged mines to none
+	// Flagging 1,1 will not reduce the unopened safe cells by one
 
-	cell := b.Retrieve(dimensions.Location{X: 2, Y: 2})
+	cell := b.Retrieve(dimensions.Location{X: 1, Y: 1})
 
 	cell.Flag()
 
-	unflaggedMines = b.CountUnflaggedMines()
-	expectedUnflaggedCells = 0
+	unopenCells = b.CountUnopenSafeCells()
+	expectedUnopenCells = 3
 
-	if unflaggedMines != expectedUnflaggedCells {
+	if unopenCells != expectedUnopenCells {
 		t.Fatalf(
-			"expected to have %d unflagged mines. we have %d instead",
-			expectedUnflaggedCells,
-			unflaggedMines,
+			"expected to have %d unopen cells. we have %d instead",
+			expectedUnopenCells,
+			unopenCells,
 		)
 	}
 }

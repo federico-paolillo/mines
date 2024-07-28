@@ -14,33 +14,39 @@ const (
 )
 
 type Game struct {
-	Board  *board.Board
-	Lives  int
-	Status GameStatus
+	board  *board.Board
+	lives  int
+	status GameStatus
 }
 
 func NewGame(lives int, board *board.Board) *Game {
 	return &Game{
-		Board:  board,
-		Lives:  lives,
-		Status: Playing,
+		board:  board,
+		lives:  lives,
+		status: Playing,
 	}
 }
 
 func (game *Game) Flag(x, y int) {
-	cell := game.Board.Retrieve(dimensions.Location{X: x, Y: y})
+	if game.ended() {
+		return
+	}
+
+	cell := game.board.Retrieve(dimensions.Location{X: x, Y: y})
 
 	if cell == board.Void {
 		return
 	}
 
 	cell.Flag()
-
-	game.checkWinCondition()
 }
 
 func (game *Game) Open(x, y int) {
-	cell := game.Board.Retrieve(dimensions.Location{X: x, Y: y})
+	if game.ended() {
+		return
+	}
+
+	cell := game.board.Retrieve(dimensions.Location{X: x, Y: y})
 
 	if cell == board.Void {
 		return
@@ -60,9 +66,17 @@ func (game *Game) Open(x, y int) {
 	game.checkWinCondition()
 }
 
+func (game *Game) Status() GameStatus {
+	return game.status
+}
+
+func (game *Game) Lives() int {
+	return game.lives
+}
+
 func (game *Game) tryCascade(cascadingOrigin dimensions.Location) {
 	for _, location := range cascadingOrigin.AdjacentLocations() {
-		candidateCell := game.Board.Retrieve(location)
+		candidateCell := game.board.Retrieve(location)
 
 		if candidateCell == board.Void {
 			continue
@@ -88,31 +102,32 @@ func (game *Game) tryCascade(cascadingOrigin dimensions.Location) {
 }
 
 func (game *Game) mineTripped() {
-	if game.Lives == 0 {
-		game.Status = Lost
+	if game.lives == 0 {
+		game.status = Lost
 	} else {
-		game.Lives--
+		game.lives--
 	}
 }
 
 func (game *Game) checkWinCondition() {
-	unflaggedMines := game.Board.CountUnflaggedMines()
-	unopenSafeCells := game.Board.CountUnopenSafeCells()
+	unopenSafeCells := game.board.CountUnopenSafeCells()
 
-	noMissingMinesToFlag := unflaggedMines == 0
-	noMissingUnopenCells := unopenSafeCells == 0
+	allSafeCellsAreOpen := unopenSafeCells == 0
 
-	if noMissingMinesToFlag {
-		game.Status = Won
-		return
-	}
-
-	if noMissingUnopenCells {
-		game.Status = Won
+	if allSafeCellsAreOpen {
+		game.status = Won
 		return
 	}
 }
 
-func (game *Game) checkLoseCondition() {
+func (game *Game) ended() bool {
+	if game.status == Won {
+		return true
+	}
 
+	if game.status == Lost {
+		return true
+	}
+
+	return false
 }

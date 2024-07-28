@@ -40,20 +40,6 @@ func (board *Board) CountUnopenSafeCells() int {
 	return unopenedCellsCount
 }
 
-func (board *Board) CountUnflaggedMines() int {
-	unflaggedMinesCount := 0
-
-	for _, cell := range board.cells {
-		if cell.Mined() {
-			if cell.Status(Closed) {
-				unflaggedMinesCount++
-			}
-		}
-	}
-
-	return unflaggedMinesCount
-}
-
 func (board *Board) Size() dimensions.Size {
 	return board.size
 }
