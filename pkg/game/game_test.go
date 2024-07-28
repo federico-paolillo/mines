@@ -8,7 +8,7 @@ import (
 	"github.com/federico-paolillo/mines/pkg/game"
 )
 
-func TestChordingOpensAppropriateCell(t *testing.T) {
+func TestCascadingOpensAppropriateCell(t *testing.T) {
 	/*
 	 * Assume a board like:
 	 * x x x
