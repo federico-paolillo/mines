@@ -127,15 +127,6 @@ func TestAdjacentMinesCalculatesProperly2(t *testing.T) {
 	 * where x is a closed empty cell
 	 * 			 1 is a cell with adjacent mines
 	 *       M is a mined cell
-	 * opening cell a 1,1 should chord and produce a board like:
-	 * # o o
-	 * o 1 1
-	 * o 1 M
-	 * o 1 1
-	 * where o is a an chording empty cell opened
-	 *       # is the cell that was opened
-	 * 			 1 is a cell with adjacent mines
-	 *       M is a mined cell
 	 */
 
 	bb := board.NewBuilder(dimensions.Size{Width: 3, Height: 4})

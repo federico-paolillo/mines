@@ -75,9 +75,9 @@ func TestPrintsBoardProperlyWithDefaultSymbols2(t *testing.T) {
 
 	expected :=
 		`000
-0oo
-0oo
-0oo
+011
+01o
+01o
 `
 	result, err := printer.Render(b)
 
@@ -126,9 +126,9 @@ func TestAsciiPrinterPrintsUsingCustomSymbols(t *testing.T) {
 
 	expected :=
 		`000
-0oo
-0o⛳️
-0oo
+011
+01⛳️
+01o
 `
 	result, err := printer.Render(b)
 

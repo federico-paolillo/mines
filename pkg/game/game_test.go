@@ -12,20 +12,19 @@ func TestChordingOpensAppropriateCell(t *testing.T) {
 	/*
 	 * Assume a board like:
 	 * x x x
-	 * x 1 1
-	 * x 1 M
-	 * x 1 1
+	 * x x x
+	 * x x M
+	 * x x x
 	 * where x is a closed empty cell
-	 * 			 1 is a cell with adjacent mines
 	 *       M is a mined cell
-	 * opening cell a 1,1 should chord and produce a board like:
+	 * opening cell at 1,1 should cascade and produce a board like:
 	 * # o o
 	 * o 1 1
 	 * o 1 M
-	 * o 1 1
-	 * where o is a an chording empty cell opened
+	 * o 1 x
+	 * where o is a cascading empty cell opened
 	 *       # is the cell that was opened
-	 * 			 1 is a cell with adjacent mines
+	 * 			 1 is an open cell with adjacent mines
 	 *       M is a mined cell
 	 */
 
@@ -50,21 +49,21 @@ func TestChordingOpensAppropriateCell(t *testing.T) {
 
 	game.Open(1, 1)
 
-	openLocations := [6]dimensions.Location{
+	openLocations := [10]dimensions.Location{
 		{X: 1, Y: 1},
 		{X: 2, Y: 1},
 		{X: 3, Y: 1},
 		{X: 1, Y: 2},
-		{X: 1, Y: 3},
-		{X: 1, Y: 4},
-	}
-
-	closeLocations := [6]dimensions.Location{
 		{X: 2, Y: 2},
 		{X: 3, Y: 2},
+		{X: 1, Y: 3},
 		{X: 2, Y: 3},
-		{X: 3, Y: 3},
+		{X: 1, Y: 4},
 		{X: 2, Y: 4},
+	}
+
+	closeLocations := [2]dimensions.Location{
+		{X: 3, Y: 3},
 		{X: 3, Y: 4},
 	}
 
@@ -87,12 +86,25 @@ func TestWhenOpeningAllSafeCellsTheGameIsWon(t *testing.T) {
 	/*
 	 * Assume a board like:
 	 * x x x
-	 * x 1 1
-	 * x 1 M
-	 * x 1 1
+	 * x x x
+	 * x x M
+	 * x x x
 	 * where x is a closed empty cell
-	 * 			 1 is a cell with adjacent mines
 	 *       M is a mined cell
+	 * opening cell at 1,1 should cascade and produce a board like:
+	 * # o o
+	 * o 1 1
+	 * o 1 M
+	 * o 1 x
+	 * where o is a cascading empty cell opened
+	 *       # is the cell that was opened
+	 * 			 1 is an open cell with adjacent mines
+	 *       M is a mined cell
+	 * opening cell at 3,4 should win the game:
+	 * o o o
+	 * o 1 1
+	 * o 1 M
+	 * o 1 #
 	 */
 
 	bb := board.NewBuilder(dimensions.Size{Width: 3, Height: 4})
@@ -114,13 +126,9 @@ func TestWhenOpeningAllSafeCellsTheGameIsWon(t *testing.T) {
 
 	currentGame := game.NewGame(1, b)
 
-	// We can leverage chording for this board. That is why we don't need all moves
+	// We can leverage cascading for this board. That is why we don't need all moves
 
 	currentGame.Open(1, 1)
-	currentGame.Open(2, 2)
-	currentGame.Open(3, 2)
-	currentGame.Open(2, 3)
-	currentGame.Open(2, 4)
 	currentGame.Open(3, 4)
 
 	if currentGame.Status != game.Won {

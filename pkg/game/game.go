@@ -54,14 +54,14 @@ func (game *Game) Open(x, y int) {
 	}
 
 	if cell.AdjacentMines() == 0 {
-		game.tryChording(cell.Position())
+		game.tryCascade(cell.Position())
 	}
 
 	game.checkWinCondition()
 }
 
-func (game *Game) tryChording(chordingOrigin dimensions.Location) {
-	for _, location := range chordingOrigin.AdjacentLocations() {
+func (game *Game) tryCascade(cascadingOrigin dimensions.Location) {
+	for _, location := range cascadingOrigin.AdjacentLocations() {
 		candidateCell := game.Board.Retrieve(location)
 
 		if candidateCell == board.Void {
@@ -76,9 +76,13 @@ func (game *Game) tryChording(chordingOrigin dimensions.Location) {
 			continue
 		}
 
+		// We want to open up until (and including) the first cell with at least one adjacent mine
+		// If there are adjacent mines we will stop cascading
+
+		candidateCell.Open()
+
 		if candidateCell.AdjacentMines() == 0 {
-			candidateCell.Open()
-			game.tryChording(candidateCell.Position())
+			game.tryCascade(candidateCell.Position())
 		}
 	}
 }
