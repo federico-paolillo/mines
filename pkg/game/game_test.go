@@ -257,3 +257,146 @@ func TestGameDoesNotAllowFurtherMovesOnceGameIsLost(t *testing.T) {
 		)
 	}
 }
+
+func TestCanPlayAndWinGameExample(t *testing.T) {
+	/* Grid 9x9:
+	 * 1 M 1 0 0 1 1 1 0
+	 * 2 2 1 0 0 2 M 2 0
+	 * M 2 1 0 0 2 M 2 0
+	 * 2 M 1 0 0 2 2 2 0
+	 * 2 3 2 1 0 1 M 1 0
+	 * M 2 M 1 0 1 2 2 1
+	 * 2 3 1 1 0 0 1 M 1
+	 * M 1 0 0 0 0 1 1 1
+	 * 1 1 0 0 0 0 0 0 0
+	 */
+
+	bb := board.NewBuilder(dimensions.Size{Width: 9, Height: 9})
+
+	bb.PlaceSafe(1, 1)
+	bb.PlaceMine(2, 1)
+	bb.PlaceSafe(3, 1)
+	bb.PlaceSafe(4, 1)
+	bb.PlaceSafe(5, 1)
+	bb.PlaceSafe(6, 1)
+	bb.PlaceSafe(7, 1)
+	bb.PlaceSafe(8, 1)
+	bb.PlaceSafe(9, 1)
+
+	bb.PlaceSafe(1, 2)
+	bb.PlaceSafe(2, 2)
+	bb.PlaceSafe(3, 2)
+	bb.PlaceSafe(4, 2)
+	bb.PlaceSafe(5, 2)
+	bb.PlaceSafe(6, 2)
+	bb.PlaceMine(7, 2)
+	bb.PlaceSafe(8, 2)
+	bb.PlaceSafe(9, 2)
+
+	bb.PlaceMine(1, 3)
+	bb.PlaceSafe(2, 3)
+	bb.PlaceSafe(3, 3)
+	bb.PlaceSafe(4, 3)
+	bb.PlaceSafe(5, 3)
+	bb.PlaceSafe(6, 3)
+	bb.PlaceMine(7, 3)
+	bb.PlaceSafe(8, 3)
+	bb.PlaceSafe(9, 3)
+
+	bb.PlaceSafe(1, 4)
+	bb.PlaceMine(2, 4)
+	bb.PlaceSafe(3, 4)
+	bb.PlaceSafe(4, 4)
+	bb.PlaceSafe(5, 4)
+	bb.PlaceSafe(6, 4)
+	bb.PlaceSafe(7, 4)
+	bb.PlaceSafe(8, 4)
+	bb.PlaceSafe(9, 4)
+
+	bb.PlaceSafe(1, 5)
+	bb.PlaceSafe(2, 5)
+	bb.PlaceSafe(3, 5)
+	bb.PlaceSafe(4, 5)
+	bb.PlaceSafe(5, 5)
+	bb.PlaceSafe(6, 5)
+	bb.PlaceMine(7, 5)
+	bb.PlaceSafe(8, 5)
+	bb.PlaceSafe(9, 5)
+
+	bb.PlaceMine(1, 6)
+	bb.PlaceSafe(2, 6)
+	bb.PlaceMine(3, 6)
+	bb.PlaceSafe(4, 6)
+	bb.PlaceSafe(5, 6)
+	bb.PlaceSafe(6, 6)
+	bb.PlaceSafe(7, 6)
+	bb.PlaceSafe(8, 6)
+	bb.PlaceSafe(9, 6)
+
+	bb.PlaceMine(1, 6)
+	bb.PlaceSafe(2, 6)
+	bb.PlaceMine(3, 6)
+	bb.PlaceSafe(4, 6)
+	bb.PlaceSafe(5, 6)
+	bb.PlaceSafe(6, 6)
+	bb.PlaceSafe(7, 6)
+	bb.PlaceSafe(8, 6)
+	bb.PlaceSafe(9, 6)
+
+	bb.PlaceSafe(1, 7)
+	bb.PlaceSafe(2, 7)
+	bb.PlaceSafe(3, 7)
+	bb.PlaceSafe(4, 7)
+	bb.PlaceSafe(5, 7)
+	bb.PlaceSafe(6, 7)
+	bb.PlaceSafe(7, 7)
+	bb.PlaceMine(8, 7)
+	bb.PlaceSafe(9, 7)
+
+	bb.PlaceMine(1, 8)
+	bb.PlaceSafe(2, 8)
+	bb.PlaceSafe(3, 8)
+	bb.PlaceSafe(4, 8)
+	bb.PlaceSafe(5, 8)
+	bb.PlaceSafe(6, 8)
+	bb.PlaceSafe(7, 8)
+	bb.PlaceSafe(8, 8)
+	bb.PlaceSafe(9, 8)
+
+	bb.PlaceSafe(1, 9)
+	bb.PlaceSafe(2, 9)
+	bb.PlaceSafe(3, 9)
+	bb.PlaceSafe(4, 9)
+	bb.PlaceSafe(5, 9)
+	bb.PlaceSafe(6, 9)
+	bb.PlaceSafe(7, 9)
+	bb.PlaceSafe(8, 9)
+	bb.PlaceSafe(9, 9)
+
+	b := bb.Build()
+
+	g := game.NewGame(0, b)
+
+	g.Open(5, 5)
+	g.Open(7, 4)
+	g.Open(2, 6)
+	g.Open(8, 6)
+	g.Open(7, 1)
+	g.Open(1, 7)
+	g.Open(1, 5)
+	g.Open(1, 4)
+	g.Open(2, 5)
+	g.Open(1, 9)
+	g.Open(2, 2)
+	g.Open(2, 3)
+	g.Open(1, 1)
+	g.Open(1, 2)
+	g.Open(8, 5)
+	g.Open(9, 5)
+	g.Open(9, 6)
+	g.Open(9, 7)
+
+	if g.Status() != game.Won {
+		t.Fatalf("expected game to be won after the moves played")
+	}
+}
