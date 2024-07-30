@@ -1,6 +1,7 @@
 # mines
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/federico-paolillo/mines)](https://goreportcard.com/report/github.com/federico-paolillo/mines)
+[![Build status](https://github.com/federico-paolillo/mines/actions/workflows/ci.yml/badge.svg)](https://github.com/federico-paolillo/mines/actions/workflows/ci.yml)
 
 **Note:** This software is in development. It may be that some of the things I write here do not yet exist.
 
