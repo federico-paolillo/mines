@@ -400,3 +400,82 @@ func TestCanPlayAndWinGameExample(t *testing.T) {
 		t.Fatalf("expected game to be won after the moves played")
 	}
 }
+
+func TestChordingOpensAppropriateCells(t *testing.T) {
+
+	/*
+	 * M 1 0 0
+	 * 1 1 0 0
+	 * 1 1 1 0
+	 * 1 M 1 0
+	 * 1 1 1 0
+	 *
+	 * Opening 4,1. Flagging 2,4.
+	 *
+	 * o 1 0 0
+	 * o 1 0 0
+	 * o 1 1 0
+	 * o F 1 0
+	 * o o 1 0
+	 *
+	 * Chording 2,3 marked as # will open cells marked as x
+	 *
+	 * o 1 0 0
+	 * x 1 0 0
+	 * x # 1 0
+	 * x F 1 0
+	 * o o 1 0
+	 */
+
+	bb := board.NewBuilder(dimensions.Size{Width: 4, Height: 5})
+
+	bb.PlaceMine(1, 1)
+	bb.PlaceSafe(2, 1)
+	bb.PlaceSafe(3, 1)
+	bb.PlaceSafe(4, 1)
+
+	bb.PlaceSafe(1, 2)
+	bb.PlaceSafe(2, 2)
+	bb.PlaceSafe(3, 2)
+	bb.PlaceSafe(4, 2)
+
+	bb.PlaceSafe(1, 3)
+	bb.PlaceSafe(2, 3)
+	bb.PlaceSafe(3, 3)
+	bb.PlaceSafe(4, 3)
+
+	bb.PlaceSafe(1, 4)
+	bb.PlaceMine(2, 4)
+	bb.PlaceSafe(3, 4)
+	bb.PlaceSafe(4, 4)
+
+	bb.PlaceSafe(1, 5)
+	bb.PlaceSafe(2, 5)
+	bb.PlaceSafe(3, 5)
+	bb.PlaceSafe(4, 5)
+
+	b := bb.Build()
+
+	g := game.NewGame(0, b)
+
+	g.Open(4, 1)
+	g.Flag(2, 4)
+	g.Chord(2, 3)
+
+	expectedOpenCellsLocation := [3]dimensions.Location{
+		{X: 1, Y: 2},
+		{X: 1, Y: 3},
+		{X: 1, Y: 4},
+	}
+
+	for _, openCellLocation := range expectedOpenCellsLocation {
+		c := b.Retrieve(openCellLocation)
+
+		if c.Status(board.Closed) {
+			t.Errorf(
+				"expected cell at %v to be open",
+				c.Position(),
+			)
+		}
+	}
+}

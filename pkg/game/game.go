@@ -66,6 +66,53 @@ func (game *Game) Open(x, y int) {
 	game.checkWinCondition()
 }
 
+// Attempt chording at specified location. To chord, the selected cell must already be open and
+// must have at least one adjacent mine.
+//
+// When the number of adjacent mines is equal to the number of adjacent flagged cells,
+// all adjacent non-flagged unopened cells will be opened.
+func (game *Game) Chord(x, y int) {
+	if game.ended() {
+		return
+	}
+
+	location := dimensions.Location{X: x, Y: y}
+
+	originCell := game.board.Retrieve(location)
+
+	if originCell == board.Void {
+		return
+	}
+
+	if !originCell.Status(board.Opened) {
+		return
+	}
+
+	adjacentFlaggedCells := 0
+	adjacentCellsToOpenPositions := make([]dimensions.Location, 0, 8)
+
+	for _, adjacentLocation := range location.AdjacentLocations() {
+		adjacentCell := game.board.Retrieve(adjacentLocation)
+
+		if adjacentCell.Status(board.Flagged) {
+			adjacentFlaggedCells++
+		}
+
+		if adjacentCell.Status(board.Closed) {
+			adjacentCellsToOpenPositions = append(
+				adjacentCellsToOpenPositions,
+				adjacentCell.Position(),
+			)
+		}
+	}
+
+	if adjacentFlaggedCells == originCell.AdjacentMines() {
+		for _, adjacentCellPosition := range adjacentCellsToOpenPositions {
+			game.Open(adjacentCellPosition.X, adjacentCellPosition.Y)
+		}
+	}
+}
+
 func (game *Game) Status() GameStatus {
 	return game.status
 }
