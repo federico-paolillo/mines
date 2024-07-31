@@ -43,3 +43,25 @@ func (board *Board) CountUnopenSafeCells() int {
 func (board *Board) Size() dimensions.Size {
 	return board.size
 }
+
+func (board *Board) CountAdjacentCellsOfStatus(status Cellstate, location dimensions.Location) int {
+	cells := board.RetrieveAdjacentCellsOfStatus(status, location)
+
+	count := len(cells)
+
+	return count
+}
+
+func (board *Board) RetrieveAdjacentCellsOfStatus(status Cellstate, location dimensions.Location) []*Cell {
+	cells := make([]*Cell, 0, 8)
+
+	for _, location := range location.AdjacentLocations() {
+		cell := board.Retrieve(location)
+
+		if cell.Status(status) {
+			cells = append(cells, cell)
+		}
+	}
+
+	return cells
+}

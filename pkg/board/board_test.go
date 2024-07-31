@@ -86,3 +86,67 @@ func TestUnopenSafeCellsCountIsCorrect2(t *testing.T) {
 		)
 	}
 }
+
+func TestCountAdjacentCellOfStatusIsCorrect(t *testing.T) {
+	bb := board.NewBuilder(dimensions.Size{Width: 2, Height: 2})
+
+	bb.PlaceSafe(1, 1)
+	bb.PlaceSafe(2, 1)
+	bb.PlaceSafe(1, 2)
+	bb.PlaceMine(2, 2)
+
+	b := bb.Build()
+
+	c := b.Retrieve(dimensions.Location{X: 2, Y: 1})
+
+	c.Flag()
+
+	count := b.CountAdjacentCellsOfStatus(board.Flagged, dimensions.Location{X: 1, Y: 1})
+
+	if count != 1 {
+		t.Fatalf(
+			"expected to count %d flagged cells. counted %d",
+			1,
+			count,
+		)
+	}
+}
+
+func TestRetrieveAdjacentCellOfStatusIsCorrect(t *testing.T) {
+	bb := board.NewBuilder(dimensions.Size{Width: 2, Height: 2})
+
+	bb.PlaceSafe(1, 1)
+	bb.PlaceSafe(2, 1)
+	bb.PlaceSafe(1, 2)
+	bb.PlaceMine(2, 2)
+
+	b := bb.Build()
+
+	c := b.Retrieve(dimensions.Location{X: 2, Y: 1})
+
+	c.Flag()
+
+	cells := b.RetrieveAdjacentCellsOfStatus(board.Flagged, dimensions.Location{X: 1, Y: 1})
+
+	actualLen := len(cells)
+	expectedLen := 1
+
+	if actualLen != expectedLen {
+		t.Fatalf(
+			"expected cells to be %d len. instead got %d",
+			expectedLen,
+			actualLen,
+		)
+	}
+
+	expectedPosition := dimensions.Location{X: 2, Y: 1}
+	actualPosition := cells[0].Position()
+
+	if actualPosition != expectedPosition {
+		t.Fatalf(
+			"expected cells retrieved to be at %v. instead is %v",
+			expectedPosition,
+			actualPosition,
+		)
+	}
+}

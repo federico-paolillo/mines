@@ -84,28 +84,17 @@ func (game *Game) Chord(x, y int) {
 		return
 	}
 
-	adjacentFlaggedCells := 0
-	adjacentCellsToOpenPositions := make([]dimensions.Location, 0, 8)
+	adjacentFlaggedCells := game.board.CountAdjacentCellsOfStatus(board.Flagged, location)
 
-	for _, adjacentLocation := range location.AdjacentLocations() {
-		adjacentCell := game.board.Retrieve(adjacentLocation)
-
-		if adjacentCell.Status(board.Flagged) {
-			adjacentFlaggedCells++
-		}
-
-		if adjacentCell.Status(board.Closed) {
-			adjacentCellsToOpenPositions = append(
-				adjacentCellsToOpenPositions,
-				adjacentCell.Position(),
-			)
-		}
+	if adjacentFlaggedCells != originCell.AdjacentMines() {
+		return
 	}
 
-	if adjacentFlaggedCells == originCell.AdjacentMines() {
-		for _, adjacentCellPosition := range adjacentCellsToOpenPositions {
-			game.Open(adjacentCellPosition.X, adjacentCellPosition.Y)
-		}
+	adjacentClosedCells := game.board.RetrieveAdjacentCellsOfStatus(board.Closed, location)
+
+	for _, closedCell := range adjacentClosedCells {
+		cellLocation := closedCell.Position()
+		game.Open(cellLocation.X, cellLocation.Y)
 	}
 }
 
