@@ -13,3 +13,7 @@ func (size *Size) Contains(location Location) bool {
 
 	return xIsContained && yIsContained
 }
+
+func (size *Size) Area() int {
+	return size.Width * size.Height
+}

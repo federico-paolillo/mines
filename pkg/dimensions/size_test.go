@@ -35,3 +35,20 @@ func TestLocationsOutOfBoundsAreDetected(t *testing.T) {
 		)
 	}
 }
+
+func TestCalculatesAreaCorrectly(t *testing.T) {
+	size := dimensions.Size{Width: 10, Height: 10}
+
+	area := size.Area()
+	expectedArea := 100
+
+	if area != expectedArea {
+		t.Fatalf(
+			"for size %v an area of %d was expected. %d was calculated",
+			size,
+			expectedArea,
+			area,
+		)
+	}
+
+}

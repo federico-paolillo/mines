@@ -10,9 +10,9 @@ import (
 type Cellkind = string
 
 const (
-	mine Cellkind = "mine"
+	Mine Cellkind = "mine"
 	void          = "void"
-	safe          = "safe"
+	Safe          = "safe"
 )
 
 type Placements = map[dimensions.Location]Cellkind
@@ -43,7 +43,7 @@ func (builder *Builder) PlaceSafe(x, y int) error {
 		)
 	}
 
-	builder.placements[location] = safe
+	builder.placements[location] = Safe
 
 	return nil
 }
@@ -60,7 +60,7 @@ func (builder *Builder) PlaceMine(x, y int) error {
 		)
 	}
 
-	builder.placements[location] = mine
+	builder.placements[location] = Mine
 
 	return nil
 }
@@ -87,9 +87,9 @@ func (builder *Builder) Build() *Board {
 
 	for location, cellkind := range builder.placements {
 		switch cellkind {
-		case mine:
+		case Mine:
 			cells[location] = NewMineCell(location, builder.countAdjacentMines(location))
-		case safe:
+		case Safe:
 			cells[location] = NewSafeCell(location, builder.countAdjacentMines(location))
 		default:
 			continue
@@ -101,13 +101,31 @@ func (builder *Builder) Build() *Board {
 	return board
 }
 
+func (builder *Builder) IsSafe(x, y int) bool {
+	return builder.getAt(x, y) == Safe
+}
+
+func (builder *Builder) IsMine(x, y int) bool {
+	return builder.getAt(x, y) == Mine
+}
+
+func (builder *Builder) getAt(x, y int) Cellkind {
+	location := dimensions.Location{X: x, Y: y}
+
+	if cellkind, ok := builder.placements[location]; ok {
+		return cellkind
+	}
+
+	return void
+}
+
 func (builder *Builder) countAdjacentMines(location dimensions.Location) int {
 	adjacentLocations := location.AdjacentLocations()
 	minesCount := 0
 
 	for _, adjacentLocation := range adjacentLocations {
 		if val, ok := builder.placements[adjacentLocation]; ok {
-			if val == mine {
+			if val == Mine {
 				minesCount++
 			}
 		}
