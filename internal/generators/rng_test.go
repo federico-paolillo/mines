@@ -15,7 +15,9 @@ func TestRngBoardGeneratorPlacesRequestedMines(t *testing.T) {
 	size := dimensions.Size{Width: 9, Height: 9}
 
 	for range iterations {
-		g := generators.NewRngBoardGenerator(rand.Int())
+		seed := rand.Int()
+
+		g := generators.NewRngBoardGenerator(seed)
 		b := g.Generate(size, minesWanted)
 
 		safeCells := b.CountUnopenSafeCells()
@@ -23,9 +25,10 @@ func TestRngBoardGeneratorPlacesRequestedMines(t *testing.T) {
 
 		if minesGenerated != minesWanted {
 			t.Fatalf(
-				"expected %d mines. got %d",
+				"expected %d mines, got %d. seed is %d",
 				minesGenerated,
 				minesWanted,
+				seed,
 			)
 		}
 	}
