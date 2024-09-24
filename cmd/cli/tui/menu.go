@@ -41,10 +41,18 @@ func (d *Dialog) GatherInput(step Step, destination Inputs) {
 	for {
 		in := d.Console.Scanline()
 
-		ok := step.Validate(in)
+		ok := true
+		inputHasName := step.Name != ""
+
+		if step.Validate != nil {
+			ok = step.Validate(in)
+		}
 
 		if ok {
-			destination[step.Name] = in
+			if inputHasName {
+				destination[step.Name] = in
+			}
+
 			break
 		}
 

@@ -24,14 +24,11 @@ func TestDialogRendersSteps(t *testing.T) {
 		testConsole,
 		[]tui.Step{
 			{
-				[]string{
+				Prompt: []string{
 					"prompt_1",
 					"prompt_2",
 				},
-				"input_a",
-				func(_ string) bool {
-					return true
-				},
+				Name: "input_a",
 			},
 		},
 		func(_ tui.Inputs) {
@@ -227,9 +224,6 @@ func TestDialogCanConstructComplexFlow(t *testing.T) {
 					"enter x",
 				},
 				Name: "x",
-				Validate: func(_ string) bool {
-					return true
-				},
 			},
 		},
 		func(inputs tui.Inputs) {
@@ -243,10 +237,6 @@ func TestDialogCanConstructComplexFlow(t *testing.T) {
 			{
 				Prompt: []string{
 					"1. quit",
-				},
-				Name: "",
-				Validate: func(value string) bool {
-					return true
 				},
 			},
 		},
