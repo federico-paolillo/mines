@@ -1,14 +1,16 @@
 package tui
 
-type Subscriber func(intent any)
+type Subscriber = func(intent any)
+type Unsubscribe = func()
 
 type Dispatcher struct {
-	subscribers []Subscriber
+	subscribers      map[int]Subscriber
+	subscribersIndex int
 }
 
 func NewDispatcher() *Dispatcher {
 	return &Dispatcher{
-		subscribers: make([]Subscriber, 0),
+		subscribers: make(map[int]Subscriber, 0),
 	}
 }
 
@@ -18,6 +20,14 @@ func (d *Dispatcher) Dispatch(intent any) {
 	}
 }
 
-func (d *Dispatcher) Subscribe(sub Subscriber) {
-	d.subscribers = append(d.subscribers, sub)
+func (d *Dispatcher) Subscribe(sub Subscriber) Unsubscribe {
+	currentIndex := d.subscribersIndex
+
+	d.subscribers[currentIndex] = sub
+
+	d.subscribersIndex++
+
+	return func() {
+		delete(d.subscribers, currentIndex)
+	}
 }
