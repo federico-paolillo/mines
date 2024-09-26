@@ -13,9 +13,9 @@ type Step struct {
 }
 
 type Dialog struct {
-	Console *Console
-	Steps   []Step
-	Execute func(inputs Inputs)
+	Console               *Console
+	Steps                 []Step
+	OnCompleteInteraction func(inputs Inputs)
 }
 
 func (d *Dialog) Interact(prevInputs Inputs) {
@@ -24,20 +24,20 @@ func (d *Dialog) Interact(prevInputs Inputs) {
 	maps.Copy(inputs, prevInputs)
 
 	for _, step := range d.Steps {
-		d.RenderPrompt(step)
-		d.GatherInput(step, inputs)
+		d.renderPrompt(step)
+		d.gatherInput(step, inputs)
 	}
 
-	d.Execute(inputs)
+	d.OnCompleteInteraction(inputs)
 }
 
-func (d *Dialog) RenderPrompt(step Step) {
+func (d *Dialog) renderPrompt(step Step) {
 	for _, prompt := range step.Prompt {
 		d.Console.Printline(prompt)
 	}
 }
 
-func (d *Dialog) GatherInput(step Step, destination Inputs) {
+func (d *Dialog) gatherInput(step Step, destination Inputs) {
 	for {
 		in := d.Console.Scanline()
 
