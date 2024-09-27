@@ -1,4 +1,4 @@
-package tui
+package dispatcher
 
 type Subscriber = func(intent any)
 type Unsubscribe = func()

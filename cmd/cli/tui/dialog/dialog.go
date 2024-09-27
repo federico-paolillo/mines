@@ -1,6 +1,10 @@
-package tui
+package dialog
 
-import "maps"
+import (
+	"maps"
+
+	"github.com/federico-paolillo/mines/cmd/cli/tui/console"
+)
 
 type Prompt []string
 type Inputs map[string]string
@@ -14,7 +18,7 @@ type Step struct {
 }
 
 type Dialog struct {
-	Console               *Console
+	Console               *console.Console
 	Steps                 []Step
 	OnCompleteInteraction func(inputs Inputs)
 }

@@ -3,28 +3,30 @@ package menus
 import (
 	"fmt"
 
-	"github.com/federico-paolillo/mines/cmd/cli/tui"
+	"github.com/federico-paolillo/mines/cmd/cli/tui/console"
+	"github.com/federico-paolillo/mines/cmd/cli/tui/dialog"
+	"github.com/federico-paolillo/mines/cmd/cli/tui/dispatcher"
 )
 
 type entriesMap = map[string]*Entry
 
 type Entry struct {
 	Prompt string
-	Dialog *tui.Dialog
+	Dialog *dialog.Dialog
 }
 
 func NewMenu(
-	console *tui.Console,
-	dispatcher *tui.Dispatcher,
+	console *console.Console,
+	dispatcher *dispatcher.Dispatcher,
 	entries []Entry,
-) *tui.Dialog {
+) *dialog.Dialog {
 	entriesMap := makeEntriesMap(entries)
 	steps := makeMenuSteps(entriesMap)
 
-	return &tui.Dialog{
+	return &dialog.Dialog{
 		Console: console,
 		Steps:   steps,
-		OnCompleteInteraction: func(inputs tui.Inputs) {
+		OnCompleteInteraction: func(inputs dialog.Inputs) {
 			selection := inputs["selection"]
 			entry := entriesMap[selection]
 			entry.Dialog.Interact(inputs)
@@ -45,7 +47,7 @@ func makeEntriesMap(entries []Entry) map[string]*Entry {
 
 func makeMenuSteps(
 	entries entriesMap,
-) []tui.Step {
+) []dialog.Step {
 	prompt := make([]string, 0, len(entries))
 
 	for i, entry := range entries {
@@ -53,7 +55,7 @@ func makeMenuSteps(
 		prompt = append(prompt, entryPrompt)
 	}
 
-	return []tui.Step{
+	return []dialog.Step{
 		{
 			Prompt: prompt,
 			Name:   "selection",

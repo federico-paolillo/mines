@@ -1,11 +1,14 @@
 package menus
 
-import "github.com/federico-paolillo/mines/cmd/cli/tui"
+import (
+	"github.com/federico-paolillo/mines/cmd/cli/tui/console"
+	"github.com/federico-paolillo/mines/cmd/cli/tui/dialog"
+)
 
-func NewInhertMenu(console *tui.Console) *tui.Dialog {
-	return &tui.Dialog{
+func NewInhertMenu(console *console.Console) *dialog.Dialog {
+	return &dialog.Dialog{
 		Console:               console,
-		Steps:                 make([]tui.Step, 0),
-		OnCompleteInteraction: func(inputs tui.Inputs) {},
+		Steps:                 make([]dialog.Step, 0),
+		OnCompleteInteraction: func(inputs dialog.Inputs) {},
 	}
 }

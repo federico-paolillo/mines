@@ -1,18 +1,18 @@
-package tui_test
+package console_test
 
 import (
 	"io"
 	"strings"
 	"testing"
 
-	"github.com/federico-paolillo/mines/cmd/cli/tui"
+	"github.com/federico-paolillo/mines/cmd/cli/tui/console"
 )
 
 func TestConsolePrintLines(t *testing.T) {
 	var stdout strings.Builder
 	var stdin io.Reader
 
-	c := tui.NewConsole(stdin, &stdout)
+	c := console.NewConsole(stdin, &stdout)
 
 	c.Printline("pippo")
 	c.Printline("pluto")
@@ -38,7 +38,7 @@ func TestConsoleReadLines(t *testing.T) {
 		"1\n1234\ny\n",
 	)
 
-	c := tui.NewConsole(stdin, &stdout)
+	c := console.NewConsole(stdin, &stdout)
 
 	lines := c.Scanline()
 

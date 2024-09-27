@@ -1,7 +1,9 @@
 package menus
 
 import (
-	"github.com/federico-paolillo/mines/cmd/cli/tui"
+	"github.com/federico-paolillo/mines/cmd/cli/tui/console"
+	"github.com/federico-paolillo/mines/cmd/cli/tui/dialog"
+	"github.com/federico-paolillo/mines/cmd/cli/tui/dispatcher"
 	"github.com/federico-paolillo/mines/cmd/cli/tui/intents"
 )
 
@@ -9,12 +11,12 @@ var uppercaseY = "Y"
 var lowercaseN = "n"
 
 func NewQuitMenu(
-	console *tui.Console,
-	dispatcher *tui.Dispatcher,
-) *tui.Dialog {
-	return &tui.Dialog{
+	console *console.Console,
+	dispatcher *dispatcher.Dispatcher,
+) *dialog.Dialog {
+	return &dialog.Dialog{
 		Console: console,
-		Steps: []tui.Step{
+		Steps: []dialog.Step{
 			{
 				Prompt: []string{
 					"do you want to quit ? (Y/n)",
@@ -25,7 +27,7 @@ func NewQuitMenu(
 				},
 			},
 		},
-		OnCompleteInteraction: func(inputs tui.Inputs) {
+		OnCompleteInteraction: func(inputs dialog.Inputs) {
 			if isY(inputs["quit"]) {
 				dispatcher.Dispatch(intents.QuitApplication)
 			}

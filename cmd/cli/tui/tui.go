@@ -1,18 +1,20 @@
 package tui
 
 import (
+	"github.com/federico-paolillo/mines/cmd/cli/tui/dialog"
+	"github.com/federico-paolillo/mines/cmd/cli/tui/dispatcher"
 	"github.com/federico-paolillo/mines/cmd/cli/tui/intents"
 )
 
 type Tui struct {
-	menu       *Dialog
-	dispatcher *Dispatcher
+	menu       *dialog.Dialog
+	dispatcher *dispatcher.Dispatcher
 	quitting   bool
 }
 
 func NewTui(
-	dispatcher *Dispatcher,
-	menu *Dialog,
+	dispatcher *dispatcher.Dispatcher,
+	menu *dialog.Dialog,
 ) *Tui {
 	return &Tui{
 		menu,
@@ -21,7 +23,7 @@ func NewTui(
 	}
 }
 
-func (t *Tui) Loop() {
+func (t *Tui) Run() {
 	t.quitting = false
 
 	unsub := t.dispatcher.Subscribe(t.handleDispatch)
@@ -33,7 +35,7 @@ func (t *Tui) Loop() {
 			break
 		}
 		//render board
-		t.menu.Interact(NoInputs)
+		t.menu.Interact(dialog.NoInputs)
 	}
 }
 
@@ -42,7 +44,7 @@ func (t *Tui) handleDispatch(intent any) {
 	case intents.QuitApplicationIntent:
 		t.quitting = true
 		break
-	// case intents.Move:
+		// case intents.Move:
 		// board.DoMove(intent.coords)
 	}
 }

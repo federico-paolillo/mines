@@ -1,9 +1,9 @@
-package tui_test
+package dispatcher_test
 
 import (
 	"testing"
 
-	"github.com/federico-paolillo/mines/cmd/cli/tui"
+	"github.com/federico-paolillo/mines/cmd/cli/tui/dispatcher"
 )
 
 func TestDispatcherCallsAllSubscribers(t *testing.T) {
@@ -17,7 +17,7 @@ func TestDispatcherCallsAllSubscribers(t *testing.T) {
 		counter++
 	}
 
-	d := tui.NewDispatcher()
+	d := dispatcher.NewDispatcher()
 
 	_ = d.Subscribe(l1)
 	_ = d.Subscribe(l2)
@@ -46,7 +46,7 @@ func TestDispatcherDoesNotCallUnsubscribedSubscribers(t *testing.T) {
 		counter++
 	}
 
-	d := tui.NewDispatcher()
+	d := dispatcher.NewDispatcher()
 
 	_ = d.Subscribe(l1)
 	unsub := d.Subscribe(l2)

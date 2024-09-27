@@ -1,11 +1,12 @@
-package tui_test
+package dialog_test
 
 import (
 	"reflect"
 	"strings"
 	"testing"
 
-	"github.com/federico-paolillo/mines/cmd/cli/tui"
+	"github.com/federico-paolillo/mines/cmd/cli/tui/console"
+	"github.com/federico-paolillo/mines/cmd/cli/tui/dialog"
 )
 
 func TestDialogRendersSteps(t *testing.T) {
@@ -15,14 +16,14 @@ func TestDialogRendersSteps(t *testing.T) {
 		"input\n",
 	)
 
-	testConsole := tui.NewConsole(
+	testConsole := console.NewConsole(
 		stdin,
 		&stdout,
 	)
 
-	d := tui.Dialog{
+	d := dialog.Dialog{
 		testConsole,
-		[]tui.Step{
+		[]dialog.Step{
 			{
 				Prompt: []string{
 					"prompt_1",
@@ -31,12 +32,12 @@ func TestDialogRendersSteps(t *testing.T) {
 				Name: "input_a",
 			},
 		},
-		func(_ tui.Inputs) {
+		func(_ dialog.Inputs) {
 
 		},
 	}
 
-	d.Interact(tui.NoInputs)
+	d.Interact(dialog.NoInputs)
 
 	screen := stdout.String()
 
@@ -54,14 +55,14 @@ func TestDialogRendersHuhWhenInvalidInput(t *testing.T) {
 		"wrong\nok\n",
 	)
 
-	testConsole := tui.NewConsole(
+	testConsole := console.NewConsole(
 		stdin,
 		&stdout,
 	)
 
-	d := tui.Dialog{
+	d := dialog.Dialog{
 		testConsole,
-		[]tui.Step{
+		[]dialog.Step{
 			{
 				[]string{
 					"prompt_1",
@@ -73,12 +74,12 @@ func TestDialogRendersHuhWhenInvalidInput(t *testing.T) {
 				},
 			},
 		},
-		func(_ tui.Inputs) {
+		func(_ dialog.Inputs) {
 
 		},
 	}
 
-	d.Interact(tui.NoInputs)
+	d.Interact(dialog.NoInputs)
 
 	screen := stdout.String()
 
@@ -96,16 +97,16 @@ func TestDialogCollectsInputCorrectly(t *testing.T) {
 		"wrong\nabc\n",
 	)
 
-	testConsole := tui.NewConsole(
+	testConsole := console.NewConsole(
 		stdin,
 		&stdout,
 	)
 
-	var inputs tui.Inputs
+	var inputs dialog.Inputs
 
-	d := tui.Dialog{
+	d := dialog.Dialog{
 		testConsole,
-		[]tui.Step{
+		[]dialog.Step{
 			{
 				[]string{
 					"prompt_1",
@@ -117,12 +118,12 @@ func TestDialogCollectsInputCorrectly(t *testing.T) {
 				},
 			},
 		},
-		func(i tui.Inputs) {
+		func(i dialog.Inputs) {
 			inputs = i
 		},
 	}
 
-	d.Interact(tui.NoInputs)
+	d.Interact(dialog.NoInputs)
 
 	screen := stdout.String()
 
@@ -132,7 +133,7 @@ func TestDialogCollectsInputCorrectly(t *testing.T) {
 		t.Errorf("dialog did not render expected output. wanted '%q' got '%q'", screen, screenExpected)
 	}
 
-	inputsExpected := tui.Inputs{
+	inputsExpected := dialog.Inputs{
 		"input_a": "abc",
 	}
 
@@ -148,16 +149,16 @@ func TestDialogCanActAsMenu(t *testing.T) {
 		"1\n",
 	)
 
-	testConsole := tui.NewConsole(
+	testConsole := console.NewConsole(
 		stdin,
 		&stdout,
 	)
 
 	chosenEntry := ""
 
-	d := tui.Dialog{
+	d := dialog.Dialog{
 		testConsole,
-		[]tui.Step{
+		[]dialog.Step{
 			{
 				[]string{
 					"1. do x",
@@ -170,12 +171,12 @@ func TestDialogCanActAsMenu(t *testing.T) {
 				},
 			},
 		},
-		func(i tui.Inputs) {
+		func(i dialog.Inputs) {
 			chosenEntry = i["choice"]
 		},
 	}
 
-	d.Interact(tui.NoInputs)
+	d.Interact(dialog.NoInputs)
 
 	selectionExpected := "1"
 
@@ -191,16 +192,16 @@ func TestDialogCanConstructComplexFlow(t *testing.T) {
 		"1\n1234\ny\n",
 	)
 
-	testConsole := tui.NewConsole(
+	testConsole := console.NewConsole(
 		stdin,
 		&stdout,
 	)
 
 	didConfirm := false
 
-	confirmMenu := tui.Dialog{
+	confirmMenu := dialog.Dialog{
 		testConsole,
-		[]tui.Step{
+		[]dialog.Step{
 			{
 				Prompt: []string{
 					"confirm? (y/n)",
@@ -211,14 +212,14 @@ func TestDialogCanConstructComplexFlow(t *testing.T) {
 				},
 			},
 		},
-		func(inputs tui.Inputs) {
+		func(inputs dialog.Inputs) {
 			didConfirm = inputs["confirm"] == "y"
 		},
 	}
 
-	inputMenu := tui.Dialog{
+	inputMenu := dialog.Dialog{
 		testConsole,
-		[]tui.Step{
+		[]dialog.Step{
 			{
 				Prompt: []string{
 					"enter x",
@@ -226,26 +227,26 @@ func TestDialogCanConstructComplexFlow(t *testing.T) {
 				Name: "x",
 			},
 		},
-		func(inputs tui.Inputs) {
+		func(inputs dialog.Inputs) {
 			confirmMenu.Interact(inputs)
 		},
 	}
 
-	mainMenu := tui.Dialog{
+	mainMenu := dialog.Dialog{
 		testConsole,
-		[]tui.Step{
+		[]dialog.Step{
 			{
 				Prompt: []string{
 					"1. quit",
 				},
 			},
 		},
-		func(inputs tui.Inputs) {
+		func(inputs dialog.Inputs) {
 			inputMenu.Interact(inputs)
 		},
 	}
 
-	mainMenu.Interact(tui.NoInputs)
+	mainMenu.Interact(dialog.NoInputs)
 
 	if !didConfirm {
 		t.Errorf("did not confirm")

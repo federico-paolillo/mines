@@ -4,7 +4,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/federico-paolillo/mines/cmd/cli/tui"
+	"github.com/federico-paolillo/mines/cmd/cli/tui/console"
+	"github.com/federico-paolillo/mines/cmd/cli/tui/dialog"
+	"github.com/federico-paolillo/mines/cmd/cli/tui/dispatcher"
 	"github.com/federico-paolillo/mines/cmd/cli/tui/menus"
 )
 
@@ -15,12 +17,12 @@ func TestRendersMenuSelectionsCorrectly(t *testing.T) {
 		"2\n",
 	)
 
-	c := tui.NewConsole(
+	c := console.NewConsole(
 		stdin,
 		&stdout,
 	)
 
-	d := tui.NewDispatcher()
+	d := dispatcher.NewDispatcher()
 
 	m := menus.NewMenu(
 		c,
@@ -41,7 +43,7 @@ func TestRendersMenuSelectionsCorrectly(t *testing.T) {
 		},
 	)
 
-	m.Interact(tui.NoInputs)
+	m.Interact(dialog.NoInputs)
 
 	screen := stdout.String()
 	screenExpected := "1 pippo\n2 pluto\n3 topolino\n"
@@ -58,12 +60,12 @@ func TestRendersChosesMenuCorrectly(t *testing.T) {
 		"2\n",
 	)
 
-	c := tui.NewConsole(
+	c := console.NewConsole(
 		stdin,
 		&stdout,
 	)
 
-	d := tui.NewDispatcher()
+	d := dispatcher.NewDispatcher()
 
 	didCall := false
 
@@ -77,10 +79,10 @@ func TestRendersChosesMenuCorrectly(t *testing.T) {
 			},
 			{
 				Prompt: "pluto",
-				Dialog: &tui.Dialog{
+				Dialog: &dialog.Dialog{
 					Console: c,
-					Steps:   []tui.Step{},
-					OnCompleteInteraction: func(_ tui.Inputs) {
+					Steps:   []dialog.Step{},
+					OnCompleteInteraction: func(_ dialog.Inputs) {
 						didCall = true
 					},
 				},
@@ -92,7 +94,7 @@ func TestRendersChosesMenuCorrectly(t *testing.T) {
 		},
 	)
 
-	m.Interact(tui.NoInputs)
+	m.Interact(dialog.NoInputs)
 
 	if !didCall {
 		t.Errorf("dialog did not call menu entry")
