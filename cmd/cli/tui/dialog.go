@@ -2,12 +2,13 @@ package tui
 
 import "maps"
 
+type Prompt []string
 type Inputs map[string]string
 
 var NoInputs Inputs
 
 type Step struct {
-	Prompt   []string
+	Prompt   Prompt
 	Name     string
 	Validate func(value string) bool
 }
