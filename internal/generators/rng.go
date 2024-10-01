@@ -7,21 +7,21 @@ import (
 	"github.com/federico-paolillo/mines/pkg/dimensions"
 )
 
-type rngBoardGenerator struct {
+type RngBoardGenerator struct {
 	seed int
 	rng  *rand.Rand
 }
 
-func NewRngBoardGenerator(seed int) *rngBoardGenerator {
+func NewRngBoardGenerator(seed int) *RngBoardGenerator {
 	rng := rand.New(rand.NewSource(int64(seed)))
 
-	return &rngBoardGenerator{
+	return &RngBoardGenerator{
 		seed: seed,
 		rng:  rng,
 	}
 }
 
-func (gen *rngBoardGenerator) Generate(size dimensions.Size, mines int) *board.Board {
+func (gen *RngBoardGenerator) Generate(size dimensions.Size, mines int) *board.Board {
 	// Dumb algorithm: fill the board with safe cells then replace those with n mines
 	bb := board.NewBuilder(size)
 
