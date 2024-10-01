@@ -3,14 +3,22 @@ package main
 import (
 	"os"
 
-	"github.com/federico-paolillo/mines/cmd/cli/tui"
+	"github.com/federico-paolillo/mines/cmd/cli/commands"
+	"github.com/federico-paolillo/mines/cmd/cli/tui/console"
+	"github.com/spf13/cobra"
 )
 
 func main() {
-	t := tui.InitTui(
+	c := console.NewConsole(
 		os.Stdin,
 		os.Stdout,
 	)
 
-	t.Run()
+	r := commands.NewRootCmd(
+		c,
+	)
+
+	err := r.Execute()
+
+	cobra.CheckErr(err)
 }
