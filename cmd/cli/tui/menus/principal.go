@@ -12,11 +12,17 @@ func NewMainMenu(
 ) *dialog.Dialog {
 	return NewMenu(
 		console,
-		dispatcher,
 		[]Entry{
 			{
 				Prompt: "quit",
 				Dialog: NewQuitMenu(
+					console,
+					dispatcher,
+				),
+			},
+			{
+				Prompt: "move",
+				Dialog: NewMoveMenu(
 					console,
 					dispatcher,
 				),

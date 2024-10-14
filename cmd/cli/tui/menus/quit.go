@@ -5,10 +5,8 @@ import (
 	"github.com/federico-paolillo/mines/cmd/cli/tui/dialog"
 	"github.com/federico-paolillo/mines/cmd/cli/tui/dispatcher"
 	"github.com/federico-paolillo/mines/cmd/cli/tui/intents"
+	"github.com/federico-paolillo/mines/cmd/cli/tui/validation"
 )
-
-var uppercaseY = "Y"
-var lowercaseN = "n"
 
 func NewQuitMenu(
 	console *console.Console,
@@ -23,26 +21,14 @@ func NewQuitMenu(
 				},
 				Name: "quit",
 				Validate: func(value string) bool {
-					return isYn(value)
+					return validation.IsYN(value)
 				},
 			},
 		},
 		OnCompleteInteraction: func(inputs dialog.Inputs) {
-			if isY(inputs["quit"]) {
+			if validation.IsY(inputs["quit"]) {
 				dispatcher.Dispatch(intents.QuitApplication)
 			}
 		},
 	}
-}
-
-func isYn(value string) bool {
-	return isY(value) || isn(value)
-}
-
-func isY(value string) bool {
-	return value == uppercaseY
-}
-
-func isn(value string) bool {
-	return value == lowercaseN
 }

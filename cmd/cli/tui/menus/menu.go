@@ -2,10 +2,10 @@ package menus
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/federico-paolillo/mines/cmd/cli/tui/console"
 	"github.com/federico-paolillo/mines/cmd/cli/tui/dialog"
-	"github.com/federico-paolillo/mines/cmd/cli/tui/dispatcher"
 )
 
 type entriesMap = map[string]*Entry
@@ -17,15 +17,15 @@ type Entry struct {
 
 func NewMenu(
 	console *console.Console,
-	dispatcher *dispatcher.Dispatcher,
 	entries []Entry,
 ) *dialog.Dialog {
-	entriesMap := makeEntriesMap(entries)
-	steps := makeMenuSteps(entriesMap)
+	loneStep, entriesMap := makeMenuStep(entries)
 
 	return &dialog.Dialog{
 		Console: console,
-		Steps:   steps,
+		Steps: []dialog.Step{
+			loneStep,
+		},
 		OnCompleteInteraction: func(inputs dialog.Inputs) {
 			selection := inputs["selection"]
 			entry := entriesMap[selection]
@@ -34,35 +34,27 @@ func NewMenu(
 	}
 }
 
-func makeEntriesMap(entries []Entry) map[string]*Entry {
+func makeMenuStep(
+	entries []Entry,
+) (dialog.Step, entriesMap) {
 	entriesMap := make(entriesMap, 0)
-
-	for i, entry := range entries {
-		index := fmt.Sprintf("%d", i+1)
-
-		entriesMap[index] = &entry
-	}
-	return entriesMap
-}
-
-func makeMenuSteps(
-	entries entriesMap,
-) []dialog.Step {
 	prompt := make([]string, 0, len(entries))
 
 	for i, entry := range entries {
-		entryPrompt := fmt.Sprintf("%s %s", i, entry.Prompt)
+		entryIndex := strconv.FormatInt(int64(i+1), 10)
+		entryPrompt := fmt.Sprintf("%s %s", entryIndex, entry.Prompt)
+
+		entriesMap[entryIndex] = &entry
+
 		prompt = append(prompt, entryPrompt)
 	}
 
-	return []dialog.Step{
-		{
-			Prompt: prompt,
-			Name:   "selection",
-			Validate: func(value string) bool {
-				_, ok := entries[value]
-				return ok
-			},
+	return dialog.Step{
+		Prompt: prompt,
+		Name:   "selection",
+		Validate: func(value string) bool {
+			_, ok := entriesMap[value]
+			return ok
 		},
-	}
+	}, entriesMap
 }

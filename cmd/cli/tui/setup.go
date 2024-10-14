@@ -9,15 +9,21 @@ import (
 	"github.com/federico-paolillo/mines/internal/generators"
 	"github.com/federico-paolillo/mines/internal/printers"
 	"github.com/federico-paolillo/mines/pkg/dimensions"
+	"github.com/federico-paolillo/mines/pkg/game"
 )
 
 func InitTui(
 	stdin io.Reader,
 	stdout io.Writer,
 ) *Tui {
-	g := generators.NewRngBoardGenerator(1234)
+	gn := generators.NewRngBoardGenerator(1234)
 
-	b := g.Generate(dimensions.Size{Width: 4, Height: 4}, 2)
+	b := gn.Generate(dimensions.Size{Width: 4, Height: 4}, 2)
+
+	g := game.NewGame(
+		1,
+		b,
+	)
 
 	c := console.NewConsole(
 		stdin,
@@ -43,5 +49,6 @@ func InitTui(
 		d,
 		m,
 		v,
+		g,
 	)
 }

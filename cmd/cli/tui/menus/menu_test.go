@@ -6,7 +6,6 @@ import (
 
 	"github.com/federico-paolillo/mines/cmd/cli/tui/console"
 	"github.com/federico-paolillo/mines/cmd/cli/tui/dialog"
-	"github.com/federico-paolillo/mines/cmd/cli/tui/dispatcher"
 	"github.com/federico-paolillo/mines/cmd/cli/tui/menus"
 )
 
@@ -22,11 +21,8 @@ func TestRendersMenuSelectionsCorrectly(t *testing.T) {
 		&stdout,
 	)
 
-	d := dispatcher.NewDispatcher()
-
 	m := menus.NewMenu(
 		c,
-		d,
 		[]menus.Entry{
 			{
 				Prompt: "pippo",
@@ -49,7 +45,7 @@ func TestRendersMenuSelectionsCorrectly(t *testing.T) {
 	screenExpected := "1 pippo\n2 pluto\n3 topolino\n"
 
 	if screen != screenExpected {
-		t.Errorf("dialog did not render expected output. wanted '%q' got '%q'", screen, screenExpected)
+		t.Errorf("dialog did not render expected output. wanted '%q' got '%q'", screenExpected, screen)
 	}
 }
 
@@ -65,13 +61,10 @@ func TestRendersChosesMenuCorrectly(t *testing.T) {
 		&stdout,
 	)
 
-	d := dispatcher.NewDispatcher()
-
 	didCall := false
 
 	m := menus.NewMenu(
 		c,
-		d,
 		[]menus.Entry{
 			{
 				Prompt: "pippo",
