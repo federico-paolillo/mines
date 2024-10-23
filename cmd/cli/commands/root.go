@@ -1,7 +1,7 @@
 package commands
 
 import (
-	"github.com/federico-paolillo/mines/cmd/cli/tui/console"
+	"github.com/federico-paolillo/mines/internal/console"
 	"github.com/spf13/cobra"
 )
 

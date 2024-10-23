@@ -1,8 +1,7 @@
 package commands
 
 import (
-	"github.com/federico-paolillo/mines/cmd/cli/tui"
-	"github.com/federico-paolillo/mines/cmd/cli/tui/console"
+	"github.com/federico-paolillo/mines/internal/console"
 	"github.com/spf13/cobra"
 )
 
@@ -21,10 +20,5 @@ func NewPlayCommand(
 func runPlayCommand(
 	console *console.Console,
 ) {
-	tui := tui.InitTui(
-		console.Stdin,
-		console.Stdout,
-	)
-
-	tui.Run()
+	// TODO: Do nothing for now
 }
