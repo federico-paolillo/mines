@@ -5,12 +5,12 @@ import (
 	"github.com/federico-paolillo/mines/pkg/dimensions"
 )
 
-type Status = string
+type Gamestate string
 
 const (
-	Playing Status = "playing"
-	Lost           = "lost"
-	Won            = "won"
+	Playing Gamestate = "playing"
+	Lost              = "lost"
+	Won               = "won"
 )
 
 type Game struct {
@@ -98,7 +98,7 @@ func (game *Game) Chord(x, y int) {
 	}
 }
 
-func (game *Game) Status() Status {
+func (game *Game) Status() Gamestate {
 	if game.lives < 0 {
 		return Lost
 	}

@@ -6,13 +6,13 @@ import (
 	"github.com/federico-paolillo/mines/pkg/dimensions"
 )
 
-type Cellstate int
+type Cellstate string
 
 const (
-	Opened Cellstate = iota
-	Closed
-	Flagged
-	Unfathomable = 0xFFFF
+	Opened       Cellstate = "open"
+	Closed                 = "closed"
+	Flagged                = "flagged"
+	Unfathomable           = "unfathomable"
 )
 
 type Cell struct {
