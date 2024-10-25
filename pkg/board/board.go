@@ -31,7 +31,7 @@ func (board *Board) CountUnopenSafeCells() int {
 
 	for _, cell := range board.cells {
 		if cell.Safe() {
-			if cell.Status(Closed, Flagged) {
+			if cell.HasStatus(Closed, Flagged) {
 				unopenedCellsCount++
 			}
 		}
@@ -58,7 +58,7 @@ func (board *Board) RetrieveAdjacentCellsOfStatus(status Cellstate, location dim
 	for _, location := range location.AdjacentLocations() {
 		cell := board.Retrieve(location)
 
-		if cell.Status(status) {
+		if cell.HasStatus(status) {
 			cells = append(cells, cell)
 		}
 	}

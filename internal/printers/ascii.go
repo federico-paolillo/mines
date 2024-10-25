@@ -98,11 +98,11 @@ func (asciiPrinter *AsciiPrinter) MapSymbol(symbol CellRenderKind, stringRepr st
 }
 
 func asSymbol(cell *board.Cell) CellRenderKind {
-	if cell.Status(board.Flagged) {
+	if cell.HasStatus(board.Flagged) {
 		return Flagged
 	}
 
-	if cell.Status(board.Closed) {
+	if cell.HasStatus(board.Closed) {
 		return Closed
 	}
 

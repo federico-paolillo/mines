@@ -69,14 +69,14 @@ func TestCascadingOpensAppropriateCell(t *testing.T) {
 
 	for _, location := range openLocations {
 		cell := b.Retrieve(location)
-		if cell.Status(board.Opened) != true {
+		if cell.HasStatus(board.Opened) != true {
 			t.Errorf("expected cell at %v to be open", location)
 		}
 	}
 
 	for _, location := range closeLocations {
 		cell := b.Retrieve(location)
-		if cell.Status(board.Closed) != true {
+		if cell.HasStatus(board.Closed) != true {
 			t.Errorf("expected cell at %v to be closed", location)
 		}
 	}
@@ -200,7 +200,7 @@ func TestGameDoesNotAllowFurtherMovesOnceGameIsWon(t *testing.T) {
 
 	cell := b.Retrieve(dimensions.Location{X: 3, Y: 3})
 
-	if cell.Status(board.Opened) {
+	if cell.HasStatus(board.Opened) {
 		t.Fatalf(
 			"cell at %v should not have been openable because the game was won",
 			cell.Position(),
@@ -250,7 +250,7 @@ func TestGameDoesNotAllowFurtherMovesOnceGameIsLost(t *testing.T) {
 
 	cell := b.Retrieve(dimensions.Location{X: 1, Y: 1})
 
-	if cell.Status(board.Opened) {
+	if cell.HasStatus(board.Opened) {
 		t.Fatalf(
 			"cell at %v should not have been openable because the game was lost",
 			cell.Position(),
@@ -471,7 +471,7 @@ func TestChordingOpensAppropriateCells(t *testing.T) {
 	for _, openCellLocation := range expectedOpenCellsLocation {
 		c := b.Retrieve(openCellLocation)
 
-		if c.Status(board.Closed) {
+		if c.HasStatus(board.Closed) {
 			t.Errorf(
 				"expected cell at %v to be open",
 				c.Position(),

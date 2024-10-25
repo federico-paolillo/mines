@@ -80,7 +80,7 @@ func (game *Game) Chord(x, y int) {
 		return
 	}
 
-	if !originCell.Status(board.Opened) {
+	if !originCell.HasStatus(board.Opened) {
 		return
 	}
 
@@ -125,7 +125,7 @@ func (game *Game) tryCascade(cascadingOrigin dimensions.Location) {
 			continue
 		}
 
-		if candidateCell.Status(board.Opened, board.Flagged) {
+		if candidateCell.HasStatus(board.Opened, board.Flagged) {
 			continue
 		}
 

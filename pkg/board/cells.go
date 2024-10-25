@@ -53,18 +53,18 @@ func NewMineCell(
 }
 
 func (cell *Cell) Open() {
-	if cell.Status(Closed, Flagged) {
+	if cell.HasStatus(Closed, Flagged) {
 		cell.status = Opened
 	}
 }
 
 func (cell *Cell) Flag() {
-	if cell.Status(Closed) {
+	if cell.HasStatus(Closed) {
 		cell.status = Flagged
 	}
 }
 
-func (cell *Cell) Status(statuses ...Cellstate) bool {
+func (cell *Cell) HasStatus(statuses ...Cellstate) bool {
 	for _, state := range statuses {
 		if cell.status == state {
 			return true
@@ -88,4 +88,8 @@ func (cell *Cell) Position() dimensions.Location {
 
 func (cell *Cell) AdjacentMines() int {
 	return cell.adjacentMines
+}
+
+func (cell *Cell) Status() Cellstate {
+	return cell.status
 }
