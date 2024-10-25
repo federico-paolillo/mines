@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/federico-paolillo/mines/cmd/cli/tui/console"
+	"github.com/federico-paolillo/mines/internal/console"
 )
 
 func TestConsolePrintLines(t *testing.T) {
