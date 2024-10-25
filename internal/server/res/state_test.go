@@ -5,29 +5,31 @@ import (
 	"testing"
 
 	"github.com/federico-paolillo/mines/internal/server/res"
+	"github.com/federico-paolillo/mines/pkg/board"
+	"github.com/federico-paolillo/mines/pkg/game"
 )
 
 func TestStateDtoMarshalsCorrectly(t *testing.T) {
-	stateDto := res.GameStateDto{
+	stateDto := res.MatchstateDto{
 		Id:     "abc",
 		Lives:  13,
-		State:  res.Lost,
+		State:  game.Lost,
 		Width:  123,
 		Height: 321,
 		Cells: [][]res.CellDto{
 			{
 				res.CellDto{
-					State: res.Flagged,
+					State: board.Flagged,
 					X:     1,
 					Y:     1,
 				},
 				res.CellDto{
-					State: res.Flagged,
+					State: board.Flagged,
 					X:     2,
 					Y:     1,
 				},
 				res.CellDto{
-					State: res.Flagged,
+					State: board.Flagged,
 					X:     3,
 					Y:     1,
 				},

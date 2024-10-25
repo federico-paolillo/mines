@@ -5,11 +5,12 @@ import (
 	"testing"
 
 	"github.com/federico-paolillo/mines/internal/server/res"
+	"github.com/federico-paolillo/mines/pkg/board"
 )
 
 func TestCellDtoMarshalsCorrectly(t *testing.T) {
 	cellDto := &res.CellDto{
-		State: res.Flagged,
+		State: board.Flagged,
 		X:     12,
 		Y:     23,
 	}

@@ -1,15 +1,9 @@
 package res
 
-type Cellstate = string
-
-const (
-	Open    Cellstate = "open"
-	Closed            = "closed"
-	Flagged           = "flagged"
-)
+import "github.com/federico-paolillo/mines/pkg/board"
 
 type CellDto struct {
-	State Cellstate `json:"state"`
-	X     int       `json:"x"`
-	Y     int       `json:"y"`
+	State board.Cellstate `json:"state"`
+	X     int             `json:"x"`
+	Y     int             `json:"y"`
 }
