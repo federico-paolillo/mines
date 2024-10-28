@@ -5,9 +5,9 @@ import "github.com/federico-paolillo/mines/pkg/dimensions"
 type Difficulty = string
 
 const (
-	Beginner     Difficulty = "beginner"
-	Intermediate            = "intermediate"
-	Expert                  = "expert"
+	BeginnerDifficulty     Difficulty = "beginner"
+	IntermediateDifficulty            = "intermediate"
+	ExpertDifficulty                  = "expert"
 )
 
 type DifficultySettings struct {
@@ -45,11 +45,11 @@ var expertSettings = DifficultySettings{
 
 func GetDifficultySettings(difficulty Difficulty) DifficultySettings {
 	switch difficulty {
-	case Beginner:
+	case BeginnerDifficulty:
 		return beginnerSettings
-	case Intermediate:
+	case IntermediateDifficulty:
 		return intermediateSettings
-	case Expert:
+	case ExpertDifficulty:
 		return expertSettings
 	default:
 		return beginnerSettings

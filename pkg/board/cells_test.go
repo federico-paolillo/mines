@@ -23,7 +23,7 @@ func TestNewSafeCellIsNotMinedAndPositionedProperly(t *testing.T) {
 		t.Error("expected cell to be without mines")
 	}
 
-	if safeCell.HasStatus(board.Closed) != true {
+	if safeCell.HasStatus(board.ClosedCell) != true {
 		t.Error("expected cell to be closed")
 	}
 
@@ -48,7 +48,7 @@ func TestNewMineCellIsMinedAndPositionedProperly(t *testing.T) {
 		t.Error("expected cell to be mined")
 	}
 
-	if minedCell.HasStatus(board.Closed) != true {
+	if minedCell.HasStatus(board.ClosedCell) != true {
 		t.Error("expected cell to be closed")
 	}
 

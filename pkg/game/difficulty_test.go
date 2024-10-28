@@ -15,19 +15,19 @@ func TestDifficultiesHaveProperSettings(t *testing.T) {
 		mines      int
 	}{
 		{
-			difficulty: game.Beginner,
+			difficulty: game.BeginnerDifficulty,
 			size:       dimensions.Size{Width: 9, Height: 9},
 			mines:      10,
 			lives:      2,
 		},
 		{
-			difficulty: game.Intermediate,
+			difficulty: game.IntermediateDifficulty,
 			lives:      1,
 			size:       dimensions.Size{Width: 16, Height: 16},
 			mines:      40,
 		},
 		{
-			difficulty: game.Expert,
+			difficulty: game.ExpertDifficulty,
 			lives:      0,
 			size:       dimensions.Size{Width: 30, Height: 16},
 			mines:      99,

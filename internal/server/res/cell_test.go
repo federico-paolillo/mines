@@ -10,7 +10,7 @@ import (
 
 func TestCellDtoMarshalsCorrectly(t *testing.T) {
 	cellDto := &res.CellDto{
-		State: board.Flagged,
+		State: board.FlaggedCell,
 		X:     12,
 		Y:     23,
 	}

@@ -8,9 +8,9 @@ import (
 type Gamestate string
 
 const (
-	Playing Gamestate = "playing"
-	Lost              = "lost"
-	Won               = "won"
+	PlayingGame Gamestate = "playing"
+	LostGame              = "lost"
+	WonGame               = "won"
 )
 
 type Game struct {
@@ -26,7 +26,7 @@ func NewGame(lives int, board *board.Board) *Game {
 }
 
 func (game *Game) Flag(x, y int) {
-	if game.ended() {
+	if game.Ended() {
 		return
 	}
 
@@ -40,7 +40,7 @@ func (game *Game) Flag(x, y int) {
 }
 
 func (game *Game) Open(x, y int) {
-	if game.ended() {
+	if game.Ended() {
 		return
 	}
 
@@ -68,7 +68,7 @@ func (game *Game) Open(x, y int) {
 // When the number of adjacent mines is equal to the number of adjacent flagged cells,
 // all adjacent non-flagged unopened cells will be opened.
 func (game *Game) Chord(x, y int) {
-	if game.ended() {
+	if game.Ended() {
 		return
 	}
 
@@ -80,17 +80,17 @@ func (game *Game) Chord(x, y int) {
 		return
 	}
 
-	if !originCell.HasStatus(board.Opened) {
+	if !originCell.HasStatus(board.OpenCell) {
 		return
 	}
 
-	adjacentFlaggedCells := game.board.CountAdjacentCellsOfStatus(board.Flagged, location)
+	adjacentFlaggedCells := game.board.CountAdjacentCellsOfStatus(board.FlaggedCell, location)
 
 	if adjacentFlaggedCells != originCell.AdjacentMines() {
 		return
 	}
 
-	adjacentClosedCells := game.board.RetrieveAdjacentCellsOfStatus(board.Closed, location)
+	adjacentClosedCells := game.board.RetrieveAdjacentCellsOfStatus(board.ClosedCell, location)
 
 	for _, closedCell := range adjacentClosedCells {
 		cellLocation := closedCell.Position()
@@ -100,17 +100,17 @@ func (game *Game) Chord(x, y int) {
 
 func (game *Game) Status() Gamestate {
 	if game.lives < 0 {
-		return Lost
+		return LostGame
 	}
 
 	unopenSafeCells := game.board.CountUnopenSafeCells()
 	allSafeCellsAreOpen := unopenSafeCells == 0
 
 	if allSafeCellsAreOpen {
-		return Won
+		return WonGame
 	}
 
-	return Playing
+	return PlayingGame
 }
 
 func (game *Game) Lives() int {
@@ -125,7 +125,7 @@ func (game *Game) tryCascade(cascadingOrigin dimensions.Location) {
 			continue
 		}
 
-		if candidateCell.HasStatus(board.Opened, board.Flagged) {
+		if candidateCell.HasStatus(board.OpenCell, board.FlaggedCell) {
 			continue
 		}
 
@@ -144,8 +144,8 @@ func (game *Game) tryCascade(cascadingOrigin dimensions.Location) {
 	}
 }
 
-func (game *Game) ended() bool {
-	if game.Status() == Playing {
+func (game *Game) Ended() bool {
+	if game.Status() == PlayingGame {
 		return false
 	}
 

@@ -30,88 +30,88 @@ func TestExportsCellsProperly(t *testing.T) {
 			{
 				X:     1,
 				Y:     1,
-				State: board.Closed,
+				State: board.ClosedCell,
 			},
 			{
 				X:     2,
 				Y:     1,
-				State: board.Closed,
+				State: board.ClosedCell,
 			},
 			{
 				X:     3,
 				Y:     1,
-				State: board.Closed,
+				State: board.ClosedCell,
 			},
 			{
 				X:     4,
 				Y:     1,
-				State: board.Closed,
+				State: board.ClosedCell,
 			},
 		},
 		{
 			{
 				X:     1,
 				Y:     2,
-				State: board.Closed,
+				State: board.ClosedCell,
 			},
 			{
 				X:     2,
 				Y:     2,
-				State: board.Closed,
+				State: board.ClosedCell,
 			},
 			{
 				X:     3,
 				Y:     2,
-				State: board.Closed,
+				State: board.ClosedCell,
 			},
 			{
 				X:     4,
 				Y:     2,
-				State: board.Closed,
+				State: board.ClosedCell,
 			},
 		},
 		{
 			{
 				X:     1,
 				Y:     3,
-				State: board.Closed,
+				State: board.ClosedCell,
 			},
 			{
 				X:     2,
 				Y:     3,
-				State: board.Closed,
+				State: board.ClosedCell,
 			},
 			{
 				X:     3,
 				Y:     3,
-				State: board.Closed,
+				State: board.ClosedCell,
 			},
 			{
 				X:     4,
 				Y:     3,
-				State: board.Closed,
+				State: board.ClosedCell,
 			},
 		},
 		{
 			{
 				X:     1,
 				Y:     4,
-				State: board.Closed,
+				State: board.ClosedCell,
 			},
 			{
 				X:     2,
 				Y:     4,
-				State: board.Closed,
+				State: board.ClosedCell,
 			},
 			{
 				X:     3,
 				Y:     4,
-				State: board.Closed,
+				State: board.ClosedCell,
 			},
 			{
 				X:     4,
 				Y:     4,
-				State: board.Closed,
+				State: board.ClosedCell,
 			},
 		},
 	}

@@ -9,10 +9,10 @@ import (
 type Cellstate string
 
 const (
-	Opened       Cellstate = "open"
-	Closed                 = "closed"
-	Flagged                = "flagged"
-	Unfathomable           = "unfathomable"
+	OpenCell         Cellstate = "open"
+	ClosedCell                 = "closed"
+	FlaggedCell                = "flagged"
+	UnfathomableCell           = "unfathomable"
 )
 
 type Cell struct {
@@ -24,7 +24,7 @@ type Cell struct {
 
 var Void = &Cell{
 	position: dimensions.Location{X: math.MinInt32, Y: math.MinInt32},
-	status:   Unfathomable,
+	status:   UnfathomableCell,
 	mined:    false,
 }
 
@@ -34,7 +34,7 @@ func NewSafeCell(
 ) *Cell {
 	return &Cell{
 		position:      location,
-		status:        Closed,
+		status:        ClosedCell,
 		mined:         false,
 		adjacentMines: adjacentMines,
 	}
@@ -46,21 +46,21 @@ func NewMineCell(
 ) *Cell {
 	return &Cell{
 		position:      location,
-		status:        Closed,
+		status:        ClosedCell,
 		mined:         true,
 		adjacentMines: adjacentMines,
 	}
 }
 
 func (cell *Cell) Open() {
-	if cell.HasStatus(Closed, Flagged) {
-		cell.status = Opened
+	if cell.HasStatus(ClosedCell, FlaggedCell) {
+		cell.status = OpenCell
 	}
 }
 
 func (cell *Cell) Flag() {
-	if cell.HasStatus(Closed) {
-		cell.status = Flagged
+	if cell.HasStatus(ClosedCell) {
+		cell.status = FlaggedCell
 	}
 }
 

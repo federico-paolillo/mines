@@ -101,7 +101,7 @@ func TestCountAdjacentCellOfStatusIsCorrect(t *testing.T) {
 
 	c.Flag()
 
-	count := b.CountAdjacentCellsOfStatus(board.Flagged, dimensions.Location{X: 1, Y: 1})
+	count := b.CountAdjacentCellsOfStatus(board.FlaggedCell, dimensions.Location{X: 1, Y: 1})
 
 	if count != 1 {
 		t.Fatalf(
@@ -126,7 +126,7 @@ func TestRetrieveAdjacentCellOfStatusIsCorrect(t *testing.T) {
 
 	c.Flag()
 
-	cells := b.RetrieveAdjacentCellsOfStatus(board.Flagged, dimensions.Location{X: 1, Y: 1})
+	cells := b.RetrieveAdjacentCellsOfStatus(board.FlaggedCell, dimensions.Location{X: 1, Y: 1})
 
 	actualLen := len(cells)
 	expectedLen := 1

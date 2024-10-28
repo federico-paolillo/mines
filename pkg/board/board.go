@@ -31,7 +31,7 @@ func (board *Board) CountUnopenSafeCells() int {
 
 	for _, cell := range board.cells {
 		if cell.Safe() {
-			if cell.HasStatus(Closed, Flagged) {
+			if cell.HasStatus(ClosedCell, FlaggedCell) {
 				unopenedCellsCount++
 			}
 		}

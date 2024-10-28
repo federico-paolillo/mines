@@ -13,23 +13,23 @@ func TestStateDtoMarshalsCorrectly(t *testing.T) {
 	stateDto := res.MatchstateDto{
 		Id:     "abc",
 		Lives:  13,
-		State:  game.Lost,
+		State:  game.LostGame,
 		Width:  123,
 		Height: 321,
 		Cells: [][]res.CellDto{
 			{
 				res.CellDto{
-					State: board.Flagged,
+					State: board.FlaggedCell,
 					X:     1,
 					Y:     1,
 				},
 				res.CellDto{
-					State: board.Flagged,
+					State: board.FlaggedCell,
 					X:     2,
 					Y:     1,
 				},
 				res.CellDto{
-					State: board.Flagged,
+					State: board.FlaggedCell,
 					X:     3,
 					Y:     1,
 				},
