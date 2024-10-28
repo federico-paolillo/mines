@@ -8,23 +8,28 @@ import (
 	"github.com/federico-paolillo/mines/pkg/game"
 )
 
+type Matchversion = int64
+
 var ErrIllegalMove = errors.New("unrecognized move")
 var ErrGameHasEnded = errors.New("game has ended")
 
 // A Match is a particular instance of a Game that is addressable by an unique identifier
 type Match struct {
-	Id    string
-	board *board.Board
-	game  *game.Game
+	Id      string
+	Version Matchversion
+	board   *board.Board
+	game    *game.Game
 }
 
 func NewMatch(
 	id string,
+	version Matchversion,
 	board *board.Board,
 	game *game.Game,
 ) *Match {
 	return &Match{
 		id,
+		version,
 		board,
 		game,
 	}

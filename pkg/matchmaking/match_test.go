@@ -28,14 +28,20 @@ func TestMatchStateReflectsGameAndBoardSituation(t *testing.T) {
 
 	g := game.NewGame(2, b)
 
-	m := matchmaking.NewMatch("abc", b, g)
+	m := matchmaking.NewMatch(
+		"abc",
+		123,
+		b,
+		g,
+	)
 
 	expectation := &matchmaking.Matchstate{
-		Id:     "abc",
-		Lives:  2,
-		State:  game.PlayingGame,
-		Width:  2,
-		Height: 2,
+		Id:      "abc",
+		Version: 123,
+		Lives:   2,
+		State:   game.PlayingGame,
+		Width:   2,
+		Height:  2,
 		Cells: [][]matchmaking.Cell{
 			{
 				{
@@ -114,6 +120,7 @@ func TestMatchAppliesMovesProperly(t *testing.T) {
 
 	m := matchmaking.NewMatch(
 		"abc",
+		123,
 		b,
 		g,
 	)
