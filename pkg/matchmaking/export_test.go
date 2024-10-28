@@ -4,9 +4,9 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/federico-paolillo/mines/internal/server/matchmaking"
 	"github.com/federico-paolillo/mines/pkg/board"
 	"github.com/federico-paolillo/mines/pkg/dimensions"
+	"github.com/federico-paolillo/mines/pkg/matchmaking"
 )
 
 func TestExportsCellsProperly(t *testing.T) {

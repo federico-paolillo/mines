@@ -3,7 +3,7 @@ package id_test
 import (
 	"testing"
 
-	"github.com/federico-paolillo/mines/internal/server/id"
+	"github.com/federico-paolillo/mines/internal/id"
 )
 
 func TestGeneratesTwoDifferentIdsWhenCalledTwice(t *testing.T) {
