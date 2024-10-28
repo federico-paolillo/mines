@@ -11,7 +11,7 @@ import (
 var ErrIllegalMove = errors.New("unrecognized move")
 var ErrGameHasEnded = errors.New("game has ended")
 
-// A Match is a particular instance of a Game that is addressable by and unique identifier
+// A Match is a particular instance of a Game that is addressable by an unique identifier
 type Match struct {
 	Id    string
 	board *board.Board
@@ -66,7 +66,7 @@ func (m *Match) Apply(move Move) error {
 		m.game.Chord(move.X, move.Y)
 	default:
 		return fmt.Errorf(
-			"match: move '%T' cannot be applied to match '%s'. %w",
+			"match: move '%s' cannot be applied to match '%s'. %w",
 			move.Type,
 			m.Id,
 			ErrIllegalMove,
