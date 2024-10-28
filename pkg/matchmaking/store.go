@@ -8,5 +8,5 @@ var ErrNoSuchMatch = errors.New("match does not exist")
 
 type Store interface {
 	Fetch(id string) (*Match, error)
-	Save(id string) error
+	Save(match *Match) error
 }
