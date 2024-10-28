@@ -76,3 +76,70 @@ func TestMatchStateReflectsGameAndBoardSituation(t *testing.T) {
 		)
 	}
 }
+
+func TestMatchAppliesMovesProperly(t *testing.T) {
+	s := dimensions.Size{
+		Width:  2,
+		Height: 2,
+	}
+
+	bb := board.NewBuilder(s)
+
+	bb.PlaceSafe(1, 1)
+	bb.PlaceSafe(2, 1)
+	bb.PlaceSafe(1, 2)
+	bb.PlaceMine(2, 2)
+
+	b := bb.Build()
+
+	g := game.NewGame(2, b)
+
+	moves := []matchmaking.Move{
+		{
+			Type: matchmaking.MoveOpen,
+			X:    1,
+			Y:    1,
+		},
+		{
+			Type: matchmaking.MoveOpen,
+			X:    2,
+			Y:    1,
+		},
+		{
+			Type: matchmaking.MoveOpen,
+			X:    1,
+			Y:    2,
+		},
+	}
+
+	m := matchmaking.NewMatch(
+		"abc",
+		b,
+		g,
+	)
+
+	for i, move := range moves {
+		err := m.Apply(move)
+
+		if err != nil {
+			t.Errorf(
+				"could not apply move '%d'. %v",
+				i,
+				err,
+			)
+		}
+	}
+
+	matchStatus := m.Status()
+
+	expectedGamestate := game.WonGame
+	gamestate := matchStatus.State
+
+	if matchStatus.State != game.WonGame {
+		t.Fatalf(
+			"match is not in expected state. got '%s' wanted '%s'",
+			gamestate,
+			expectedGamestate,
+		)
+	}
+}

@@ -1,16 +1,19 @@
 package matchmaking
 
 import (
-	"sync"
+	"errors"
+	"fmt"
 
 	"github.com/federico-paolillo/mines/pkg/board"
 	"github.com/federico-paolillo/mines/pkg/game"
 )
 
+var ErrIllegalMove = errors.New("unrecognized move")
+var ErrGameHasEnded = errors.New("game has ended")
+
 // A Match is a particular instance of a Game that is addressable by and unique identifier
 type Match struct {
 	Id    string
-	mux   *sync.Mutex
 	board *board.Board
 	game  *game.Game
 }
@@ -22,17 +25,12 @@ func NewMatch(
 ) *Match {
 	return &Match{
 		id,
-		&sync.Mutex{},
 		board,
 		game,
 	}
 }
 
 func (m *Match) Status() Matchstate {
-	m.mux.Lock()
-
-	defer m.mux.Unlock()
-
 	bSize := m.board.Size()
 
 	cells := ExportCells(m.board)
@@ -45,4 +43,35 @@ func (m *Match) Status() Matchstate {
 		State:  m.game.Status(),
 		Cells:  cells,
 	}
+}
+
+func (m *Match) Apply(move Move) error {
+	if m.game.Ended() {
+		return fmt.Errorf(
+			"match: move '%s' cannot be applied to match '%s'. %w",
+			move.Type,
+			m.Id,
+			ErrGameHasEnded,
+		)
+	}
+
+	switch move.Type {
+	case MoveOpen:
+		m.game.Open(move.X, move.Y)
+		break
+	case MoveFlag:
+		m.game.Flag(move.X, move.Y)
+		break
+	case MoveChord:
+		m.game.Chord(move.X, move.Y)
+	default:
+		return fmt.Errorf(
+			"match: move '%T' cannot be applied to match '%s'. %w",
+			move.Type,
+			m.Id,
+			ErrIllegalMove,
+		)
+	}
+
+	return nil
 }
