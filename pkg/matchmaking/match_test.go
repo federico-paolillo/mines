@@ -30,7 +30,7 @@ func TestMatchStateReflectsGameAndBoardSituation(t *testing.T) {
 
 	m := matchmaking.NewMatch("abc", b, g)
 
-	expectation := matchmaking.Matchstate{
+	expectation := &matchmaking.Matchstate{
 		Id:     "abc",
 		Lives:  2,
 		State:  game.PlayingGame,

@@ -30,12 +30,12 @@ func NewMatch(
 	}
 }
 
-func (m *Match) Status() Matchstate {
+func (m *Match) Status() *Matchstate {
 	bSize := m.board.Size()
 
 	cells := ExportCells(m.board)
 
-	return Matchstate{
+	return &Matchstate{
 		Id:     m.Id,
 		Lives:  m.game.Lives(),
 		Width:  bSize.Width,
