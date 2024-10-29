@@ -14,13 +14,18 @@ import (
 func TestHydrationRestoresMatchProperly(t *testing.T) {
 	bb := board.NewBuilder(
 		dimensions.Size{
-			Width:  2,
+			Width:  4,
 			Height: 1,
 		},
 	)
 
 	bb.PlaceSafe(1, 1)
 	bb.PlaceMine(2, 1)
+	bb.PlaceMine(3, 1)
+	bb.PlaceMine(4, 1)
+
+	bb.MarkOpen(1, 1)
+	bb.MarkFlagged(4, 1)
 
 	b := bb.Build()
 
