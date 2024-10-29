@@ -12,7 +12,7 @@ const (
 	OpenCell         Cellstate = "open"
 	ClosedCell                 = "closed"
 	FlaggedCell                = "flagged"
-	UnfathomableCell           = "unfathomable"
+	unfathomableCell           = "unfathomable"
 )
 
 type Cell struct {
@@ -24,7 +24,7 @@ type Cell struct {
 
 var Void = &Cell{
 	position: dimensions.Location{X: math.MinInt32, Y: math.MinInt32},
-	status:   UnfathomableCell,
+	status:   unfathomableCell,
 	mined:    false,
 }
 

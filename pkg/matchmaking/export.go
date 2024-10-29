@@ -19,12 +19,12 @@ func ExportCells(b *board.Board) Cells {
 			bCell := b.Retrieve(location)
 
 			position := bCell.Position()
-			state := bCell.Status()
 
 			cell := Cell{
 				X:     position.X,
 				Y:     position.Y,
-				State: state,
+				State: bCell.Status(),
+				Mined: bCell.Mined(),
 			}
 
 			cols = append(cols, cell)

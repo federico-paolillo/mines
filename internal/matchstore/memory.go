@@ -28,7 +28,7 @@ func (m *MemoryStore) Fetch(id string) (*matchmaking.Match, error) {
 		)
 	}
 
-	match := matchmaking.HydrateMatch(entry)
+	match := HydrateMatch(entry)
 
 	return match, nil
 }

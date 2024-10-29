@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/federico-paolillo/mines/pkg/board"
+	"github.com/federico-paolillo/mines/pkg/dimensions"
 	"github.com/federico-paolillo/mines/pkg/game"
 )
 

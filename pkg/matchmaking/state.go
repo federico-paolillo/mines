@@ -10,6 +10,7 @@ type Cells = [][]Cell
 // Simplified Cell view of a Minesweeper board
 type Cell struct {
 	X, Y  int
+	Mined bool
 	State board.Cellstate
 }
 

@@ -48,11 +48,13 @@ func TestMatchStateReflectsGameAndBoardSituation(t *testing.T) {
 					X:     1,
 					Y:     1,
 					State: board.ClosedCell,
+					Mined: false,
 				},
 				{
 					X:     2,
 					Y:     1,
 					State: board.ClosedCell,
+					Mined: false,
 				},
 			},
 			{
@@ -60,11 +62,13 @@ func TestMatchStateReflectsGameAndBoardSituation(t *testing.T) {
 					X:     1,
 					Y:     2,
 					State: board.ClosedCell,
+					Mined: false,
 				},
 				{
 					X:     2,
 					Y:     2,
 					State: board.ClosedCell,
+					Mined: false,
 				},
 			},
 		},
