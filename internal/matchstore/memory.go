@@ -34,13 +34,18 @@ func (m *MemoryStore) Fetch(id string) (*matchmaking.Match, error) {
 }
 
 func (m *MemoryStore) Save(match *matchmaking.Match) error {
-	newEntry := asEntry(match)
+	newEntry := match.Status()
 
 	currentEntry, exists := m.matches.Load(newEntry.Id)
 
 	if exists {
 		return m.optimisticSwap(currentEntry, newEntry)
 	}
+
+	// Change the version before storage
+	// This entry has not yet left the storage so it is safe to change in place
+
+	newEntry.Version = matchmaking.NextVersion()
 
 	m.matches.Store(newEntry.Id, newEntry)
 
@@ -67,6 +72,10 @@ func (m *MemoryStore) optimisticSwap(
 	// If "compare and swap" fails it means that the currentEntry we retrived has been modified in-between
 	// If that is the case, we give up because a concurrent change happened before we could finish
 
+	// Change the version before storage
+	// This entry has not yet left the storage so it is safe to change in place
+	newEntry.Version = matchmaking.NextVersion()
+
 	didSwap := m.matches.CompareAndSwap(id, currentEntry, newEntry)
 
 	if !didSwap {
@@ -79,11 +88,4 @@ func (m *MemoryStore) optimisticSwap(
 	}
 
 	return nil
-}
-
-func asEntry(match *matchmaking.Match) *matchmaking.Matchstate {
-	newEntry := match.Status()
-	newEntry.Version = matchmaking.NextVersion() // Change the version before storage
-
-	return newEntry
 }
