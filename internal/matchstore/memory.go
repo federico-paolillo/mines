@@ -34,40 +34,56 @@ func (m *MemoryStore) Fetch(id string) (*matchmaking.Match, error) {
 }
 
 func (m *MemoryStore) Save(match *matchmaking.Match) error {
-	id := match.Id
+	newEntry := asEntry(match)
 
-	entry, ok := m.matches.Load(id)
+	currentEntry, exists := m.matches.Load(newEntry.Id)
 
-	if ok {
-		if entry.Version != match.Version {
-			return fmt.Errorf(
-				"memorystore: attempted to save match '%s' with version '%d' which is different than last known version '%d'. %w",
-				match.Id,
-				match.Version,
-				entry.Version,
-				matchmaking.ErrConcurrentUpdate,
-			)
-		}
+	if exists {
+		return m.optimisticSwap(currentEntry, newEntry)
+	}
+
+	m.matches.Store(newEntry.Id, newEntry)
+
+	return nil
+}
+
+func (m *MemoryStore) optimisticSwap(
+	currentEntry *matchmaking.Matchstate,
+	newEntry *matchmaking.Matchstate,
+) error {
+	id := currentEntry.Id
+
+	if currentEntry.Version != newEntry.Version {
+		return fmt.Errorf(
+			"memorystore: attempted to save match '%s' with version '%d' which is different than last known version '%d'. %w",
+			id,
+			newEntry.Version,
+			currentEntry.Version,
+			matchmaking.ErrConcurrentUpdate,
+		)
 	}
 
 	// We replace currentEntry we just got a moment ago with the new upToDateMatch
 	// If "compare and swap" fails it means that the currentEntry we retrived has been modified in-between
 	// If that is the case, we give up because a concurrent change happened before we could finish
 
-	newEntry := match.Status()
+	didSwap := m.matches.CompareAndSwap(id, currentEntry, newEntry)
 
-	newEntry.Version = matchmaking.NextVersion() // Update the version before storing
-
-	ok = m.matches.CompareAndSwap(id, entry, newEntry)
-
-	if !ok {
+	if !didSwap {
 		return fmt.Errorf(
 			"memorystore: attempted to save match '%s' with new version '%d' but the match changed in-between. %w",
-			match.Id,
+			id,
 			newEntry.Version,
 			matchmaking.ErrConcurrentUpdate,
 		)
 	}
 
 	return nil
+}
+
+func asEntry(match *matchmaking.Match) *matchmaking.Matchstate {
+	newEntry := match.Status()
+	newEntry.Version = matchmaking.NextVersion() // Change the version before storage
+
+	return newEntry
 }
