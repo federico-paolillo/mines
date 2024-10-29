@@ -197,3 +197,57 @@ func TestBuilderDoesNotAllowOutOfBoundsLocations2(t *testing.T) {
 		t.Fatalf("expected builder to reject out of bounds placement. it did not")
 	}
 }
+
+func TestBuilderTogglesStateToOpen(t *testing.T) {
+	bb := board.NewBuilder(dimensions.Size{Width: 1, Height: 1})
+
+	bb.PlaceSafe(1, 1)
+	bb.MarkOpen(1, 1)
+
+	b := bb.Build()
+
+	c := b.Retrieve(dimensions.Location{X: 1, Y: 1})
+
+	if !c.HasStatus(board.OpenCell) {
+		t.Fatalf(
+			"cell at 1,1 should have been open. it is '%s'",
+			c.Status(),
+		)
+	}
+}
+
+func TestBuilderTogglesStateToClosed(t *testing.T) {
+	bb := board.NewBuilder(dimensions.Size{Width: 1, Height: 1})
+
+	bb.PlaceSafe(1, 1)
+	bb.MarkOpen(1, 1)
+
+	b := bb.Build()
+
+	c := b.Retrieve(dimensions.Location{X: 1, Y: 1})
+
+	if !c.HasStatus(board.ClosedCell) {
+		t.Fatalf(
+			"cell at 1,1 should have been closed. it is '%s'",
+			c.Status(),
+		)
+	}
+}
+
+func TestBuilderTogglesStateToFlagged(t *testing.T) {
+	bb := board.NewBuilder(dimensions.Size{Width: 1, Height: 1})
+
+	bb.PlaceSafe(1, 1)
+	bb.MarkOpen(1, 1)
+
+	b := bb.Build()
+
+	c := b.Retrieve(dimensions.Location{X: 1, Y: 1})
+
+	if !c.HasStatus(board.FlaggedCell) {
+		t.Fatalf(
+			"cell at 1,1 should have been flagged. it is '%s'",
+			c.Status(),
+		)
+	}
+}

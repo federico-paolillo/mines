@@ -10,12 +10,22 @@ import (
 type Cellkind = string
 
 const (
-	Mine Cellkind = "mine"
-	void          = "void"
-	Safe          = "safe"
+	MineKind Cellkind = "mine"
+	voidKind          = "void"
+	SafeKind          = "safe"
 )
 
-type Placements = map[dimensions.Location]Cellkind
+type metaCell struct {
+	kind  Cellkind
+	state Cellstate
+}
+
+var void = metaCell{
+	voidKind,
+	ClosedCell,
+}
+
+type Placements = map[dimensions.Location]metaCell
 
 type Builder struct {
 	size       dimensions.Size
@@ -27,57 +37,103 @@ var ErrOutOfBounds = errors.New("placement is out of bounds")
 func NewBuilder(boardSize dimensions.Size) *Builder {
 	return &Builder{
 		size:       boardSize,
-		placements: make(map[dimensions.Location]Cellkind, boardSize.Width*boardSize.Height),
+		placements: make(map[dimensions.Location]metaCell, boardSize.Width*boardSize.Height),
 	}
 }
 
 func (builder *Builder) PlaceSafe(x, y int) error {
-	location := dimensions.Location{X: x, Y: y}
-
-	if !builder.size.Contains(location) {
-		return fmt.Errorf(
-			"%v is out of bounds for size %v. %w",
-			location,
-			builder.size,
-			ErrOutOfBounds,
-		)
-	}
-
-	builder.placements[location] = Safe
-
-	return nil
+	return builder.place(
+		x,
+		y,
+		SafeKind,
+		ClosedCell,
+	)
 }
 
 func (builder *Builder) PlaceMine(x, y int) error {
+	return builder.place(
+		x,
+		y,
+		MineKind,
+		ClosedCell,
+	)
+}
+
+func (builder *Builder) PlaceVoid(x, y int) error {
+	return builder.place(
+		x,
+		y,
+		voidKind,
+		UnfathomableCell,
+	)
+}
+
+func (builder *Builder) MarkOpen(x, y int) error {
+	return builder.mark(
+		x,
+		y,
+		OpenCell,
+	)
+}
+
+func (builder *Builder) MarkClose(x, y int) error {
+	return builder.mark(
+		x,
+		y,
+		ClosedCell,
+	)
+}
+
+func (builder *Builder) MarkFlag(x, y int) error {
+	return builder.mark(
+		x,
+		y,
+		FlaggedCell,
+	)
+}
+
+func (builder *Builder) mark(
+	x, y int,
+	newState Cellstate,
+) error {
 	location := dimensions.Location{X: x, Y: y}
 
 	if !builder.size.Contains(location) {
 		return fmt.Errorf(
-			"%v is out of bounds for size %v. %w",
+			"builder: '%v' is out of bounds for size '%v'. %w",
 			location,
 			builder.size,
 			ErrOutOfBounds,
 		)
 	}
 
-	builder.placements[location] = Mine
+	if cell, ok := builder.placements[location]; ok {
+		cell.state = newState
+	}
 
 	return nil
 }
 
-func (builder *Builder) PlaceVoid(x, y int) error {
+func (builder *Builder) place(
+	x, y int,
+	kind Cellkind,
+	state Cellstate,
+) error {
 	location := dimensions.Location{X: x, Y: y}
 
 	if !builder.size.Contains(location) {
 		return fmt.Errorf(
-			"%v is out of bounds for size %v. %w",
+			"builder: '%v' is out of bounds for size '%v'. %w",
 			location,
 			builder.size,
 			ErrOutOfBounds,
 		)
 	}
 
-	builder.placements[location] = void
+	builder.placements[location] = metaCell{
+		kind:  kind,
+		state: state,
+	}
 
 	return nil
 }
@@ -85,11 +141,11 @@ func (builder *Builder) PlaceVoid(x, y int) error {
 func (builder *Builder) Build() *Board {
 	cells := make(Cellmap, builder.size.Width*builder.size.Height)
 
-	for location, cellkind := range builder.placements {
-		switch cellkind {
-		case Mine:
+	for location, cellmeta := range builder.placements {
+		switch cellmeta {
+		case MineKind:
 			cells[location] = NewMineCell(location, builder.countAdjacentMines(location))
-		case Safe:
+		case SafeKind:
 			cells[location] = NewSafeCell(location, builder.countAdjacentMines(location))
 		default:
 			continue
@@ -102,14 +158,14 @@ func (builder *Builder) Build() *Board {
 }
 
 func (builder *Builder) IsSafe(x, y int) bool {
-	return builder.getAt(x, y) == Safe
+	return builder.getAt(x, y).kind == SafeKind
 }
 
 func (builder *Builder) IsMine(x, y int) bool {
-	return builder.getAt(x, y) == Mine
+	return builder.getAt(x, y).kind == MineKind
 }
 
-func (builder *Builder) getAt(x, y int) Cellkind {
+func (builder *Builder) getAt(x, y int) metaCell {
 	location := dimensions.Location{X: x, Y: y}
 
 	if cellkind, ok := builder.placements[location]; ok {
@@ -124,8 +180,8 @@ func (builder *Builder) countAdjacentMines(location dimensions.Location) int {
 	minesCount := 0
 
 	for _, adjacentLocation := range adjacentLocations {
-		if val, ok := builder.placements[adjacentLocation]; ok {
-			if val == Mine {
+		if cell, ok := builder.placements[adjacentLocation]; ok {
+			if cell.kind == MineKind {
 				minesCount++
 			}
 		}
