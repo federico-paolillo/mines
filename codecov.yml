@@ -3,6 +3,7 @@ coverage:
   round: up
 ignore:
   - internal/testutils
+  - internal/syncmapt
 parsers:
   go:
     partials_as_hits: true
