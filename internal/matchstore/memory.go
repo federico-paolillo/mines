@@ -62,10 +62,9 @@ func (m *MemoryStore) Save(match *matchmaking.Match) error {
 
 	if !ok {
 		return fmt.Errorf(
-			"memorystore: attempted to save match '%s' with new version '%d' but the match changed in-between",
+			"memorystore: attempted to save match '%s' with new version '%d' but the match changed in-between. %w",
 			match.Id,
-			match.Version,
-			entry.Version,
+			newEntry.Version,
 			matchmaking.ErrConcurrentUpdate,
 		)
 	}

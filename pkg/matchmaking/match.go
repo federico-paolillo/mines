@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"github.com/federico-paolillo/mines/pkg/board"
-	"github.com/federico-paolillo/mines/pkg/dimensions"
 	"github.com/federico-paolillo/mines/pkg/game"
 )
 
@@ -42,12 +41,13 @@ func (m *Match) Status() *Matchstate {
 	cells := ExportCells(m.board)
 
 	return &Matchstate{
-		Id:     m.Id,
-		Lives:  m.game.Lives(),
-		Width:  bSize.Width,
-		Height: bSize.Height,
-		State:  m.game.Status(),
-		Cells:  cells,
+		Id:      m.Id,
+		Version: m.Version,
+		Lives:   m.game.Lives(),
+		Width:   bSize.Width,
+		Height:  bSize.Height,
+		State:   m.game.Status(),
+		Cells:   cells,
 	}
 }
 

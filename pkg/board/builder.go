@@ -20,12 +20,7 @@ type metaCell struct {
 	state Cellstate
 }
 
-var void = metaCell{
-	voidKind,
-	ClosedCell,
-}
-
-type Placements = map[dimensions.Location]metaCell
+type Placements = map[dimensions.Location]*metaCell
 
 type Builder struct {
 	size       dimensions.Size
@@ -37,7 +32,7 @@ var ErrOutOfBounds = errors.New("placement is out of bounds")
 func NewBuilder(boardSize dimensions.Size) *Builder {
 	return &Builder{
 		size:       boardSize,
-		placements: make(map[dimensions.Location]metaCell, boardSize.Width*boardSize.Height),
+		placements: make(map[dimensions.Location]*metaCell, boardSize.Width*boardSize.Height),
 	}
 }
 
@@ -64,7 +59,7 @@ func (builder *Builder) PlaceVoid(x, y int) error {
 		x,
 		y,
 		voidKind,
-		UnfathomableCell,
+		unfathomableCell,
 	)
 }
 
@@ -84,7 +79,7 @@ func (builder *Builder) MarkClose(x, y int) error {
 	)
 }
 
-func (builder *Builder) MarkFlag(x, y int) error {
+func (builder *Builder) MarkFlagged(x, y int) error {
 	return builder.mark(
 		x,
 		y,
@@ -130,7 +125,7 @@ func (builder *Builder) place(
 		)
 	}
 
-	builder.placements[location] = metaCell{
+	builder.placements[location] = &metaCell{
 		kind:  kind,
 		state: state,
 	}
@@ -142,13 +137,20 @@ func (builder *Builder) Build() *Board {
 	cells := make(Cellmap, builder.size.Width*builder.size.Height)
 
 	for location, cellmeta := range builder.placements {
-		switch cellmeta {
+		switch cellmeta.kind {
 		case MineKind:
 			cells[location] = NewMineCell(location, builder.countAdjacentMines(location))
 		case SafeKind:
 			cells[location] = NewSafeCell(location, builder.countAdjacentMines(location))
 		default:
 			continue
+		}
+
+		switch cellmeta.state {
+		case OpenCell:
+			cells[location].Open()
+		case FlaggedCell:
+			cells[location].Flag()
 		}
 	}
 
@@ -165,14 +167,17 @@ func (builder *Builder) IsMine(x, y int) bool {
 	return builder.getAt(x, y).kind == MineKind
 }
 
-func (builder *Builder) getAt(x, y int) metaCell {
+func (builder *Builder) getAt(x, y int) *metaCell {
 	location := dimensions.Location{X: x, Y: y}
 
-	if cellkind, ok := builder.placements[location]; ok {
-		return cellkind
+	if metacell, ok := builder.placements[location]; ok {
+		return metacell
 	}
 
-	return void
+	return &metaCell{
+		kind:  unfathomableCell,
+		state: ClosedCell,
+	}
 }
 
 func (builder *Builder) countAdjacentMines(location dimensions.Location) int {

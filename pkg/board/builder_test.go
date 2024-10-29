@@ -220,7 +220,7 @@ func TestBuilderTogglesStateToClosed(t *testing.T) {
 	bb := board.NewBuilder(dimensions.Size{Width: 1, Height: 1})
 
 	bb.PlaceSafe(1, 1)
-	bb.MarkOpen(1, 1)
+	bb.MarkClose(1, 1)
 
 	b := bb.Build()
 
@@ -238,7 +238,7 @@ func TestBuilderTogglesStateToFlagged(t *testing.T) {
 	bb := board.NewBuilder(dimensions.Size{Width: 1, Height: 1})
 
 	bb.PlaceSafe(1, 1)
-	bb.MarkOpen(1, 1)
+	bb.MarkFlagged(1, 1)
 
 	b := bb.Build()
 
