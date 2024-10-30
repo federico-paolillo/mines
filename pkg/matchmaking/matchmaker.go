@@ -12,6 +12,16 @@ type Matchmaker struct {
 	generator BoardGenerator
 }
 
+func NewMatchmaker(
+	storage Store,
+	generator BoardGenerator,
+) *Matchmaker {
+	return &Matchmaker{
+		storage,
+		generator,
+	}
+}
+
 func (m *Matchmaker) New(difficulty game.Difficulty) (*Match, error) {
 	settings := game.GetDifficultySettings(difficulty)
 
@@ -72,7 +82,34 @@ func (m *Matchmaker) Apply(id string, move Move) (*Matchstate, error) {
 		)
 	}
 
+	err = m.storage.Save(match)
+
+	if err != nil {
+		return nil, fmt.Errorf(
+			"matchmaker: failed to save match '%s' after applying move '%s'. %w",
+			move.Type,
+			id,
+			err,
+		)
+	}
+
 	status := match.Status()
 
 	return status, nil
+}
+
+func (m *Matchmaker) Get(id string) (*Matchstate, error) {
+	match, err := m.storage.Fetch(id)
+
+	if err != nil {
+		return nil, fmt.Errorf(
+			"matchmaker: could not fetch match with id '%s'. %w",
+			id,
+			err,
+		)
+	}
+
+	state := match.Status()
+
+	return state, nil
 }
