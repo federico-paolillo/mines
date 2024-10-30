@@ -24,6 +24,11 @@ jobs:
       - name: Vet
         run: go vet -v ./...
 
+      - name: Lint
+        uses: golangci/golangci-lint-action@v6
+        with:
+          version: v1.59
+
       - name: Coverage
         run: go test -race -coverprofile=coverage.txt -covermode=atomic ./...
 

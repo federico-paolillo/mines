@@ -1,0 +1,19 @@
+run:
+  timeout: 2m
+  tests: false
+  go: '1.22.1'
+  concurrency: 4
+linters:
+  enable-all: true
+  disable:
+    - execinquery
+    - gomnd
+output:
+  print-issued-lines: true
+  print-linter-name: true
+  uniq-by-line: true
+  show-stats: false
+  sort-results: true
+  formats:
+    - format: colored-line-number
+      path: stdout
