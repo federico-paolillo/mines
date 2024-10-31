@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	idSizeInBytes = 256
+	idSizeInBytes = 512
 	emptyId       = ""
 )
 
