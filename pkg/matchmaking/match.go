@@ -10,8 +10,10 @@ import (
 
 type Matchversion = int64
 
-var ErrIllegalMove = errors.New("unrecognized move")
-var ErrGameHasEnded = errors.New("game has ended")
+var (
+	ErrIllegalMove  = errors.New("unrecognized move")
+	ErrGameHasEnded = errors.New("game has ended")
+)
 
 // A Match is a particular instance of a Game that is addressable by an unique identifier
 type Match struct {
@@ -64,10 +66,8 @@ func (m *Match) Apply(move Move) error {
 	switch move.Type {
 	case MoveOpen:
 		m.game.Open(move.X, move.Y)
-		break
 	case MoveFlag:
 		m.game.Flag(move.X, move.Y)
-		break
 	case MoveChord:
 		m.game.Chord(move.X, move.Y)
 	default:

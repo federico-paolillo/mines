@@ -69,7 +69,7 @@ func (m *MemoryStore) optimisticSwap(
 	}
 
 	// We replace currentEntry we just got a moment ago with the new upToDateMatch
-	// If "compare and swap" fails it means that the currentEntry we retrived has been modified in-between
+	// If "compare and swap" fails it means that the currentEntry we retrieved has been modified in-between
 	// If that is the case, we give up because a concurrent change happened before we could finish
 
 	// Change the version before storage

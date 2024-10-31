@@ -10,20 +10,24 @@ func (m *SyncMap[K, V]) Delete(key K) {
 	m.innerMap.Delete(key)
 }
 
-func (m *SyncMap[K, V]) Load(key K) (value V, ok bool) {
+func (m *SyncMap[K, V]) Load(key K) (V, bool) {
+	var value V
+
 	v, ok := m.innerMap.Load(key)
 
 	if !ok {
 		return value, ok
 	}
 
-	return v.(V), ok
+	value, ok = v.(V)
+
+	return value, ok
 }
 
 func (m *SyncMap[K, V]) Store(key K, value V) {
 	m.innerMap.Store(key, value)
 }
 
-func (m *SyncMap[K, V]) CompareAndSwap(key K, old V, new V) bool {
-	return m.innerMap.CompareAndSwap(key, old, new)
+func (m *SyncMap[K, V]) CompareAndSwap(key K, oldv V, newv V) bool {
+	return m.innerMap.CompareAndSwap(key, oldv, newv)
 }

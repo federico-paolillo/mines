@@ -6,8 +6,8 @@ type Difficulty = string
 
 const (
 	BeginnerDifficulty     Difficulty = "beginner"
-	IntermediateDifficulty            = "intermediate"
-	ExpertDifficulty                  = "expert"
+	IntermediateDifficulty Difficulty = "intermediate"
+	ExpertDifficulty       Difficulty = "expert"
 )
 
 type DifficultySettings struct {

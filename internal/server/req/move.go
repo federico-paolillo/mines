@@ -4,8 +4,8 @@ type Movetype = string
 
 const (
 	Open  Movetype = "open"
-	Flag           = "flag"
-	Chord          = "chord"
+	Flag  Movetype = "flag"
+	Chord Movetype = "chord"
 )
 
 type MoveDto struct {

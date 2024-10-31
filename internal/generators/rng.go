@@ -13,7 +13,12 @@ type RngBoardGenerator struct {
 }
 
 func NewRngBoardGenerator(seed int) *RngBoardGenerator {
-	rng := rand.New(rand.NewSource(int64(seed)))
+	//nolint:gosec // We don't need a CSPRNG here
+	rng := rand.New(
+		rand.NewSource(
+			int64(seed),
+		),
+	)
 
 	return &RngBoardGenerator{
 		seed: seed,
@@ -27,7 +32,7 @@ func (gen *RngBoardGenerator) Generate(size dimensions.Size, mines int) *board.B
 
 	for y := range size.Height {
 		for x := range size.Width {
-			bb.PlaceSafe(x+1, y+1)
+			_ = bb.PlaceSafe(x+1, y+1)
 		}
 	}
 
@@ -40,7 +45,7 @@ func (gen *RngBoardGenerator) Generate(size dimensions.Size, mines int) *board.B
 				continue
 			}
 
-			bb.PlaceMine(x, y)
+			_ = bb.PlaceMine(x, y)
 
 			break
 		}

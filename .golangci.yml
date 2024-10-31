@@ -8,12 +8,27 @@ linters:
   disable:
     - execinquery
     - gomnd
+    - depguard
+    - varnamelen
+    - mnd
+    - gochecknoglobals
+    - godot
+    - exportloopref
+    - exhaustruct
+    - ireturn
+    - err113
+    - godox
 output:
   print-issued-lines: true
   print-linter-name: true
   uniq-by-line: true
   show-stats: false
   sort-results: true
-  formats:
-    - format: colored-line-number
-      path: stdout
+linters-settings:
+  revive:
+    rules:
+      - name: var-naming
+        arguments:
+          - ["ID"]
+  stylecheck:
+    initialisms: ["Id"]

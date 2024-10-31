@@ -36,14 +36,14 @@ func hydrateCell(
 	cell matchmaking.Cell,
 ) {
 	if cell.Mined {
-		bb.PlaceMine(cell.X, cell.Y)
+		_ = bb.PlaceMine(cell.X, cell.Y)
 	} else {
-		bb.PlaceSafe(cell.X, cell.Y)
+		_ = bb.PlaceSafe(cell.X, cell.Y)
 	}
 
 	if cell.State == board.OpenCell {
-		bb.MarkOpen(cell.X, cell.Y)
+		_ = bb.MarkOpen(cell.X, cell.Y)
 	} else if cell.State == board.FlaggedCell {
-		bb.MarkFlagged(cell.X, cell.Y)
+		_ = bb.MarkFlagged(cell.X, cell.Y)
 	}
 }

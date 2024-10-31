@@ -6,13 +6,13 @@ import (
 	"github.com/federico-paolillo/mines/pkg/dimensions"
 )
 
-type Cellstate string
+type Cellstate = string
 
 const (
 	OpenCell         Cellstate = "open"
-	ClosedCell                 = "closed"
-	FlaggedCell                = "flagged"
-	unfathomableCell           = "unfathomable"
+	ClosedCell       Cellstate = "closed"
+	FlaggedCell      Cellstate = "flagged"
+	unfathomableCell Cellstate = "unfathomable"
 )
 
 type Cell struct {
@@ -75,11 +75,11 @@ func (cell *Cell) HasStatus(statuses ...Cellstate) bool {
 }
 
 func (cell *Cell) Mined() bool {
-	return cell.mined == true
+	return cell.mined
 }
 
 func (cell *Cell) Safe() bool {
-	return cell.mined == false
+	return !cell.Mined()
 }
 
 func (cell *Cell) Position() dimensions.Location {

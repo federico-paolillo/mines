@@ -26,7 +26,6 @@ func (m *Matchmaker) New(difficulty game.Difficulty) (*Match, error) {
 	settings := game.GetDifficultySettings(difficulty)
 
 	matchId, err := id.Generate()
-
 	if err != nil {
 		return nil, fmt.Errorf(
 			"matchmaker: could not generate match. %w",
@@ -48,7 +47,6 @@ func (m *Matchmaker) New(difficulty game.Difficulty) (*Match, error) {
 	)
 
 	err = m.storage.Save(match)
-
 	if err != nil {
 		return nil, fmt.Errorf(
 			"matchmaker: could not save match. %w",
@@ -61,7 +59,6 @@ func (m *Matchmaker) New(difficulty game.Difficulty) (*Match, error) {
 
 func (m *Matchmaker) Apply(id string, move Move) (*Matchstate, error) {
 	match, err := m.storage.Fetch(id)
-
 	if err != nil {
 		return nil, fmt.Errorf(
 			"matchmaker: could not fetch match with id '%s' to apply move '%s'. %w",
@@ -72,7 +69,6 @@ func (m *Matchmaker) Apply(id string, move Move) (*Matchstate, error) {
 	}
 
 	err = match.Apply(move)
-
 	if err != nil {
 		return nil, fmt.Errorf(
 			"matchmaker: failed to apply move '%s' to match with id '%s'. %w",
@@ -83,7 +79,6 @@ func (m *Matchmaker) Apply(id string, move Move) (*Matchstate, error) {
 	}
 
 	err = m.storage.Save(match)
-
 	if err != nil {
 		return nil, fmt.Errorf(
 			"matchmaker: failed to save match '%s' after applying move '%s'. %w",
@@ -100,7 +95,6 @@ func (m *Matchmaker) Apply(id string, move Move) (*Matchstate, error) {
 
 func (m *Matchmaker) Get(id string) (*Matchstate, error) {
 	match, err := m.storage.Fetch(id)
-
 	if err != nil {
 		return nil, fmt.Errorf(
 			"matchmaker: could not fetch match with id '%s'. %w",

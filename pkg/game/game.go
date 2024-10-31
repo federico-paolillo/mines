@@ -5,12 +5,12 @@ import (
 	"github.com/federico-paolillo/mines/pkg/dimensions"
 )
 
-type Gamestate string
+type Gamestate = string
 
 const (
 	PlayingGame Gamestate = "playing"
-	LostGame              = "lost"
-	WonGame               = "won"
+	LostGame    Gamestate = "lost"
+	WonGame     Gamestate = "won"
 )
 
 type Game struct {
@@ -54,6 +54,7 @@ func (game *Game) Open(x, y int) {
 
 	if cell.Mined() {
 		game.lives--
+
 		return
 	}
 
@@ -145,9 +146,5 @@ func (game *Game) tryCascade(cascadingOrigin dimensions.Location) {
 }
 
 func (game *Game) Ended() bool {
-	if game.Status() == PlayingGame {
-		return false
-	}
-
-	return true
+	return game.Status() != PlayingGame
 }

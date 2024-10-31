@@ -7,15 +7,17 @@ import (
 	"strings"
 )
 
-const idSizeInBytes = 256
-const emptyId = ""
+const (
+	idSizeInBytes = 256
+	emptyId       = ""
+)
 
 func Generate() (string, error) {
 	rawId := make([]byte, idSizeInBytes)
 
 	_, err := rand.Read(rawId)
-
 	if err != nil {
+		//nolint:errorlint // We do not want to wrap and leak errors that are not under our control
 		return emptyId, fmt.Errorf(
 			"id: could not generate id random bytes. %v",
 			err,
@@ -27,8 +29,8 @@ func Generate() (string, error) {
 	encoder := base64.NewEncoder(base64.URLEncoding, &sb)
 
 	_, err = encoder.Write(rawId)
-
 	if err != nil {
+		//nolint:errorlint // We do not want to wrap and leak errors that are not under our control
 		return emptyId, fmt.Errorf(
 			"id: could not base64 encode id. %v",
 			err,
@@ -36,8 +38,8 @@ func Generate() (string, error) {
 	}
 
 	err = encoder.Close()
-
 	if err != nil {
+		//nolint:errorlint // We do not want to wrap and leak errors that are not under our control
 		return emptyId, fmt.Errorf(
 			"id: could not base64 encode id. %v",
 			err,

@@ -11,8 +11,8 @@ type Cellkind = string
 
 const (
 	MineKind Cellkind = "mine"
-	voidKind          = "void"
-	SafeKind          = "safe"
+	voidKind Cellkind = "void"
+	SafeKind Cellkind = "safe"
 )
 
 type metaCell struct {
