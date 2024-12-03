@@ -76,6 +76,8 @@ func (m *MemoryStore) optimisticSwap(
 	// This entry has not yet left the storage so it is safe to change in place
 	newEntry.Version = matchmaking.NextVersion()
 
+	// Compare and swap checks that currentEntry is equal to the one in the Map before replacing it with newEntry
+
 	didSwap := m.matches.CompareAndSwap(id, currentEntry, newEntry)
 
 	if !didSwap {
