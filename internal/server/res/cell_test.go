@@ -6,6 +6,7 @@ import (
 
 	"github.com/federico-paolillo/mines/internal/server/res"
 	"github.com/federico-paolillo/mines/pkg/board"
+	"github.com/federico-paolillo/mines/pkg/matchmaking"
 )
 
 func TestCellDtoMarshalsCorrectly(t *testing.T) {
@@ -37,6 +38,31 @@ func TestCellDtoMarshalsCorrectly(t *testing.T) {
 			"cell dto was serialized to something unexpected. wanted\n%s\ngot\n%s\n",
 			expectedString,
 			actualString,
+		)
+	}
+}
+
+func TestCellDtoMapsCorrectlyFromMatchmakingCell(t *testing.T) {
+	cell := matchmaking.Cell{
+		X:     1,
+		Y:     2,
+		Mined: true,
+		State: board.FlaggedCell,
+	}
+
+	cellDto := res.ToCellDto(cell)
+
+	expectedCellDto := res.CellDto{
+		X:     1,
+		Y:     2,
+		State: board.FlaggedCell,
+	}
+
+	if cellDto != expectedCellDto {
+		t.Fatalf(
+			"cell dto was mapped incorrectly. wanted\n%v\ngot\n%v\n",
+			expectedCellDto,
+			cellDto,
 		)
 	}
 }

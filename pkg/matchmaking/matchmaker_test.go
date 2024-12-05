@@ -63,40 +63,38 @@ func TestMatchmakerProducesNewMatchesAccordingToDifficulty(t *testing.T) {
 			)
 		}
 
-		status := m.Status()
-
-		if status.Lives != testCase.Lives {
+		if m.Lives != testCase.Lives {
 			t.Errorf(
 				"lives generated for match with difficulty '%s' is wrong. expected %d got %d",
 				testCase.Difficulty,
-				status.Lives,
+				m.Lives,
 				testCase.Lives,
 			)
 		}
 
-		if status.Width != testCase.Width {
+		if m.Width != testCase.Width {
 			t.Errorf(
 				"width generated for match with difficulty '%s' is wrong. expected %d got %d",
 				testCase.Difficulty,
-				status.Width,
+				m.Width,
 				testCase.Width,
 			)
 		}
 
-		if status.Height != testCase.Height {
+		if m.Height != testCase.Height {
 			t.Errorf(
 				"height generated for match with difficulty '%s' is wrong. expected %d got %d",
 				testCase.Difficulty,
-				status.Height,
+				m.Height,
 				testCase.Height,
 			)
 		}
 
-		if status.State != testCase.State {
+		if m.State != testCase.State {
 			t.Errorf(
 				"state generated for match with difficulty '%s' is wrong. expected '%s' got '%s'",
 				testCase.Difficulty,
-				status.State,
+				m.State,
 				testCase.State,
 			)
 		}

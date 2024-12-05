@@ -22,7 +22,7 @@ func NewMatchmaker(
 	}
 }
 
-func (m *Matchmaker) New(difficulty game.Difficulty) (*Match, error) {
+func (m *Matchmaker) New(difficulty game.Difficulty) (*Matchstate, error) {
 	settings := game.GetDifficultySettings(difficulty)
 
 	matchId, err := id.Generate()
@@ -54,7 +54,9 @@ func (m *Matchmaker) New(difficulty game.Difficulty) (*Match, error) {
 		)
 	}
 
-	return match, nil
+	state := match.Status()
+
+	return state, nil
 }
 
 func (m *Matchmaker) Apply(id string, move Move) (*Matchstate, error) {

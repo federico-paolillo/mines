@@ -2,11 +2,13 @@ package res_test
 
 import (
 	"encoding/json"
+	"reflect"
 	"testing"
 
 	"github.com/federico-paolillo/mines/internal/server/res"
 	"github.com/federico-paolillo/mines/pkg/board"
 	"github.com/federico-paolillo/mines/pkg/game"
+	"github.com/federico-paolillo/mines/pkg/matchmaking"
 )
 
 func TestStateDtoMarshalsCorrectly(t *testing.T) {
@@ -80,6 +82,76 @@ func TestStateDtoMarshalsCorrectly(t *testing.T) {
 			"state dto was serialized to something unexpected. wanted\n%s\ngot\n%s\n",
 			expectedString,
 			actualString,
+		)
+	}
+}
+
+func TestStateDtoMapsCorrectlyFromMatchmakingMatchstate(t *testing.T) {
+	matchstate := &matchmaking.Matchstate{
+		Id:      "abc",
+		Version: 1234,
+		Lives:   13,
+		State:   game.LostGame,
+		Width:   3,
+		Height:  1,
+		Cells: [][]matchmaking.Cell{
+			[]matchmaking.Cell{
+				matchmaking.Cell{
+					X:     1,
+					Y:     1,
+					Mined: false,
+					State: board.FlaggedCell,
+				},
+				matchmaking.Cell{
+					X:     2,
+					Y:     1,
+					Mined: false,
+					State: board.FlaggedCell,
+				},
+				matchmaking.Cell{
+					X:     3,
+					Y:     1,
+					Mined: false,
+					State: board.FlaggedCell,
+				},
+			},
+		},
+	}
+
+	matchstateDto := res.ToMatchstateDto(matchstate)
+
+	expectedStateDto := res.MatchstateDto{
+		Id:     "abc",
+		Lives:  13,
+		State:  game.LostGame,
+		Width:  3,
+		Height: 1,
+		Cells: [][]res.CellDto{
+			{
+				res.CellDto{
+					State: board.FlaggedCell,
+					X:     1,
+					Y:     1,
+				},
+				res.CellDto{
+					State: board.FlaggedCell,
+					X:     2,
+					Y:     1,
+				},
+				res.CellDto{
+					State: board.FlaggedCell,
+					X:     3,
+					Y:     1,
+				},
+			},
+		},
+	}
+
+	if !reflect.DeepEqual(matchstateDto, expectedStateDto) {
+		t.Fatalf(
+			"matchstate dto was mapped incorrectly. wanted\n%v\ngot\n%v\n",
+			matchstateDto,
+			expectedStateDto,
 		)
 	}
 }

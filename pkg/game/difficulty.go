@@ -2,7 +2,7 @@ package game
 
 import "github.com/federico-paolillo/mines/pkg/dimensions"
 
-type Difficulty = string
+type Difficulty string
 
 const (
 	BeginnerDifficulty     Difficulty = "beginner"

@@ -1,46 +1,108 @@
 package server_test
 
 import (
-	"log/slog"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
-	"github.com/federico-paolillo/mines/internal/server"
-	"github.com/federico-paolillo/mines/pkg/mines"
-	"github.com/federico-paolillo/mines/pkg/mines/config"
+	"github.com/federico-paolillo/mines/internal/server/req"
+	"github.com/federico-paolillo/mines/internal/server/res"
+	"github.com/federico-paolillo/mines/internal/testutils"
+	"github.com/federico-paolillo/mines/pkg/game"
 )
 
-func TestServerReturnsBogusResponseForGetMatch(t *testing.T) {
-	cfg := config.Root{
-		Seed: 1234,
-		Server: config.Server{
-			Host: "",
-			Port: "65000",
-		},
+func TestServerReturnsNewMatchWithProperConfiguration(t *testing.T) {
+	difficulties := []game.Difficulty{
+		game.BeginnerDifficulty,
+		game.ExpertDifficulty,
+		game.IntermediateDifficulty,
 	}
 
-	mines := mines.NewMines(
-		slog.Default(),
-		cfg,
-	)
+	for _, difficulty := range difficulties {
+		testNewMatchWithDifficulty(
+			t,
+			difficulty,
+		)
+	}
+}
 
-	s := server.NewServer(
-		mines,
-		cfg.Server,
-	)
-
+func testNewMatchWithDifficulty(
+	t *testing.T,
+	difficulty game.Difficulty,
+) {
+	s := testutils.NewServer()
 	w := httptest.NewRecorder()
 
-	req := httptest.NewRequest(http.MethodGet, "/match/1234", nil)
+	req := testutils.NewRequest(
+		http.MethodPost,
+		"/match",
+		req.NewGameDto{
+			Difficulty: difficulty,
+		},
+	)
 
 	s.Handler.ServeHTTP(w, req)
 
-	if w.Code != http.StatusTeapot {
+	if w.Code != http.StatusOK {
 		t.Fatalf(
 			"unexpected status code. got %d wanted %d",
 			w.Code,
-			http.StatusTeapot,
+			http.StatusOK,
+		)
+	}
+
+	responseDto, err := testutils.Unmarshal[res.MatchstateDto](w.Body)
+
+	if err != nil {
+		t.Fatalf(
+			"could not unmarshal response. %v",
+			err,
+		)
+	}
+
+	ensureMatchstateUsesProperSettings(
+		t,
+		responseDto,
+		difficulty,
+	)
+}
+
+func ensureMatchstateUsesProperSettings(
+	t *testing.T,
+	matchstate *res.MatchstateDto,
+	difficulty game.Difficulty,
+) {
+	settings := game.GetDifficultySettings(difficulty)
+
+	if matchstate.Lives != settings.Lives {
+		t.Errorf(
+			"unexpected number of lives. wanted %d got %d",
+			settings.Lives,
+			matchstate.Lives,
+		)
+	}
+
+	if matchstate.State != game.PlayingGame {
+		t.Errorf(
+			"unexpected game state. wanted '%s' got '%s'",
+			game.PlayingGame,
+			matchstate.State,
+		)
+	}
+
+	if matchstate.Height != settings.BoardSize.Height {
+		t.Errorf(
+			"unexpected game height. wanted '%d' got '%d'",
+			settings.BoardSize.Height,
+			matchstate.Height,
+		)
+	}
+
+	if matchstate.Width != settings.BoardSize.Width {
+		t.Errorf(
+			"unexpected game height. wanted '%d' got '%d'",
+			settings.BoardSize.Width,
+			matchstate.Width,
 		)
 	}
 }
