@@ -60,14 +60,14 @@ func testNewMatchWithDifficulty(
 		)
 	}
 
-	ensureMatchstateUsesProperSettings(
+	ensureMatchUsesProperDifficultySettings(
 		t,
 		responseDto,
 		difficulty,
 	)
 }
 
-func ensureMatchstateUsesProperSettings(
+func ensureMatchUsesProperDifficultySettings(
 	t *testing.T,
 	matchstate *res.MatchstateDto,
 	difficulty game.Difficulty,
@@ -92,7 +92,7 @@ func ensureMatchstateUsesProperSettings(
 
 	if matchstate.Height != settings.BoardSize.Height {
 		t.Errorf(
-			"unexpected game height. wanted '%d' got '%d'",
+			"unexpected height. wanted '%d' got '%d'",
 			settings.BoardSize.Height,
 			matchstate.Height,
 		)
@@ -100,7 +100,7 @@ func ensureMatchstateUsesProperSettings(
 
 	if matchstate.Width != settings.BoardSize.Width {
 		t.Errorf(
-			"unexpected game height. wanted '%d' got '%d'",
+			"unexpected width. wanted '%d' got '%d'",
 			settings.BoardSize.Width,
 			matchstate.Width,
 		)
