@@ -1,47 +1,20 @@
-package server_test
+package testutils
 
 import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
-	"github.com/federico-paolillo/mines/internal/server/req"
 	"github.com/federico-paolillo/mines/internal/server/res"
-	"github.com/federico-paolillo/mines/internal/testutils"
 	"github.com/federico-paolillo/mines/pkg/game"
 )
 
-func TestServerReturnsNewMatchWithProperConfiguration(t *testing.T) {
-	difficulties := []game.Difficulty{
-		game.BeginnerDifficulty,
-		game.ExpertDifficulty,
-		game.IntermediateDifficulty,
-	}
-
-	for _, difficulty := range difficulties {
-		testNewMatchWithDifficulty(
-			t,
-			difficulty,
-		)
-	}
-}
-
-func testNewMatchWithDifficulty(
+func EnsureNewGameResponseMatchesDifficultySettings(
 	t *testing.T,
 	difficulty game.Difficulty,
+	w *httptest.ResponseRecorder,
 ) {
-	s := testutils.NewServer()
-	w := httptest.NewRecorder()
-
-	req := testutils.NewRequest(
-		http.MethodPost,
-		"/match",
-		req.NewGameDto{
-			Difficulty: difficulty,
-		},
-	)
-
-	s.Handler.ServeHTTP(w, req)
+	t.Helper()
 
 	if w.Code != http.StatusOK {
 		t.Fatalf(
@@ -51,8 +24,7 @@ func testNewMatchWithDifficulty(
 		)
 	}
 
-	responseDto, err := testutils.Unmarshal[res.MatchstateDto](w.Body)
-
+	matchstate, err := Unmarshal[res.MatchstateDto](w.Body)
 	if err != nil {
 		t.Fatalf(
 			"could not unmarshal response. %v",
@@ -60,18 +32,6 @@ func testNewMatchWithDifficulty(
 		)
 	}
 
-	ensureMatchUsesProperDifficultySettings(
-		t,
-		responseDto,
-		difficulty,
-	)
-}
-
-func ensureMatchUsesProperDifficultySettings(
-	t *testing.T,
-	matchstate *res.MatchstateDto,
-	difficulty game.Difficulty,
-) {
 	settings := game.GetDifficultySettings(difficulty)
 
 	if matchstate.Lives != settings.Lives {

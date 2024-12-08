@@ -4,9 +4,12 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/federico-paolillo/mines/internal/server/validators"
 	"github.com/federico-paolillo/mines/pkg/mines"
 	"github.com/federico-paolillo/mines/pkg/mines/config"
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
+	"github.com/go-playground/validator/v10"
 )
 
 func NewServer(
@@ -14,6 +17,8 @@ func NewServer(
 	cfg config.Server,
 ) *http.Server {
 	e := gin.New()
+
+	setupValidation()
 
 	setupMiddlewares(mines, e)
 	setupHandlers(mines, e)
@@ -26,6 +31,12 @@ func NewServer(
 	}
 
 	return s
+}
+
+func setupValidation() {
+	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
+		_ = v.RegisterValidation(validators.IsDifficultyEnumValidator, validators.IsDifficultyEnum)
+	}
 }
 
 func setupMiddlewares(
