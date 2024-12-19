@@ -23,6 +23,10 @@ func NewServer(
 	setupMiddlewares(mines, e)
 	setupHandlers(mines, e)
 
+	e.NoRoute(func(c *gin.Context) {
+		c.Status(http.StatusTeapot)
+	})
+
 	s := &http.Server{
 		Addr:         cfg.Endpoint(),
 		Handler:      e,

@@ -38,7 +38,6 @@ func MustMakeNewGame(
 	}
 
 	matchstate, err := Unmarshal[res.MatchstateDto](w.Body)
-
 	if err != nil {
 		t.Fatalf(
 			"could not unmarshal response. %v",
@@ -47,4 +46,31 @@ func MustMakeNewGame(
 	}
 
 	return matchstate
+}
+
+func MustGetGame(
+	t *testing.T,
+	s *http.Server,
+	matchId string,
+) {
+	t.Helper()
+
+	w := httptest.NewRecorder()
+
+	getGameReq := NewRequest(
+		http.MethodGet,
+		"/match/"+matchId,
+		nil,
+	)
+
+	s.Handler.ServeHTTP(w, getGameReq)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf(
+			"unexpected status code on 'GET /match/%s'. got '%d' wanted '%d'",
+			matchId,
+			w.Code,
+			http.StatusOK,
+		)
+	}
 }

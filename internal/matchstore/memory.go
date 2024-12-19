@@ -8,7 +8,7 @@ import (
 )
 
 type MemoryStore struct {
-	matches syncmapt.SyncMap[string, *matchmaking.Matchstate]
+	matches syncmapt.SyncMap[string, matchmaking.Matchstate]
 }
 
 func NewMemoryStore() *MemoryStore {
