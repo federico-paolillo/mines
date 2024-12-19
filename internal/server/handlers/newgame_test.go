@@ -21,33 +21,11 @@ func TestNewGameHandlerReturnsNewMatchWithProperConfiguration(t *testing.T) {
 	}
 
 	for _, difficulty := range difficulties {
-		w := httptest.NewRecorder()
-
-		req := testutils.NewRequest(
-			http.MethodPost,
-			"/match",
-			&req.NewGameDto{
-				Difficulty: difficulty,
-			},
+		matchstate := testutils.MustMakeNewGame(
+			t,
+			s,
+			difficulty,
 		)
-
-		s.Handler.ServeHTTP(w, req)
-
-		if w.Code != http.StatusOK {
-			t.Fatalf(
-				"unexpected status code. got %d wanted %d",
-				w.Code,
-				http.StatusOK,
-			)
-		}
-
-		matchstate, err := testutils.Unmarshal[res.MatchstateDto](w.Body)
-		if err != nil {
-			t.Fatalf(
-				"could not unmarshal response. %v",
-				err,
-			)
-		}
 
 		mustMatchDifficultySettings(
 			t,
