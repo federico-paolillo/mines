@@ -16,6 +16,6 @@ func attachGameRoutes(
 ) {
 	g := e.Group("/match")
 
-	g.GET("/:matchId", handlers.GetGame(mines))
+	g.GET(":matchId", handlers.GetGame(mines))
 	g.POST("", handlers.NewGame(mines))
 }
