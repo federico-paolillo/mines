@@ -1,36 +1,18 @@
 package testutils
 
 import (
-	"net/http"
-	"net/http/httptest"
 	"testing"
 
 	"github.com/federico-paolillo/mines/internal/server/res"
 	"github.com/federico-paolillo/mines/pkg/game"
 )
 
-func EnsureNewGameResponseMatchesDifficultySettings(
+func MustMatchDifficultySettings(
 	t *testing.T,
+	matchstate *res.MatchstateDto,
 	difficulty game.Difficulty,
-	w *httptest.ResponseRecorder,
 ) {
 	t.Helper()
-
-	if w.Code != http.StatusOK {
-		t.Fatalf(
-			"unexpected status code. got %d wanted %d",
-			w.Code,
-			http.StatusOK,
-		)
-	}
-
-	matchstate, err := Unmarshal[res.MatchstateDto](w.Body)
-	if err != nil {
-		t.Fatalf(
-			"could not unmarshal response. %v",
-			err,
-		)
-	}
 
 	settings := game.GetDifficultySettings(difficulty)
 

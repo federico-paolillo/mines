@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/federico-paolillo/mines/internal/server/req"
+	"github.com/federico-paolillo/mines/internal/server/res"
 	"github.com/federico-paolillo/mines/internal/testutils"
 	"github.com/federico-paolillo/mines/pkg/game"
 )
@@ -32,10 +33,26 @@ func TestNewGameHandlerReturnsNewMatchWithProperConfiguration(t *testing.T) {
 
 		s.Handler.ServeHTTP(w, req)
 
-		testutils.EnsureNewGameResponseMatchesDifficultySettings(
+		if w.Code != http.StatusOK {
+			t.Fatalf(
+				"unexpected status code. got %d wanted %d",
+				w.Code,
+				http.StatusOK,
+			)
+		}
+
+		matchstate, err := testutils.Unmarshal[res.MatchstateDto](w.Body)
+		if err != nil {
+			t.Fatalf(
+				"could not unmarshal response. %v",
+				err,
+			)
+		}
+
+		testutils.MustMatchDifficultySettings(
 			t,
+			matchstate,
 			difficulty,
-			w,
 		)
 	}
 }
