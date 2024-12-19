@@ -55,7 +55,7 @@ func NewRequest(
 
 	return httptest.NewRequest(
 		http.MethodPost,
-		"/match",
+		target,
 		bodyReader,
 	)
 }
