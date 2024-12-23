@@ -18,13 +18,6 @@ func GetGame(mines *mines.Mines) gin.HandlerFunc {
 		matchstate, err := mines.Matchmaker.Get(matchId)
 
 		if errors.Is(err, matchmaking.ErrNoSuchMatch) {
-			mines.Logger.WarnContext(
-				ctx,
-				"get game: no such match",
-				slog.Any("match_id", matchId),
-				slog.Any("err", err),
-			)
-
 			ctx.Status(http.StatusNotFound)
 
 			return
