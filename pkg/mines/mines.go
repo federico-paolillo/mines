@@ -19,7 +19,7 @@ type Mines struct {
 
 func NewMines(
 	logger *slog.Logger,
-	cfg config.Root,
+	cfg *config.Root,
 ) *Mines {
 	mines := &Mines{
 		Logger: logger,
@@ -32,7 +32,7 @@ func NewMines(
 	return mines
 }
 
-func initGenerator(mines *Mines, cfg config.Root) {
+func initGenerator(mines *Mines, cfg *config.Root) {
 	mines.Generator = generators.NewRngBoardGenerator(
 		cfg.Seed,
 	)

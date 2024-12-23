@@ -16,7 +16,7 @@ import (
 )
 
 func NewServer() *http.Server {
-	cfg := config.Root{
+	cfg := &config.Root{
 		Seed: 1234,
 		Server: config.Server{
 			Host: "",

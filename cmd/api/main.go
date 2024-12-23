@@ -20,7 +20,7 @@ func main() {
 
 func serverProgram(
 	mines *mines.Mines,
-	cfg config.Root,
+	cfg *config.Root,
 ) error {
 	server := server.NewServer(
 		mines,
