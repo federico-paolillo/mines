@@ -71,6 +71,7 @@ func loadConfiguration() (*config.Root, error) {
 		configuro.WithoutLoadDotEnv(),
 	)
 	if err != nil {
+		//nolint:errorlint // We do not want to wrap and leak errors that are not under our control
 		return nil, fmt.Errorf(
 			"runner: failed to setup configuro. %v",
 			err,
@@ -87,6 +88,7 @@ func loadConfiguration() (*config.Root, error) {
 
 	err = cfguro.Load(cfg)
 	if err != nil {
+		//nolint:errorlint // We do not want to wrap and leak errors that are not under our control
 		return nil, fmt.Errorf(
 			"runner: failed to bind configuration. %v",
 			err,
