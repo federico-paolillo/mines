@@ -58,6 +58,8 @@ func Run(program ProgramE) StatusCode {
 		return NotOk
 	}
 
+	logger.Info("runner: program completed 'ok'")
+
 	return Ok
 }
 
