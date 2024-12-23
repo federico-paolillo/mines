@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/federico-paolillo/mines/internal/server/middlewares"
 	"github.com/federico-paolillo/mines/internal/server/validators"
 	"github.com/federico-paolillo/mines/pkg/mines"
 	"github.com/federico-paolillo/mines/pkg/mines/config"
@@ -48,7 +49,7 @@ func setupMiddlewares(
 	mines *mines.Mines,
 	e *gin.Engine,
 ) {
-	// TODO: Add authz middleware
+	e.Use(middlewares.LoggingMiddleware(mines))
 }
 
 func setupHandlers(
