@@ -14,6 +14,7 @@ func attachGameRoutes(
 	mines *mines.Mines,
 	e *gin.Engine,
 ) {
+	e.POST("/match/:matchId/move", handlers.MakeMove(mines))
 	e.GET("/match/:matchId", handlers.GetGame(mines))
 	e.POST("/match", handlers.NewGame(mines))
 }

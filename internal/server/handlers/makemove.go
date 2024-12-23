@@ -12,11 +12,33 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func GetGame(mines *mines.Mines) gin.HandlerFunc {
+func MakeMove(mines *mines.Mines) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		matchId := ctx.Param(req.MatchIdParameterName)
 
-		matchstate, err := mines.Matchmaker.Get(matchId)
+		var moveDto req.MoveDto
+
+		err := ctx.ShouldBindJSON(&moveDto)
+		if err != nil {
+			mines.Logger.ErrorContext(
+				ctx,
+				"make move: failed to bind payload",
+				slog.Any("err", err),
+			)
+
+			ctx.Status(http.StatusBadRequest)
+
+			return
+		}
+
+		matchstate, err := mines.Matchmaker.Apply(
+			matchId,
+			matchmaking.Move{
+				Type: moveDto.Type,
+				X:    moveDto.X,
+				Y:    moveDto.Y,
+			},
+		)
 
 		if errors.Is(err, matchmaking.ErrNoSuchMatch) {
 			ctx.Status(http.StatusNotFound)
@@ -24,11 +46,20 @@ func GetGame(mines *mines.Mines) gin.HandlerFunc {
 			return
 		}
 
+		if errors.Is(err, matchmaking.ErrGameHasEnded) {
+			ctx.Status(http.StatusUnprocessableEntity)
+
+			return
+		}
+
 		if err != nil {
 			mines.Logger.ErrorContext(
 				ctx,
-				"get game: failed to retrieve match",
+				"make game: failed to apply move to match",
 				slog.Any("match_id", matchId),
+				slog.Any("move_type", moveDto.Type),
+				slog.Int("move_x", moveDto.X),
+				slog.Int("move_y", moveDto.Y),
 				slog.Any("err", err),
 			)
 

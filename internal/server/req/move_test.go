@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/federico-paolillo/mines/internal/server/req"
+	"github.com/federico-paolillo/mines/pkg/matchmaking"
 )
 
 func TestMoveDtoUnmarshalsCorrectly(t *testing.T) {
@@ -26,7 +27,7 @@ func TestMoveDtoUnmarshalsCorrectly(t *testing.T) {
 	}
 
 	expectedMoveDto := req.MoveDto{
-		Type: req.Chord,
+		Type: matchmaking.MoveChord,
 		X:    123,
 		Y:    321,
 	}

@@ -8,6 +8,7 @@ import (
 	"github.com/federico-paolillo/mines/internal/server/req"
 	"github.com/federico-paolillo/mines/internal/server/res"
 	"github.com/federico-paolillo/mines/pkg/game"
+	"github.com/federico-paolillo/mines/pkg/matchmaking"
 )
 
 func MustMakeNewGame(
@@ -73,4 +74,48 @@ func MustGetGame(
 			http.StatusOK,
 		)
 	}
+}
+
+func MustMakeMove(
+	t *testing.T,
+	s *http.Server,
+	matchId string,
+	movetype matchmaking.Movetype,
+	x int,
+	y int,
+) *res.MatchstateDto {
+	t.Helper()
+
+	w := httptest.NewRecorder()
+
+	postMoveReq := NewRequest(
+		http.MethodPost,
+		"/match/"+matchId+"/move",
+		req.MoveDto{
+			X:    x,
+			Y:    y,
+			Type: movetype,
+		},
+	)
+
+	s.Handler.ServeHTTP(w, postMoveReq)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf(
+			"unexpected status code on 'POST /match/%s/move'. got '%d' wanted '%d'",
+			matchId,
+			w.Code,
+			http.StatusOK,
+		)
+	}
+
+	matchstate, err := Unmarshal[res.MatchstateDto](w.Body)
+	if err != nil {
+		t.Fatalf(
+			"could not unmarshal response. %v",
+			err,
+		)
+	}
+
+	return matchstate
 }

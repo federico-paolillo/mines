@@ -40,6 +40,7 @@ func NewServer(
 func setupValidation() {
 	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
 		_ = v.RegisterValidation(validators.IsDifficultyEnumValidator, validators.IsDifficultyEnum)
+		_ = v.RegisterValidation(validators.IsMoveTypeEnumValidator, validators.IsMoveTypeEnum)
 	}
 }
 

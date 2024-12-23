@@ -1,6 +1,6 @@
 package matchmaking
 
-type Movetype = string
+type Movetype string
 
 const (
 	MoveOpen  Movetype = "open"

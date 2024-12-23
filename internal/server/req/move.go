@@ -1,15 +1,9 @@
 package req
 
-type Movetype = string
-
-const (
-	Open  Movetype = "open"
-	Flag  Movetype = "flag"
-	Chord Movetype = "chord"
-)
+import "github.com/federico-paolillo/mines/pkg/matchmaking"
 
 type MoveDto struct {
-	Type Movetype `json:"type"`
-	X    int      `json:"x"`
-	Y    int      `json:"y"`
+	Type matchmaking.Movetype `binding:"required,ismovetypeenum" json:"type"`
+	X    int                  `binding:"required"                json:"x"`
+	Y    int                  `binding:"required"                json:"y"`
 }
