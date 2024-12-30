@@ -13,7 +13,7 @@ import (
 
 func MustMakeNewGame(
 	t *testing.T,
-	s *http.Server,
+	s *MinesTestServer,
 	difficulty game.Difficulty,
 ) *res.MatchstateDto {
 	t.Helper()
@@ -51,7 +51,7 @@ func MustMakeNewGame(
 
 func MustGetGame(
 	t *testing.T,
-	s *http.Server,
+	s *MinesTestServer,
 	matchId string,
 ) {
 	t.Helper()
@@ -78,7 +78,7 @@ func MustGetGame(
 
 func MustMakeMove(
 	t *testing.T,
-	s *http.Server,
+	s *MinesTestServer,
 	matchId string,
 	movetype matchmaking.Movetype,
 	x int,

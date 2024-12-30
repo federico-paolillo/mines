@@ -15,7 +15,12 @@ import (
 	"github.com/federico-paolillo/mines/pkg/mines/config"
 )
 
-func NewServer() *http.Server {
+type MinesTestServer struct {
+	*http.Server
+	Mines *mines.Mines
+}
+
+func NewServer() *MinesTestServer {
 	cfg := &config.Root{
 		Seed: 1234,
 		Server: config.Server{
@@ -34,7 +39,10 @@ func NewServer() *http.Server {
 		cfg.Server,
 	)
 
-	return s
+	return &MinesTestServer{
+		s,
+		mines,
+	}
 }
 
 func NewRequest(
