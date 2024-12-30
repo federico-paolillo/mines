@@ -65,7 +65,7 @@ func Run(program ProgramE) StatusCode {
 
 func loadConfiguration() (*config.Root, error) {
 	cfguro, err := configuro.NewConfig(
-		configuro.WithLoadFromEnvVars("MINES_"),
+		configuro.WithLoadFromEnvVars("MINES"),
 		configuro.WithLoadFromConfigFile("config.yml", false),
 		configuro.WithoutEnvConfigPathOverload(),
 		configuro.WithoutLoadDotEnv(),
