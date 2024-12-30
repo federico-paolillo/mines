@@ -20,7 +20,11 @@ type MinesTestServer struct {
 	Mines *mines.Mines
 }
 
-func NewServer() *MinesTestServer {
+type CustomizeMines = func(*mines.Mines)
+
+func NewCustomServer(
+	customizer CustomizeMines,
+) *MinesTestServer {
 	cfg := &config.Root{
 		Seed: 1234,
 		Server: config.Server{
@@ -34,6 +38,8 @@ func NewServer() *MinesTestServer {
 		cfg,
 	)
 
+	customizer(mines)
+
 	s := server.NewServer(
 		mines,
 		cfg.Server,
@@ -43,6 +49,13 @@ func NewServer() *MinesTestServer {
 		s,
 		mines,
 	}
+}
+
+func NewServer() *MinesTestServer {
+	return NewCustomServer(
+		func(m *mines.Mines) {
+		},
+	)
 }
 
 func NewRequest(
