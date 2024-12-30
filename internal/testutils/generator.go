@@ -41,15 +41,15 @@ func prepareFixedBoard(builder *board.Builder) {
 	 * 			 1 is a cell with adjacent mines
 	 *       M is a mined cell
 	 */
-	builder.PlaceSafe(1, 1)
-	builder.PlaceSafe(2, 1)
-	builder.PlaceSafe(3, 1)
+	_ = builder.PlaceSafe(1, 1)
+	_ = builder.PlaceSafe(2, 1)
+	_ = builder.PlaceSafe(3, 1)
 
-	builder.PlaceSafe(1, 2)
-	builder.PlaceSafe(2, 2)
-	builder.PlaceSafe(3, 2)
+	_ = builder.PlaceSafe(1, 2)
+	_ = builder.PlaceSafe(2, 2)
+	_ = builder.PlaceSafe(3, 2)
 
-	builder.PlaceSafe(1, 3)
-	builder.PlaceSafe(2, 3)
-	builder.PlaceMine(3, 3)
+	_ = builder.PlaceSafe(1, 3)
+	_ = builder.PlaceSafe(2, 3)
+	_ = builder.PlaceMine(3, 3)
 }
