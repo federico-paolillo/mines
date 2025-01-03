@@ -34,7 +34,7 @@ func TestMemoryStoreLoadsMatches(t *testing.T) {
 		)
 	}
 
-	mRetrieved, err := memstore.Fetch("abc")
+	mRetrieved, err := memstore.Fetch(testutils.SomeMatchId)
 
 	if err != nil {
 		t.Fatalf(
@@ -79,7 +79,7 @@ func TestMemoryStoreLoadsMatches(t *testing.T) {
 func TestMemoryStoreReturnsErrorWhenMatchDoesNotExist(t *testing.T) {
 	memstore := matchstore.NewMemoryStore()
 
-	_, err := memstore.Fetch("abc")
+	_, err := memstore.Fetch(testutils.SomeMatchId)
 
 	if !errors.Is(err, matchmaking.ErrNoSuchMatch) {
 		t.Fatalf(
@@ -103,7 +103,7 @@ func TestMemoryStoreRefusesToSaveMatchWithDifferentVersionThanStored(t *testing.
 		)
 	}
 
-	matchFromStore, err := memstore.Fetch("abc")
+	matchFromStore, err := memstore.Fetch(testutils.SomeMatchId)
 
 	if err != nil {
 		t.Fatalf(

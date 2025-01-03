@@ -7,7 +7,18 @@ import (
 	"github.com/federico-paolillo/mines/pkg/matchmaking"
 )
 
+const SomeMatchId = "abc"
+
+const SomeMatchVersion = 123
+
 func SomeMatch() *matchmaking.Match {
+	return SomeCustomMatch("abc", 123)
+}
+
+func SomeCustomMatch(
+	id string,
+	version matchmaking.Matchversion,
+) *matchmaking.Match {
 	bb := board.NewBuilder(
 		dimensions.Size{
 			Width:  2,
@@ -23,8 +34,8 @@ func SomeMatch() *matchmaking.Match {
 	g := game.NewGame(12, b)
 
 	m := matchmaking.NewMatch(
-		"abc",
-		123,
+		id,
+		version,
 		b,
 		g,
 	)
