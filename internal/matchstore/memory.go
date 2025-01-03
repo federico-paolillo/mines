@@ -7,14 +7,16 @@ import (
 	"github.com/federico-paolillo/mines/pkg/matchmaking"
 )
 
+type MatchesMap = map[string]*matchmaking.Matchstate
+
 type MemoryStore struct {
 	mu      sync.RWMutex
-	matches map[string]*matchmaking.Matchstate
+	matches MatchesMap
 }
 
 func NewMemoryStore() *MemoryStore {
 	return &MemoryStore{
-		matches: make(map[string]*matchmaking.Matchstate),
+		matches: make(MatchesMap),
 	}
 }
 
