@@ -1,0 +1,21 @@
+lint:
+  commands:
+    golangci:
+      run: golangci-lint run --fix
+
+test:
+  commands:
+    gotest:
+      run: go test -race -shuffle=on ./...
+
+pre-push:
+  commands:
+    test:
+      glob: "*.go"
+      run: lefthook run test
+
+pre-commit:
+  commands:
+    lint:
+      glob: "*.go"
+      run: lefthook run lint
