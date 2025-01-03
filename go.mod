@@ -1,6 +1,6 @@
 module github.com/federico-paolillo/mines
 
-go 1.22.1
+go 1.23.4
 
 require (
 	github.com/gavv/httpexpect/v2 v2.16.0
