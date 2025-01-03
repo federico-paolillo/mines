@@ -4,6 +4,7 @@ coverage:
 ignore:
   - internal/testutils
   - internal/syncmapt
+  - cmd/
 parsers:
   go:
     partials_as_hits: true
