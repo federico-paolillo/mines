@@ -2,6 +2,7 @@ package matchstore
 
 import (
 	"fmt"
+	"iter"
 	"sync"
 
 	"github.com/federico-paolillo/mines/pkg/matchmaking"
@@ -71,4 +72,28 @@ func (m *MemoryStore) Save(match *matchmaking.Match) error {
 	m.matches[newEntry.Id] = newEntry
 
 	return nil
+}
+
+func (m *MemoryStore) Delete(ids ...string) {
+	m.mu.Lock()
+
+	defer m.mu.Unlock()
+
+	for _, id := range ids {
+		delete(m.matches, id)
+	}
+}
+
+func (m *MemoryStore) All() iter.Seq[*matchmaking.Matchstate] {
+	m.mu.RLock()
+
+	defer m.mu.RUnlock()
+
+	return func(yield func(*matchmaking.Matchstate) bool) {
+		for _, v := range m.matches {
+			if !yield(v) {
+				return
+			}
+		}
+	}
 }

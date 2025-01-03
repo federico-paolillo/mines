@@ -3,6 +3,7 @@ package matchstore_test
 import (
 	"errors"
 	"reflect"
+	"slices"
 	"testing"
 
 	"github.com/federico-paolillo/mines/internal/matchstore"
@@ -145,6 +146,95 @@ func TestMemoryStoreRefusesToSaveMatchWithDifferentVersionThanStored(t *testing.
 		t.Fatalf(
 			"memorystore did not detect concurrent update. %v",
 			err,
+		)
+	}
+}
+
+func TestMemoryStoreDeletesMatches(t *testing.T) {
+	m := testutils.SomeMatch()
+
+	memstore := matchstore.NewMemoryStore()
+
+	err := memstore.Save(m)
+
+	if err != nil {
+		t.Fatalf(
+			"failed to store match. %v",
+			err,
+		)
+	}
+
+	_, err = memstore.Fetch(testutils.SomeMatchId)
+
+	if err != nil {
+		t.Fatalf(
+			"failed to retrieve match. %v",
+			err,
+		)
+	}
+
+	memstore.Delete(testutils.SomeMatchId)
+
+	_, err = memstore.Fetch(testutils.SomeMatchId)
+
+	if !errors.Is(err, matchmaking.ErrNoSuchMatch) {
+		if err != nil {
+			t.Fatalf(
+				"failed to retrieve match, but for the wrong reason. %v",
+				err,
+			)
+		}
+	}
+}
+
+func TestMemoryStoreRangesOverAllMatches(t *testing.T) {
+	m1 := testutils.SomeCustomMatch("blabla", 1234)
+	m2 := testutils.SomeCustomMatch("gnegne", 1234)
+
+	memstore := matchstore.NewMemoryStore()
+
+	var err error
+
+	err = errors.Join(memstore.Save(m1))
+	err = errors.Join(memstore.Save(m2))
+
+	if err != nil {
+		t.Fatalf(
+			"failed to store match. %v",
+			err,
+		)
+	}
+
+	idsCollected := make([]string, 0, 2)
+
+	for v := range memstore.All() {
+		idsCollected = append(idsCollected, v.Id)
+	}
+
+	idsCount := len(idsCollected)
+
+	idsExpected := []string{
+		m1.Id,
+		m2.Id,
+	}
+
+	slices.Sort(idsCollected)
+	slices.Sort(idsExpected)
+
+	idsMatch := slices.Compare(idsCollected, idsExpected) == 0
+
+	if !idsMatch {
+		t.Errorf(
+			"expected '%+v' to match '%+v'",
+			idsCollected,
+			idsExpected,
+		)
+	}
+
+	if idsCount != 2 {
+		t.Fatalf(
+			"expected '2' matches. got '%d'",
+			idsCount,
 		)
 	}
 }

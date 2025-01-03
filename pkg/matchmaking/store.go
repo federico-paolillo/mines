@@ -1,6 +1,9 @@
 package matchmaking
 
-import "errors"
+import (
+	"errors"
+	"iter"
+)
 
 var (
 	ErrConcurrentUpdate = errors.New("concurrent update detected")
@@ -11,4 +14,6 @@ var (
 type Store interface {
 	Fetch(id string) (*Match, error)
 	Save(match *Match) error
+	Delete(ids ...string)
+	All() iter.Seq[*Matchstate]
 }

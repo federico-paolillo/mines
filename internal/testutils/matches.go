@@ -26,8 +26,8 @@ func SomeCustomMatch(
 		},
 	)
 
-	bb.PlaceSafe(1, 1)
-	bb.PlaceMine(2, 1)
+	_ = bb.PlaceSafe(1, 1)
+	_ = bb.PlaceMine(2, 1)
 
 	b := bb.Build()
 
