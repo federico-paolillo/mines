@@ -145,15 +145,13 @@ func TestMatchmakerWillProcessMoves(t *testing.T) {
 
 	if err != nil {
 		t.Fatalf(
-			"matchmake failed to apply moves. %v",
+			"matchmaker failed to apply moves. %v",
 			err,
 		)
 	}
 }
 
 func TestMatchmakerReportsConcurrencyCollision(t *testing.T) {
-	t.Skip("unstable")
-
 	mm := matchmaking.NewMatchmaker(
 		matchstore.NewMemoryStore(),
 		generators.NewRngBoardGenerator(1234),

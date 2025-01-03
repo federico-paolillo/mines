@@ -2,92 +2,71 @@ package matchstore
 
 import (
 	"fmt"
+	"sync"
 
-	"github.com/federico-paolillo/mines/internal/syncmapt"
 	"github.com/federico-paolillo/mines/pkg/matchmaking"
 )
 
 type MemoryStore struct {
-	matches syncmapt.SyncMap[string, matchmaking.Matchstate]
+	mu      sync.RWMutex
+	matches map[string]*matchmaking.Matchstate
 }
 
 func NewMemoryStore() *MemoryStore {
-	return &MemoryStore{}
+	return &MemoryStore{
+		matches: make(map[string]*matchmaking.Matchstate),
+	}
 }
 
 var _ matchmaking.Store = (*MemoryStore)(nil)
 
 func (m *MemoryStore) Fetch(id string) (*matchmaking.Match, error) {
-	entry, ok := m.matches.Load(id)
+	m.mu.RLock()
 
-	if !ok {
-		return nil, fmt.Errorf(
-			"memorystore: could not find match '%s'. %w",
-			id,
-			matchmaking.ErrNoSuchMatch,
-		)
+	// Possible improvement: unlock before hydrating so that we don't keep the lock for nothing
+	defer m.mu.RUnlock()
+
+	if entry, ok := m.matches[id]; ok {
+		match := HydrateMatch(entry)
+
+		return match, nil
 	}
 
-	match := HydrateMatch(entry)
-
-	return match, nil
+	return nil, fmt.Errorf(
+		"memorystore: could not find match '%s'. %w",
+		id,
+		matchmaking.ErrNoSuchMatch,
+	)
 }
 
 func (m *MemoryStore) Save(match *matchmaking.Match) error {
+	m.mu.Lock()
+
+	defer m.mu.Unlock()
+
 	newEntry := match.Status()
 
-	currentEntry, exists := m.matches.Load(newEntry.Id)
+	// You can update a Match only if the version you provide is still the same as what's in store
+	// This optimistic concurrency token will ensure that we do not overwrite newer versions
 
-	if exists {
-		return m.optimisticSwap(currentEntry, newEntry)
+	if existingEntry, ok := m.matches[newEntry.Id]; ok {
+		if existingEntry.Version != newEntry.Version {
+			return fmt.Errorf(
+				"memorystore: attempted to save match '%s' with version '%d' which is different than last known version '%d'. %w",
+				newEntry.Id,
+				newEntry.Version,
+				existingEntry.Version,
+				matchmaking.ErrConcurrentUpdate,
+			)
+		}
 	}
 
-	// Change the version before storage
-	// This entry has not yet left the storage so it is safe to change in place
+	// Change the version before storing
+	// This entry has not yet left the store so it is safe to change in place
 
 	newEntry.Version = matchmaking.NextVersion()
 
-	m.matches.Store(newEntry.Id, newEntry)
-
-	return nil
-}
-
-func (m *MemoryStore) optimisticSwap(
-	currentEntry *matchmaking.Matchstate,
-	newEntry *matchmaking.Matchstate,
-) error {
-	id := currentEntry.Id
-
-	if currentEntry.Version != newEntry.Version {
-		return fmt.Errorf(
-			"memorystore: attempted to save match '%s' with version '%d' which is different than last known version '%d'. %w",
-			id,
-			newEntry.Version,
-			currentEntry.Version,
-			matchmaking.ErrConcurrentUpdate,
-		)
-	}
-
-	// We replace currentEntry we just got a moment ago with the new upToDateMatch
-	// If "compare and swap" fails it means that the currentEntry we retrieved has been modified in-between
-	// If that is the case, we give up because a concurrent change happened before we could finish
-
-	// Change the version before storage
-	// This entry has not yet left the storage so it is safe to change in place
-	newEntry.Version = matchmaking.NextVersion()
-
-	// Compare and swap checks that currentEntry is equal to the one in the Map before replacing it with newEntry
-
-	didSwap := m.matches.CompareAndSwap(id, currentEntry, newEntry)
-
-	if !didSwap {
-		return fmt.Errorf(
-			"memorystore: attempted to save match '%s' with new version '%d' but the match changed in-between. %w",
-			id,
-			newEntry.Version,
-			matchmaking.ErrConcurrentUpdate,
-		)
-	}
+	m.matches[newEntry.Id] = newEntry
 
 	return nil
 }
