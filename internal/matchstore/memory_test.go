@@ -6,8 +6,7 @@ import (
 	"testing"
 
 	"github.com/federico-paolillo/mines/internal/matchstore"
-	"github.com/federico-paolillo/mines/pkg/board"
-	"github.com/federico-paolillo/mines/pkg/dimensions"
+	"github.com/federico-paolillo/mines/internal/testutils"
 	"github.com/federico-paolillo/mines/pkg/game"
 	"github.com/federico-paolillo/mines/pkg/matchmaking"
 )
@@ -21,27 +20,8 @@ type versionlessState struct {
 	Cells  matchmaking.Cells
 }
 
-func TestMemorystoreLoadsMatches(t *testing.T) {
-	bb := board.NewBuilder(
-		dimensions.Size{
-			Width:  2,
-			Height: 1,
-		},
-	)
-
-	bb.PlaceSafe(1, 1)
-	bb.PlaceMine(2, 1)
-
-	b := bb.Build()
-
-	g := game.NewGame(12, b)
-
-	m := matchmaking.NewMatch(
-		"abc",
-		123,
-		b,
-		g,
-	)
+func TestMemoryStoreLoadsMatches(t *testing.T) {
+	m := testutils.SomeMatch()
 
 	memstore := matchstore.NewMemoryStore()
 
@@ -96,7 +76,7 @@ func TestMemorystoreLoadsMatches(t *testing.T) {
 	}
 }
 
-func TestMemorystoreReturnsErrorWhenMatchDoesNotExist(t *testing.T) {
+func TestMemoryStoreReturnsErrorWhenMatchDoesNotExist(t *testing.T) {
 	memstore := matchstore.NewMemoryStore()
 
 	_, err := memstore.Fetch("abc")
@@ -109,28 +89,8 @@ func TestMemorystoreReturnsErrorWhenMatchDoesNotExist(t *testing.T) {
 	}
 }
 
-func TestMemorystoreRefusesToSaveMatchWithDifferentVersionThanStored(t *testing.T) {
-	bb := board.NewBuilder(
-		dimensions.Size{
-			Width:  3,
-			Height: 1,
-		},
-	)
-
-	bb.PlaceSafe(1, 1)
-	bb.PlaceMine(2, 1)
-	bb.PlaceMine(3, 1)
-
-	b := bb.Build()
-
-	g := game.NewGame(12, b)
-
-	m := matchmaking.NewMatch(
-		"abc",
-		123,
-		b,
-		g,
-	)
+func TestMemoryStoreRefusesToSaveMatchWithDifferentVersionThanStored(t *testing.T) {
+	m := testutils.SomeMatch()
 
 	memstore := matchstore.NewMemoryStore()
 
@@ -143,7 +103,7 @@ func TestMemorystoreRefusesToSaveMatchWithDifferentVersionThanStored(t *testing.
 		)
 	}
 
-	mAgain, err := memstore.Fetch("abc")
+	matchFromStore, err := memstore.Fetch("abc")
 
 	if err != nil {
 		t.Fatalf(
@@ -152,7 +112,7 @@ func TestMemorystoreRefusesToSaveMatchWithDifferentVersionThanStored(t *testing.
 		)
 	}
 
-	_ = mAgain.Apply(
+	_ = matchFromStore.Apply(
 		matchmaking.Move{
 			Type: matchmaking.MoveOpen,
 			X:    1,
@@ -160,7 +120,7 @@ func TestMemorystoreRefusesToSaveMatchWithDifferentVersionThanStored(t *testing.
 		},
 	)
 
-	err = memstore.Save(mAgain)
+	err = memstore.Save(matchFromStore)
 
 	if err != nil {
 		t.Fatalf(
@@ -171,7 +131,7 @@ func TestMemorystoreRefusesToSaveMatchWithDifferentVersionThanStored(t *testing.
 
 	// Now we change the original match and try to save it again
 
-	_ = mAgain.Apply(
+	_ = matchFromStore.Apply(
 		matchmaking.Move{
 			Type: matchmaking.MoveOpen,
 			X:    3,
@@ -179,7 +139,7 @@ func TestMemorystoreRefusesToSaveMatchWithDifferentVersionThanStored(t *testing.
 		},
 	)
 
-	err = memstore.Save(mAgain)
+	err = memstore.Save(matchFromStore)
 
 	if !errors.Is(err, matchmaking.ErrConcurrentUpdate) {
 		t.Fatalf(
