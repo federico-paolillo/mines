@@ -1,4 +1,4 @@
-package matchstore
+package storage
 
 import (
 	"github.com/federico-paolillo/mines/pkg/board"

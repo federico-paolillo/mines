@@ -115,7 +115,7 @@ func TestMakeMoveHandlerRejectsMovesForMatchesThatHaveEnded(t *testing.T) {
 
 	markMatchAsCompleted(
 		t,
-		s.Mines.Store,
+		s.Mines.MatchStore,
 		matchstate.Id,
 	)
 

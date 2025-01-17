@@ -18,7 +18,7 @@ func TestE2EYouCanCompleteWholeMatchUsingApi(t *testing.T) {
 	minesServer := testutils.NewCustomServer(
 		func(mines *mines.Mines) {
 			mines.Matchmaker = matchmaking.NewMatchmaker(
-				mines.Store,
+				mines.MatchStore,
 				testutils.NewFixedBoardGenerator(),
 			)
 		},

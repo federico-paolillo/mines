@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/federico-paolillo/mines/internal/generators"
-	"github.com/federico-paolillo/mines/internal/matchstore"
+	"github.com/federico-paolillo/mines/internal/storage"
 	"github.com/federico-paolillo/mines/pkg/board"
 	"github.com/federico-paolillo/mines/pkg/game"
 	"github.com/federico-paolillo/mines/pkg/matchmaking"
@@ -16,7 +16,9 @@ import (
 
 func TestMatchmakerProducesNewMatchesAccordingToDifficulty(t *testing.T) {
 	mm := matchmaking.NewMatchmaker(
-		matchstore.NewMemoryStore(),
+		storage.NewMatchStore(
+			storage.NewInMemoryStore(),
+		),
 		generators.NewRngBoardGenerator(1234),
 	)
 
@@ -103,10 +105,11 @@ func TestMatchmakerProducesNewMatchesAccordingToDifficulty(t *testing.T) {
 
 func TestMatchmakerWillNotProcessMovesForNonExistingMatches(t *testing.T) {
 	mm := matchmaking.NewMatchmaker(
-		matchstore.NewMemoryStore(),
+		storage.NewMatchStore(
+			storage.NewInMemoryStore(),
+		),
 		generators.NewRngBoardGenerator(1234),
 	)
-
 	_, err := mm.Apply(
 		"does-not-exist",
 		matchmaking.Move{
@@ -126,7 +129,9 @@ func TestMatchmakerWillNotProcessMovesForNonExistingMatches(t *testing.T) {
 
 func TestMatchmakerWillProcessMoves(t *testing.T) {
 	mm := matchmaking.NewMatchmaker(
-		matchstore.NewMemoryStore(),
+		storage.NewMatchStore(
+			storage.NewInMemoryStore(),
+		),
 		generators.NewRngBoardGenerator(1234),
 	)
 
@@ -153,7 +158,9 @@ func TestMatchmakerWillProcessMoves(t *testing.T) {
 
 func TestMatchmakerReportsConcurrencyCollision(t *testing.T) {
 	mm := matchmaking.NewMatchmaker(
-		matchstore.NewMemoryStore(),
+		storage.NewMatchStore(
+			storage.NewInMemoryStore(),
+		),
 		generators.NewRngBoardGenerator(1234),
 	)
 
@@ -229,7 +236,9 @@ func TestMatchmakerReportsConcurrencyCollision(t *testing.T) {
 
 func TestMatchmakerWillPersistMoves(t *testing.T) {
 	mm := matchmaking.NewMatchmaker(
-		matchstore.NewMemoryStore(),
+		storage.NewMatchStore(
+			storage.NewInMemoryStore(),
+		),
 		generators.NewRngBoardGenerator(1234),
 	)
 

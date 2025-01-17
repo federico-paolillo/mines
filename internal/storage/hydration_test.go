@@ -1,10 +1,10 @@
-package matchstore_test
+package storage_test
 
 import (
 	"reflect"
 	"testing"
 
-	"github.com/federico-paolillo/mines/internal/matchstore"
+	"github.com/federico-paolillo/mines/internal/storage"
 	"github.com/federico-paolillo/mines/pkg/board"
 	"github.com/federico-paolillo/mines/pkg/dimensions"
 	"github.com/federico-paolillo/mines/pkg/game"
@@ -40,7 +40,7 @@ func TestHydrationRestoresMatchProperly(t *testing.T) {
 
 	state := m.Status()
 
-	mReborn := matchstore.HydrateMatch(state)
+	mReborn := storage.HydrateMatch(state)
 
 	rebornState := mReborn.Status()
 
