@@ -1,6 +1,7 @@
 package testutils
 
 import (
+	"github.com/federico-paolillo/mines/internal/id"
 	"github.com/federico-paolillo/mines/pkg/board"
 	"github.com/federico-paolillo/mines/pkg/dimensions"
 	"github.com/federico-paolillo/mines/pkg/game"
@@ -13,6 +14,13 @@ const SomeMatchVersion = 123
 
 func SomeMatch() *matchmaking.Match {
 	return SomeCustomMatch("abc", 123)
+}
+
+func SomeRandomMatch() *matchmaking.Match {
+	return SomeCustomMatch(
+		id.Generate(),
+		123,
+	)
 }
 
 func SomeCustomMatch(

@@ -25,13 +25,7 @@ func NewMatchmaker(
 func (m *Matchmaker) New(difficulty game.Difficulty) (*Matchstate, error) {
 	settings := game.GetDifficultySettings(difficulty)
 
-	matchId, err := id.Generate()
-	if err != nil {
-		return nil, fmt.Errorf(
-			"matchmaker: could not generate match. %w",
-			err,
-		)
-	}
+	matchId := id.Generate()
 
 	board := m.generator.Generate(settings.BoardSize, settings.NumberOfMines)
 
@@ -46,7 +40,7 @@ func (m *Matchmaker) New(difficulty game.Difficulty) (*Matchstate, error) {
 		game,
 	)
 
-	err = m.storage.Save(match)
+	err := m.storage.Save(match)
 	if err != nil {
 		return nil, fmt.Errorf(
 			"matchmaker: could not save match. %w",

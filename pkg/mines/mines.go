@@ -3,6 +3,7 @@ package mines
 import (
 	"log/slog"
 
+	"github.com/federico-paolillo/mines/internal/gc"
 	"github.com/federico-paolillo/mines/internal/generators"
 	"github.com/federico-paolillo/mines/internal/storage"
 	"github.com/federico-paolillo/mines/pkg/matchmaking"
@@ -16,6 +17,8 @@ type Mines struct {
 	MatchStore  matchmaking.Store
 	Matchmaker  *matchmaking.Matchmaker
 	Generator   matchmaking.BoardGenerator
+	Reaper      *gc.Reaper
+	GcStore     gc.Store
 }
 
 func NewMines(
@@ -29,6 +32,7 @@ func NewMines(
 	initGenerator(mines, cfg)
 	initMemoryStore(mines)
 	initMatchmaker(mines)
+	initReaper(mines)
 
 	return mines
 }
@@ -45,11 +49,21 @@ func initMemoryStore(mines *Mines) {
 	mines.MatchStore = storage.NewMatchStore(
 		mines.MemoryStore,
 	)
+
+	mines.GcStore = storage.NewGcStore(
+		mines.MemoryStore,
+	)
 }
 
 func initMatchmaker(mines *Mines) {
 	mines.Matchmaker = matchmaking.NewMatchmaker(
 		mines.MatchStore,
 		mines.Generator,
+	)
+}
+
+func initReaper(mines *Mines) {
+	mines.Reaper = gc.NewReaper(
+		mines.GcStore,
 	)
 }

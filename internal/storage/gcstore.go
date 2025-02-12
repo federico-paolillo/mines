@@ -11,6 +11,12 @@ type GcStore struct {
 	memstore *InMemoryStore
 }
 
+func NewGcStore(memstore *InMemoryStore) *GcStore {
+	return &GcStore{
+		memstore,
+	}
+}
+
 func (g *GcStore) All() iter.Seq[*matchmaking.Matchstate] {
 	return g.memstore.All()
 }
