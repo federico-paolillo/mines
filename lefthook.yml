@@ -12,10 +12,10 @@ pre-push:
   commands:
     test:
       glob: "*.go"
-      run: lefthook run test
+      run: go tool lefthook run test
 
 pre-commit:
   commands:
     lint:
       glob: "*.go"
-      run: lefthook run lint
+      run: go tool lefthook run lint

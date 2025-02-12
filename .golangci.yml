@@ -1,7 +1,7 @@
 run:
   timeout: 2m
   tests: false
-  go: "1.22.1"
+  go: "1.24"
   concurrency: 4
 linters:
   enable-all: true
