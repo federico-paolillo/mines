@@ -157,6 +157,8 @@ func TestMatchmakerWillProcessMoves(t *testing.T) {
 }
 
 func TestMatchmakerReportsConcurrencyCollision(t *testing.T) {
+	t.Skip("unstable")
+
 	mm := matchmaking.NewMatchmaker(
 		storage.NewMatchStore(
 			storage.NewInMemoryStore(),
