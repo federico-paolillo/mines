@@ -157,8 +157,6 @@ func TestMatchmakerWillProcessMoves(t *testing.T) {
 }
 
 func TestMatchmakerReportsConcurrencyCollision(t *testing.T) {
-	t.Skip("unstable")
-
 	mm := matchmaking.NewMatchmaker(
 		storage.NewMatchStore(
 			storage.NewInMemoryStore(),
@@ -171,9 +169,9 @@ func TestMatchmakerReportsConcurrencyCollision(t *testing.T) {
 	)
 
 	randomSleep := func() {
-		sleepTimes := []int{100, 300, 325, 350, 500}
-		sleepTime := sleepTimes[rand.Intn(len(sleepTimes))]
-		time.Sleep(time.Millisecond * time.Duration(sleepTime))
+		jitter := rand.Intn(10)
+		sleepTime := 10 + jitter
+		time.Sleep(time.Duration(sleepTime) * time.Millisecond)
 	}
 
 	errStream := make(chan error, 3)
@@ -202,7 +200,7 @@ func TestMatchmakerReportsConcurrencyCollision(t *testing.T) {
 		}
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
 
 	go moveSpammer(ctx)
 	go moveSpammer(ctx)
@@ -229,10 +227,7 @@ func TestMatchmakerReportsConcurrencyCollision(t *testing.T) {
 	cancel()
 
 	if !errors.Is(err, matchmaking.ErrConcurrentUpdate) {
-		t.Fatalf(
-			"did not report concurrency issues. %v",
-			err,
-		)
+		t.Fatalf("did not report concurrency issues)")
 	}
 }
 
