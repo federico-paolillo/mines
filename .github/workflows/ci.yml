@@ -22,7 +22,7 @@ jobs:
         run: go tool lefthook run test
 
       - name: Vet
-        run: go tool lefthook run ling
+        run: go tool lefthook run lint
 
       - name: Coverage
         run: go test -race -coverprofile=coverage.txt -covermode=atomic ./...
