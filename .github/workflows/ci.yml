@@ -13,21 +13,16 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
-          go-version: "1.23.4"
+          go-version: "1.24"
 
       - name: Build
         run: go build -v ./...
 
       - name: Test
-        run: go test -v -shuffle=on ./...
+        run: go tool lefthook run test
 
       - name: Vet
-        run: go vet -v ./...
-
-      - name: Lint
-        uses: golangci/golangci-lint-action@v6
-        with:
-          version: v1.61
+        run: go tool lefthook run ling
 
       - name: Coverage
         run: go test -race -coverprofile=coverage.txt -covermode=atomic ./...
