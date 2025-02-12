@@ -1,7 +1,7 @@
 lint:
   commands:
     golangci:
-      run: golangci-lint run --fix
+      run: go tool golangci-lint run --fix
 
 test:
   commands:
