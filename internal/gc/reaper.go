@@ -13,6 +13,11 @@ func NewReaper(store Store) *Reaper {
 func (r *Reaper) Reap() ReapStats {
 	var stats ReapStats
 
+	toReap := make([]string, 0)
+
+	// We first collect and THEN delete because .All() acquires a lock that will not release until finished
+	// Calling .Delete while looping will dead-lock
+
 	for defendant := range r.store.All() {
 		verdict := emitVerdict(defendant)
 
@@ -26,9 +31,11 @@ func (r *Reaper) Reap() ReapStats {
 		}
 
 		if verdictIsUnfavourable(verdict) {
-			r.store.Delete(defendant.Id)
+			toReap = append(toReap, defendant.Id)
 		}
 	}
+
+	r.store.Delete(toReap...)
 
 	return stats
 }
