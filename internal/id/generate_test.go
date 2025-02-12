@@ -7,23 +7,8 @@ import (
 )
 
 func TestGeneratesTwoDifferentIdsWhenCalledTwice(t *testing.T) {
-	id1, err := id.Generate()
-
-	if err != nil {
-		t.Fatalf(
-			"could not generate id. %v",
-			err,
-		)
-	}
-
-	id2, err := id.Generate()
-
-	if err != nil {
-		t.Fatalf(
-			"could not generate id. %v",
-			err,
-		)
-	}
+	id1 := id.Generate()
+	id2 := id.Generate()
 
 	if id1 == id2 {
 		t.Fatalf(

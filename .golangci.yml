@@ -1,29 +1,28 @@
 run:
   timeout: 2m
   tests: false
-  go: '1.22.1'
+  go: "1.22.1"
   concurrency: 4
 linters:
   enable-all: true
   disable:
-    - execinquery
-    - gomnd
     - depguard
     - varnamelen
     - mnd
     - gochecknoglobals
     - godot
-    - exportloopref
     - exhaustruct
     - ireturn
     - err113
     - godox
+    - tenv
 output:
   print-issued-lines: true
   print-linter-name: true
-  uniq-by-line: true
   show-stats: false
   sort-results: true
+issues:
+  uniq-by-line: false
 linters-settings:
   revive:
     rules:
