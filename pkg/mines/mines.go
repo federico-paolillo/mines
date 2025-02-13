@@ -1,13 +1,16 @@
 package mines
 
 import (
+	"fmt"
 	"log/slog"
+	"time"
 
 	"github.com/federico-paolillo/mines/internal/gc"
 	"github.com/federico-paolillo/mines/internal/generators"
 	"github.com/federico-paolillo/mines/internal/storage"
 	"github.com/federico-paolillo/mines/pkg/matchmaking"
 	"github.com/federico-paolillo/mines/pkg/mines/config"
+	"github.com/go-co-op/gocron/v2"
 )
 
 // The composition root
@@ -19,12 +22,13 @@ type Mines struct {
 	Generator   matchmaking.BoardGenerator
 	Reaper      *gc.Reaper
 	GcStore     gc.Store
+	Cron        gocron.Scheduler
 }
 
 func NewMines(
 	logger *slog.Logger,
 	cfg *config.Root,
-) *Mines {
+) (*Mines, error) {
 	mines := &Mines{
 		Logger: logger,
 	}
@@ -34,7 +38,15 @@ func NewMines(
 	initMatchmaker(mines)
 	initReaper(mines)
 
-	return mines
+	err := initCronReaper(mines, cfg)
+	if err != nil {
+		return nil, fmt.Errorf(
+			"init: could not setup composition root. %w",
+			err,
+		)
+	}
+
+	return mines, nil
 }
 
 func initGenerator(mines *Mines, cfg *config.Root) {
@@ -66,4 +78,48 @@ func initReaper(mines *Mines) {
 	mines.Reaper = gc.NewReaper(
 		mines.GcStore,
 	)
+}
+
+func initCronReaper(mines *Mines, cfg *config.Root) error {
+	if !cfg.Reaper.Bundled {
+		mines.Logger.Info("init: go-cron is disabled")
+
+		return nil
+	}
+
+	cron, err := gocron.NewScheduler(
+		gocron.WithLogger(mines.Logger),
+		gocron.WithLimitConcurrentJobs(1, gocron.LimitModeReschedule),
+		gocron.WithStopTimeout(time.Duration(cfg.Reaper.Timeout)*time.Second),
+	)
+	if err != nil {
+		return fmt.Errorf(
+			"init: could not setup go-cron. %w",
+			err,
+		)
+	}
+
+	_, err = cron.NewJob(
+		gocron.DurationJob(time.Duration(cfg.Reaper.Interval)*time.Second),
+		gocron.NewTask(func() {
+			reapStats := mines.Reaper.Reap()
+
+			mines.Logger.Info(
+				"reaper: task complete",
+				slog.Int("expired", reapStats.Expired),
+				slog.Int("completed", reapStats.Completed),
+				slog.Int("ok", reapStats.Ok),
+			)
+		}),
+	)
+	if err != nil {
+		return fmt.Errorf(
+			"init: could not schedule reaping task. %w",
+			err,
+		)
+	}
+
+	mines.Cron = cron
+
+	return nil
 }

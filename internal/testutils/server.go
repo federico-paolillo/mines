@@ -33,10 +33,13 @@ func NewCustomServer(
 		},
 	}
 
-	mines := mines.NewMines(
+	mines, err := mines.NewMines(
 		slog.Default(),
 		cfg,
 	)
+	if err != nil {
+		panic(err)
+	}
 
 	customizer(mines)
 

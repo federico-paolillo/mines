@@ -25,6 +25,10 @@ func Program(
 		slog.String("endpoint", cfg.Server.Endpoint()),
 	)
 
+	shutdownCron := maybeStartCron(mines)
+
+	defer shutdownCron()
+
 	err := server.ListenAndServe()
 	if err != nil {
 		//nolint:errorlint // We do not want to wrap and leak errors that are not under our control

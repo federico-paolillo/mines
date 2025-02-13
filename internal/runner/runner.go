@@ -40,10 +40,18 @@ func Run(program ProgramE) StatusCode {
 		return NotOk
 	}
 
-	mines := mines.NewMines(
+	mines, err := mines.NewMines(
 		logger,
 		cfg,
 	)
+	if err != nil {
+		logger.Error(
+			"runner: failed to construct dependencies",
+			slog.Any("err", err),
+		)
+
+		return NotOk
+	}
 
 	err = program(
 		mines,
