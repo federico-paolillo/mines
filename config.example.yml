@@ -1,7 +1,7 @@
 reaper:
   bundled: true
-  interval: 60
-  timeout: 10
+  intervalSeconds: 60
+  timeoutSeconds: 10
 seed: 54039
 server:
   host:
