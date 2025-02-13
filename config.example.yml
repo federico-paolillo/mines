@@ -1,0 +1,8 @@
+reaper:
+  bundled: true
+  interval: 60
+  timeout: 10
+seed: 54039
+server:
+  host:
+  port: 50000
