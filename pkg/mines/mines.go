@@ -38,7 +38,7 @@ func NewMines(
 	initMatchmaker(mines)
 	initReaper(mines)
 
-	err := initCronReaper(mines, cfg)
+	err := initCron(mines, cfg)
 	if err != nil {
 		return nil, fmt.Errorf(
 			"init: could not setup composition root. %w",
@@ -80,7 +80,7 @@ func initReaper(mines *Mines) {
 	)
 }
 
-func initCronReaper(mines *Mines, cfg *config.Root) error {
+func initCron(mines *Mines, cfg *config.Root) error {
 	if !cfg.Reaper.Bundled {
 		mines.Logger.Info("init: go-cron is disabled")
 
@@ -90,31 +90,11 @@ func initCronReaper(mines *Mines, cfg *config.Root) error {
 	cron, err := gocron.NewScheduler(
 		gocron.WithLogger(mines.Logger),
 		gocron.WithLimitConcurrentJobs(1, gocron.LimitModeReschedule),
-		gocron.WithStopTimeout(time.Duration(cfg.Reaper.Timeout)*time.Second),
+		gocron.WithStopTimeout(time.Duration(cfg.Reaper.TimeoutSeconds)*time.Second),
 	)
 	if err != nil {
 		return fmt.Errorf(
 			"init: could not setup go-cron. %w",
-			err,
-		)
-	}
-
-	_, err = cron.NewJob(
-		gocron.DurationJob(time.Duration(cfg.Reaper.Interval)*time.Second),
-		gocron.NewTask(func() {
-			reapStats := mines.Reaper.Reap()
-
-			mines.Logger.Info(
-				"reaper: task complete",
-				slog.Int("expired", reapStats.Expired),
-				slog.Int("completed", reapStats.Completed),
-				slog.Int("ok", reapStats.Ok),
-			)
-		}),
-	)
-	if err != nil {
-		return fmt.Errorf(
-			"init: could not schedule reaping task. %w",
 			err,
 		)
 	}

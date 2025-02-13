@@ -1,6 +1,8 @@
 package config
 
-import "net"
+import (
+	"net"
+)
 
 type Server struct {
 	Host string
@@ -12,13 +14,28 @@ func (c *Server) Endpoint() string {
 }
 
 type Reaper struct {
-	Interval int
-	Bundled  bool
-	Timeout  int
+	FrequencySeconds int
+	Bundled          bool
+	TimeoutSeconds   int
 }
 
 type Root struct {
 	Seed   int
 	Server Server
 	Reaper Reaper
+}
+
+func Default() *Root {
+	return &Root{
+		Seed: 1234,
+		Server: Server{
+			Host: "",
+			Port: "65000",
+		},
+		Reaper: Reaper{
+			Bundled:          false,
+			FrequencySeconds: 60,
+			TimeoutSeconds:   10,
+		},
+	}
 }

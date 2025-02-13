@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log/slog"
 
+	"github.com/federico-paolillo/mines/internal/server/cron"
 	"github.com/federico-paolillo/mines/pkg/mines"
 	"github.com/federico-paolillo/mines/pkg/mines/config"
 	"github.com/gin-gonic/gin"
@@ -25,11 +26,17 @@ func Program(
 		slog.String("endpoint", cfg.Server.Endpoint()),
 	)
 
-	shutdownCron := maybeStartCron(mines)
+	shutdownCron, err := cron.Start(mines, cfg)
+	if err != nil {
+		return fmt.Errorf(
+			"server: failed to start go-cron. %w",
+			err,
+		)
+	}
 
 	defer shutdownCron()
 
-	err := server.ListenAndServe()
+	err = server.ListenAndServe()
 	if err != nil {
 		//nolint:errorlint // We do not want to wrap and leak errors that are not under our control
 		return fmt.Errorf(

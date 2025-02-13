@@ -86,13 +86,7 @@ func loadConfiguration() (*config.Root, error) {
 		)
 	}
 
-	cfg := &config.Root{
-		Seed: 1234,
-		Server: config.Server{
-			Host: "",
-			Port: "65000",
-		},
-	}
+	cfg := config.Default()
 
 	err = cfguro.Load(cfg)
 	if err != nil {
