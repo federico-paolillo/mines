@@ -1,12 +1,17 @@
 lint:
   commands:
     golangci:
-      run: go tool golangci-lint run --fix
+      run: go tool golangci-lint run
 
 test:
   commands:
     gotest:
       run: go test -race -shuffle=on ./...
+
+format:
+  commands:
+    golangci:
+      run: go tool golangci-lint run --fix
 
 pre-push:
   commands:
