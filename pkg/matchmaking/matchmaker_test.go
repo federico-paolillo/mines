@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"math/rand"
+	"sync"
 	"testing"
 	"time"
 
@@ -174,9 +175,18 @@ func TestMatchmakerReportsConcurrencyCollision(t *testing.T) {
 		time.Sleep(time.Duration(sleepTime) * time.Millisecond)
 	}
 
+	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
+
+	defer cancel()
+
 	errStream := make(chan error, 3)
 
+	var wg sync.WaitGroup
+	var err error
+
 	moveSpammer := func(ctx context.Context) {
+		defer wg.Done()
+
 		for {
 			select {
 			case <-ctx.Done():
@@ -194,40 +204,35 @@ func TestMatchmakerReportsConcurrencyCollision(t *testing.T) {
 				)
 
 				if errors.Is(err, matchmaking.ErrConcurrentUpdate) {
-					errStream <- err
+					select {
+					case errStream <- err:
+					default:
+					}
 				}
 			}
 		}
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
-
-	go moveSpammer(ctx)
-	go moveSpammer(ctx)
-	go moveSpammer(ctx)
-
-	go func() {
-		for {
-			select {
-			case <-ctx.Done():
-				close(errStream)
-				return
-			default:
-				time.Sleep(100 * time.Millisecond)
-			}
-		}
-	}()
-
-	var err error
-
-	for newErr := range errStream {
-		err = errors.Join(newErr)
+	spammersCount := 3
+	for i := 0; i < spammersCount; i++ {
+		wg.Add(1)
+		go moveSpammer(ctx)
 	}
 
-	cancel()
+	select {
+	case <-ctx.Done():
+		t.Fatal("timed-out without reporting concurrency issues")
+	case err = <-errStream:
+		cancel()
+	}
+
+	wg.Wait()
 
 	if !errors.Is(err, matchmaking.ErrConcurrentUpdate) {
-		t.Fatalf("did not report concurrency issues)")
+		t.Fatalf(
+			"did not report concurrency issues. %v",
+			err,
+		)
 	}
 }
 

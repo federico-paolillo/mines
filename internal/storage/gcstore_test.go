@@ -35,9 +35,8 @@ func TestGcStoreReturnsAllMatchstates(t *testing.T) {
 		s2.Id,
 	}
 
-	// We are assuming that the ids are returned in order
-
-	require.Equal(t, expectedIds, actualIds)
+	require.Len(t, actualIds, 2)
+	require.Subset(t, expectedIds, actualIds)
 }
 
 func TestGcDeletesMatchstates(t *testing.T) {
@@ -68,5 +67,6 @@ func TestGcDeletesMatchstates(t *testing.T) {
 		s1.Id,
 	}
 
-	require.Equal(t, expectedIds, actualIds)
+	require.Len(t, actualIds, 1)
+	require.Subset(t, expectedIds, actualIds)
 }
