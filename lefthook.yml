@@ -13,6 +13,16 @@ format:
     golangci:
       run: go tool golangci-lint run --fix
 
+cover:
+  commands:
+    gotest:
+      run: go test -shuffle=on -race -coverprofile=coverage.txt -covermode=atomic ./...
+
+build:
+  commands:
+    gobuild:
+      run: go build -v ./...
+
 pre-push:
   commands:
     test:

@@ -61,4 +61,6 @@ func TestCompositionRootSetupsCronWhenEmbedded(t *testing.T) {
 	require.NoError(t, err, "failed to boostrap dependencies")
 
 	require.NotNil(t, mines.Cron, "cron was not setup even if it was enabled")
+
+	_ = mines.Cron.Shutdown()
 }
