@@ -1,5 +1,9 @@
 package reaper
 
+import (
+	"github.com/federico-paolillo/mines/pkg/matchmaking"
+)
+
 type Reaper struct {
 	store Store
 }
@@ -10,7 +14,9 @@ func NewReaper(store Store) *Reaper {
 	}
 }
 
-func (r *Reaper) Reap() ReapStats {
+func (r *Reaper) Reap(
+	now matchmaking.Matchstamp,
+) ReapStats {
 	var stats ReapStats
 
 	toReap := make([]string, 0)
@@ -19,7 +25,7 @@ func (r *Reaper) Reap() ReapStats {
 	// Calling .Delete while looping will dead-lock
 
 	for defendant := range r.store.All() {
-		verdict := emitVerdict(defendant)
+		verdict := emitVerdict(now, defendant)
 
 		switch verdict {
 		case Ok:

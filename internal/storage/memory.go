@@ -123,12 +123,13 @@ func cloneMatchstate(matchstate *matchmaking.Matchstate) *matchmaking.Matchstate
 	}
 
 	return &matchmaking.Matchstate{
-		Id:      matchstate.Id,
-		Version: matchstate.Version,
-		Lives:   matchstate.Lives,
-		State:   matchstate.State,
-		Width:   matchstate.Width,
-		Height:  matchstate.Height,
-		Cells:   cells,
+		Id:        matchstate.Id,
+		Version:   matchstate.Version,
+		Lives:     matchstate.Lives,
+		State:     matchstate.State,
+		Width:     matchstate.Width,
+		Height:    matchstate.Height,
+		Cells:     cells,
+		StartTime: matchstate.StartTime,
 	}
 }

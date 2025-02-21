@@ -17,7 +17,9 @@ func ScheduleReaperJob(
 	reaper *reaper.Reaper,
 ) error {
 	reap := func() {
-		reapStats := reaper.Reap()
+		now := time.Now().Unix()
+
+		reapStats := reaper.Reap(now)
 
 		mines.Logger.Info(
 			"gc: cleanup completed",

@@ -7,14 +7,19 @@ import (
 
 type ReapingVerdict = string
 
+const TwoHoursInSeconds = 7200
+
 var (
 	Ok        ReapingVerdict = "ok"
 	Expired                  = "expired"
 	Completed                = "completed"
 )
 
-func emitVerdict(m *matchmaking.Matchstate) ReapingVerdict {
-	if isExpired(m) {
+func emitVerdict(
+	now matchmaking.Matchstamp,
+	m *matchmaking.Matchstate,
+) ReapingVerdict {
+	if isExpired(now, m) {
 		return Expired
 	}
 
@@ -25,8 +30,8 @@ func emitVerdict(m *matchmaking.Matchstate) ReapingVerdict {
 	return Ok
 }
 
-func isExpired(_ *matchmaking.Matchstate) bool {
-	return false // TODO: Missing timestamp on Matchstate
+func isExpired(now matchmaking.Matchstamp, m *matchmaking.Matchstate) bool {
+	return (now - m.StartTime) > TwoHoursInSeconds
 }
 
 func isCompleted(m *matchmaking.Matchstate) bool {
