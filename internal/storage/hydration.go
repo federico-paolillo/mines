@@ -26,6 +26,7 @@ func HydrateMatch(state *matchmaking.Matchstate) *matchmaking.Match {
 	return matchmaking.NewMatch(
 		state.Id,
 		state.Version,
+		state.StartTime,
 		b,
 		game.NewGame(state.Lives, b),
 	)

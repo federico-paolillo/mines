@@ -32,17 +32,19 @@ func TestMatchStateReflectsGameAndBoardSituation(t *testing.T) {
 	m := matchmaking.NewMatch(
 		"abc",
 		123,
+		456,
 		b,
 		g,
 	)
 
 	expectation := &matchmaking.Matchstate{
-		Id:      "abc",
-		Version: 123,
-		Lives:   2,
-		State:   game.PlayingGame,
-		Width:   2,
-		Height:  2,
+		Id:        "abc",
+		Version:   123,
+		StartTime: 456,
+		Lives:     2,
+		State:     game.PlayingGame,
+		Width:     2,
+		Height:    2,
 		Cells: [][]matchmaking.Cell{
 			{
 				{
@@ -126,6 +128,7 @@ func TestMatchAppliesMovesProperly(t *testing.T) {
 	m := matchmaking.NewMatch(
 		"abc",
 		123,
+		456,
 		b,
 		g,
 	)
@@ -194,6 +197,7 @@ func TestMatchWillNotAllowFurtherMovesIfGameHasEnded(t *testing.T) {
 	m := matchmaking.NewMatch(
 		"abc",
 		123,
+		456,
 		b,
 		g,
 	)
@@ -262,6 +266,7 @@ func TestMatchAppliesAllMoves(t *testing.T) {
 	m := matchmaking.NewMatch(
 		"abc",
 		123,
+		456,
 		b,
 		g,
 	)
@@ -281,12 +286,13 @@ func TestMatchAppliesAllMoves(t *testing.T) {
 	state := m.Status()
 
 	expectation := &matchmaking.Matchstate{
-		Id:      "abc",
-		Version: 123,
-		Lives:   2,
-		State:   game.PlayingGame,
-		Width:   2,
-		Height:  2,
+		Id:        "abc",
+		Version:   123,
+		StartTime: 456,
+		Lives:     2,
+		State:     game.PlayingGame,
+		Width:     2,
+		Height:    2,
 		Cells: [][]matchmaking.Cell{
 			{
 				{
@@ -353,6 +359,7 @@ func TestMatchDisallowsUnknownMoves(t *testing.T) {
 	m := matchmaking.NewMatch(
 		"abc",
 		123,
+		456,
 		b,
 		g,
 	)

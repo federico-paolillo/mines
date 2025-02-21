@@ -67,7 +67,6 @@ func (m *InMemoryStore) Save(matchstate *matchmaking.Matchstate) error {
 	}
 
 	// Change the version before storing
-	// TODO: We have a ref. copy from before ! We will are changing and storing shared state !
 
 	newEntry.Version = matchmaking.NextVersion()
 

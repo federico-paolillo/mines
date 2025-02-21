@@ -13,19 +13,21 @@ const SomeMatchId = "abc"
 const SomeMatchVersion = 123
 
 func SomeMatch() *matchmaking.Match {
-	return SomeCustomMatch("abc", 123)
+	return SomeCustomMatch("abc", 123, 456)
 }
 
 func SomeRandomMatch() *matchmaking.Match {
 	return SomeCustomMatch(
 		id.Generate(),
 		123,
+		456,
 	)
 }
 
 func SomeCustomMatch(
 	id string,
 	version matchmaking.Matchversion,
+	startTime matchmaking.Matchstamp,
 ) *matchmaking.Match {
 	bb := board.NewBuilder(
 		dimensions.Size{
@@ -44,6 +46,7 @@ func SomeCustomMatch(
 	m := matchmaking.NewMatch(
 		id,
 		version,
+		startTime,
 		b,
 		g,
 	)

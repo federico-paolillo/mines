@@ -16,11 +16,12 @@ type Cell struct {
 
 // Summary of how a Match is doing
 type Matchstate struct {
-	Id      string
-	Version Matchversion
-	Lives   int
-	State   game.Gamestate
-	Width   int
-	Height  int
-	Cells   Cells
+	Id        string
+	Version   Matchversion
+	Lives     int
+	State     game.Gamestate
+	Width     int
+	Height    int
+	Cells     Cells
+	StartTime Matchstamp
 }

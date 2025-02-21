@@ -10,6 +10,8 @@ import (
 
 type Matchversion = int64
 
+type Matchstamp = int64
+
 var (
 	ErrIllegalMove  = errors.New("unrecognized move")
 	ErrGameHasEnded = errors.New("game has ended")
@@ -17,21 +19,24 @@ var (
 
 // A Match is a particular instance of a Game that is addressable by an unique identifier
 type Match struct {
-	Id      string
-	Version Matchversion
-	board   *board.Board
-	game    *game.Game
+	Id        string
+	Version   Matchversion
+	StartTime Matchstamp
+	board     *board.Board
+	game      *game.Game
 }
 
 func NewMatch(
 	id string,
 	version Matchversion,
+	startTime Matchstamp,
 	board *board.Board,
 	game *game.Game,
 ) *Match {
 	return &Match{
 		id,
 		version,
+		startTime,
 		board,
 		game,
 	}
@@ -43,13 +48,14 @@ func (m *Match) Status() *Matchstate {
 	cells := ExportCells(m.board)
 
 	return &Matchstate{
-		Id:      m.Id,
-		Version: m.Version,
-		Lives:   m.game.Lives(),
-		Width:   bSize.Width,
-		Height:  bSize.Height,
-		State:   m.game.Status(),
-		Cells:   cells,
+		m.Id,
+		m.Version,
+		m.game.Lives(),
+		m.game.Status(),
+		bSize.Width,
+		bSize.Height,
+		cells,
+		m.StartTime,
 	}
 }
 

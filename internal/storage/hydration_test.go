@@ -34,6 +34,7 @@ func TestHydrationRestoresMatchProperly(t *testing.T) {
 	m := matchmaking.NewMatch(
 		"abc",
 		123,
+		456,
 		b,
 		g,
 	)

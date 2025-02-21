@@ -159,12 +159,15 @@ func markMatchAsCompleted(
 	g.Open(1, 1)
 
 	if !g.Ended() {
-		t.Fatalf("game did not end, you must have forgot to apply some moves")
+		t.Fatalf("game did not end, you must have forgotten to apply some moves")
 	}
+
+	// We make a new match with a different board and game that will replace the original match
 
 	m = matchmaking.NewMatch(
 		matchId,
 		m.Version,
+		m.StartTime,
 		b,
 		g,
 	)

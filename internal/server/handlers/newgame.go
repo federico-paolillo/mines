@@ -3,6 +3,7 @@ package handlers
 import (
 	"log/slog"
 	"net/http"
+	"time"
 
 	"github.com/federico-paolillo/mines/internal/server/req"
 	"github.com/federico-paolillo/mines/internal/server/res"
@@ -28,6 +29,7 @@ func NewGame(mines *mines.Mines) gin.HandlerFunc {
 		}
 
 		matchstate, err := mines.Matchmaker.New(
+			time.Now().Unix(),
 			newGameDto.Difficulty,
 		)
 		if err != nil {

@@ -56,6 +56,7 @@ func TestMatchmakerProducesNewMatchesAccordingToDifficulty(t *testing.T) {
 	for _, testCase := range testCases {
 
 		m, err := mm.New(
+			123,
 			testCase.Difficulty,
 		)
 
@@ -137,6 +138,7 @@ func TestMatchmakerWillProcessMoves(t *testing.T) {
 	)
 
 	m, _ := mm.New(
+		123,
 		game.BeginnerDifficulty,
 	)
 
@@ -166,6 +168,7 @@ func TestMatchmakerReportsConcurrencyCollision(t *testing.T) {
 	)
 
 	m, _ := mm.New(
+		123,
 		game.BeginnerDifficulty,
 	)
 
@@ -245,6 +248,7 @@ func TestMatchmakerWillPersistMoves(t *testing.T) {
 	)
 
 	m, _ := mm.New(
+		123,
 		game.BeginnerDifficulty,
 	)
 

@@ -49,8 +49,8 @@ func TestMemoryStoreDeletesMatchstate(t *testing.T) {
 }
 
 func TestMemoryStoreRangesOverAllMatchstates(t *testing.T) {
-	m1 := testutils.SomeCustomMatch("blabla", 1234)
-	m2 := testutils.SomeCustomMatch("gnegne", 1234)
+	m1 := testutils.SomeCustomMatch("blabla", 1234, 4567)
+	m2 := testutils.SomeCustomMatch("gnegne", 1234, 4567)
 
 	memstore := storage.NewInMemoryStore()
 
