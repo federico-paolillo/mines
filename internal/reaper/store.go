@@ -1,4 +1,4 @@
-package gc
+package reaper
 
 import (
 	"iter"

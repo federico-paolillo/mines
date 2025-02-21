@@ -11,7 +11,7 @@ import (
 func TestGcStoreReturnsAllMatchstates(t *testing.T) {
 	memstore := storage.NewInMemoryStore()
 
-	gcstore := storage.NewGcStore(
+	gcstore := storage.NewReaperStore(
 		memstore,
 	)
 
@@ -42,7 +42,7 @@ func TestGcStoreReturnsAllMatchstates(t *testing.T) {
 func TestGcDeletesMatchstates(t *testing.T) {
 	memstore := storage.NewInMemoryStore()
 
-	gcstore := storage.NewGcStore(
+	gcstore := storage.NewReaperStore(
 		memstore,
 	)
 

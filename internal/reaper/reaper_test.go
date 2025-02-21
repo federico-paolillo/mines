@@ -1,9 +1,9 @@
-package gc_test
+package reaper_test
 
 import (
 	"testing"
 
-	"github.com/federico-paolillo/mines/internal/gc"
+	"github.com/federico-paolillo/mines/internal/reaper"
 	"github.com/federico-paolillo/mines/internal/storage"
 	"github.com/federico-paolillo/mines/internal/testutils"
 	"github.com/federico-paolillo/mines/pkg/game"
@@ -13,8 +13,8 @@ import (
 func TestReaperReapsCompletedMatches(t *testing.T) {
 	memstore := storage.NewInMemoryStore()
 
-	reaper := gc.NewReaper(
-		storage.NewGcStore(
+	reaper := reaper.NewReaper(
+		storage.NewReaperStore(
 			memstore,
 		),
 	)

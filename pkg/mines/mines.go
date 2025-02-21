@@ -5,8 +5,8 @@ import (
 	"log/slog"
 	"time"
 
-	"github.com/federico-paolillo/mines/internal/gc"
 	"github.com/federico-paolillo/mines/internal/generators"
+	"github.com/federico-paolillo/mines/internal/reaper"
 	"github.com/federico-paolillo/mines/internal/storage"
 	"github.com/federico-paolillo/mines/pkg/matchmaking"
 	"github.com/federico-paolillo/mines/pkg/mines/config"
@@ -20,8 +20,7 @@ type Mines struct {
 	MatchStore  matchmaking.Store
 	Matchmaker  *matchmaking.Matchmaker
 	Generator   matchmaking.BoardGenerator
-	Reaper      *gc.Reaper
-	GcStore     gc.Store
+	ReaperStore reaper.Store
 	Cron        gocron.Scheduler
 }
 
@@ -34,9 +33,8 @@ func NewMines(
 	}
 
 	initGenerator(mines, cfg)
-	initMemoryStore(mines)
+	initStores(mines)
 	initMatchmaker(mines)
-	initReaper(mines)
 
 	err := initCron(mines, cfg)
 	if err != nil {
@@ -55,34 +53,30 @@ func initGenerator(mines *Mines, cfg *config.Root) {
 	)
 }
 
-func initMemoryStore(mines *Mines) {
+func initStores(mines *Mines) {
 	mines.MemoryStore = storage.NewInMemoryStore()
 
 	mines.MatchStore = storage.NewMatchStore(
 		mines.MemoryStore,
 	)
 
-	mines.GcStore = storage.NewGcStore(
+	mines.ReaperStore = storage.NewReaperStore(
 		mines.MemoryStore,
 	)
 }
 
 func initMatchmaker(mines *Mines) {
 	mines.Matchmaker = matchmaking.NewMatchmaker(
-		mines.MatchStore,
+		storage.NewMatchStore(
+			mines.MemoryStore,
+		),
 		mines.Generator,
-	)
-}
-
-func initReaper(mines *Mines) {
-	mines.Reaper = gc.NewReaper(
-		mines.GcStore,
 	)
 }
 
 func initCron(mines *Mines, cfg *config.Root) error {
 	if !cfg.Reaper.Bundled {
-		mines.Logger.Info("init: go-cron is disabled")
+		mines.Logger.Info("init: gocron is disabled")
 
 		return nil
 	}
@@ -94,7 +88,7 @@ func initCron(mines *Mines, cfg *config.Root) error {
 	)
 	if err != nil {
 		return fmt.Errorf(
-			"init: could not setup go-cron. %w",
+			"init: could not setup gocron. %w",
 			err,
 		)
 	}

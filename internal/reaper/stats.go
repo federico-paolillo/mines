@@ -1,4 +1,4 @@
-package gc
+package reaper
 
 type ReapStats struct {
 	Expired   int

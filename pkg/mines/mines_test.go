@@ -20,13 +20,11 @@ func TestCompositionRootBoostrapsDependencies(t *testing.T) {
 
 	require.Same(t, logger, mines.Logger, "bootstrapper did not use provided logger")
 
-	require.NotNil(t, mines.Reaper)
 	require.NotNil(t, mines.MemoryStore)
 	require.NotNil(t, mines.Matchmaker)
 	require.NotNil(t, mines.MatchStore)
 	require.NotNil(t, mines.Generator)
-	require.NotNil(t, mines.Matchmaker)
-	require.NotNil(t, mines.GcStore)
+	require.NotNil(t, mines.ReaperStore)
 }
 
 func TestCompositionRootDoesNotSetupCronWhenNotEmbedded(t *testing.T) {

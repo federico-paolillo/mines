@@ -1,4 +1,4 @@
-package gc
+package reaper
 
 import (
 	"github.com/federico-paolillo/mines/pkg/game"

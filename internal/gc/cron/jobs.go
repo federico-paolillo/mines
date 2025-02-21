@@ -5,17 +5,22 @@ import (
 	"log/slog"
 	"time"
 
+	"github.com/federico-paolillo/mines/internal/reaper"
 	"github.com/federico-paolillo/mines/pkg/mines"
 	"github.com/federico-paolillo/mines/pkg/mines/config"
 	"github.com/go-co-op/gocron/v2"
 )
 
-func scheduleReaperJob(mines *mines.Mines, cfg *config.Root) error {
+func ScheduleReaperJob(
+	mines *mines.Mines,
+	cfg *config.Root,
+	reaper *reaper.Reaper,
+) error {
 	reap := func() {
-		reapStats := mines.Reaper.Reap()
+		reapStats := reaper.Reap()
 
 		mines.Logger.Info(
-			"reaper: task complete",
+			"gc: cleanup completed",
 			slog.Int("expired", reapStats.Expired),
 			slog.Int("completed", reapStats.Completed),
 			slog.Int("ok", reapStats.Ok),
@@ -31,8 +36,8 @@ func scheduleReaperJob(mines *mines.Mines, cfg *config.Root) error {
 	if err != nil {
 		return fmt.Errorf(
 			"server: could not schedule reaper job. %w. %w",
-			ErrCronSchedulingFailure,
 			err,
+			ErrCronSchedulingFailure,
 		)
 	}
 

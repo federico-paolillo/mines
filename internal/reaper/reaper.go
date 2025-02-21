@@ -1,4 +1,4 @@
-package gc
+package reaper
 
 type Reaper struct {
 	store Store

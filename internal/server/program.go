@@ -4,7 +4,8 @@ import (
 	"fmt"
 	"log/slog"
 
-	"github.com/federico-paolillo/mines/internal/server/cron"
+	"github.com/federico-paolillo/mines/internal/gc/cron"
+	"github.com/federico-paolillo/mines/internal/reaper"
 	"github.com/federico-paolillo/mines/pkg/mines"
 	"github.com/federico-paolillo/mines/pkg/mines/config"
 	"github.com/gin-gonic/gin"
@@ -26,10 +27,14 @@ func Program(
 		slog.String("endpoint", cfg.Server.Endpoint()),
 	)
 
-	shutdownCron, err := cron.Start(mines, cfg)
+	reaper := reaper.NewReaper(
+		mines.ReaperStore,
+	)
+
+	shutdownCron, err := cron.Start(mines, cfg, reaper)
 	if err != nil {
 		return fmt.Errorf(
-			"server: failed to start go-cron. %w",
+			"server: failed to start gocron. %w",
 			err,
 		)
 	}
