@@ -3,8 +3,8 @@ coverage:
   round: up
 ignore:
   - internal/testutils
-  - internal/syncmapt
   - cmd/
+  - internal/gc
 parsers:
   go:
     partials_as_hits: true
