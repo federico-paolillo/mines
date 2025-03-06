@@ -1,16 +1,13 @@
 package mines
 
 import (
-	"fmt"
 	"log/slog"
-	"time"
 
 	"github.com/federico-paolillo/mines/internal/generators"
 	"github.com/federico-paolillo/mines/internal/reaper"
 	"github.com/federico-paolillo/mines/internal/storage"
 	"github.com/federico-paolillo/mines/pkg/matchmaking"
 	"github.com/federico-paolillo/mines/pkg/mines/config"
-	"github.com/go-co-op/gocron/v2"
 )
 
 // The composition root
@@ -21,7 +18,7 @@ type Mines struct {
 	Matchmaker  *matchmaking.Matchmaker
 	Generator   matchmaking.BoardGenerator
 	ReaperStore reaper.Store
-	Cron        gocron.Scheduler
+	Reaper      *reaper.Reaper
 }
 
 func NewMines(
@@ -35,14 +32,7 @@ func NewMines(
 	initGenerator(mines, cfg)
 	initStores(mines)
 	initMatchmaker(mines)
-
-	err := initCron(mines, cfg)
-	if err != nil {
-		return nil, fmt.Errorf(
-			"init: could not setup composition root. %w",
-			err,
-		)
-	}
+	initReaper(mines)
 
 	return mines, nil
 }
@@ -74,26 +64,8 @@ func initMatchmaker(mines *Mines) {
 	)
 }
 
-func initCron(mines *Mines, cfg *config.Root) error {
-	if !cfg.Reaper.Bundled {
-		mines.Logger.Info("init: gocron is disabled")
-
-		return nil
-	}
-
-	cron, err := gocron.NewScheduler(
-		gocron.WithLogger(mines.Logger),
-		gocron.WithLimitConcurrentJobs(1, gocron.LimitModeReschedule),
-		gocron.WithStopTimeout(time.Duration(cfg.Reaper.TimeoutSeconds)*time.Second),
+func initReaper(mines *Mines) {
+	mines.Reaper = reaper.NewReaper(
+		mines.ReaperStore,
 	)
-	if err != nil {
-		return fmt.Errorf(
-			"init: could not setup gocron. %w",
-			err,
-		)
-	}
-
-	mines.Cron = cron
-
-	return nil
 }

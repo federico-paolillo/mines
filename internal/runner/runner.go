@@ -66,7 +66,7 @@ func Run(program ProgramE) StatusCode {
 		return NotOk
 	}
 
-	logger.Info("runner: program completed 'ok'")
+	logger.Info("runner: program completed with 'ok'")
 
 	return Ok
 }

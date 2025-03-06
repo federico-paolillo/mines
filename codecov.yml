@@ -5,6 +5,7 @@ ignore:
   - internal/testutils
   - cmd/
   - internal/gc
+  - program.go
 parsers:
   go:
     partials_as_hits: true
