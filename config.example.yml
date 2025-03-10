@@ -1,5 +1,4 @@
 reaper:
-  bundled: true
   intervalSeconds: 60
   timeoutSeconds: 10
 seed: 54039

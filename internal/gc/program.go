@@ -1,15 +1,15 @@
 package gc
 
 import (
+	"context"
 	"fmt"
-	"os"
-	"os/signal"
 
 	"github.com/federico-paolillo/mines/pkg/mines"
 	"github.com/federico-paolillo/mines/pkg/mines/config"
 )
 
 func Program(
+	ctx context.Context,
 	mines *mines.Mines,
 	cfg *config.Root,
 ) error {
@@ -32,11 +32,7 @@ func Program(
 
 	defer scheduler.Stop()
 
-	sigc := make(chan os.Signal, 1)
-
-	signal.Notify(sigc, os.Interrupt)
-
-	<-sigc
+	<-ctx.Done()
 
 	return nil
 }

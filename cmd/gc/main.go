@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"os"
 
 	"github.com/federico-paolillo/mines/internal/gc"
@@ -8,7 +9,10 @@ import (
 )
 
 func main() {
-	statusCode := runner.Run(gc.Program)
+	statusCode := runner.RunMany(
+		context.Background(),
+		gc.Program,
+	)
 
 	if statusCode == runner.NotOk {
 		os.Exit(1)

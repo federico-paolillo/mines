@@ -15,7 +15,6 @@ func (c *Server) Endpoint() string {
 
 type Reaper struct {
 	FrequencySeconds int
-	Bundled          bool
 	TimeoutSeconds   int
 }
 
@@ -33,7 +32,6 @@ func Default() *Root {
 			Port: "65000",
 		},
 		Reaper: Reaper{
-			Bundled:          false,
 			FrequencySeconds: 60,
 			TimeoutSeconds:   10,
 		},
