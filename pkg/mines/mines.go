@@ -10,7 +10,7 @@ import (
 	"github.com/federico-paolillo/mines/pkg/mines/config"
 )
 
-// The composition root
+// The composition root.
 type Mines struct {
 	Logger      *slog.Logger
 	MemoryStore *storage.InMemoryStore

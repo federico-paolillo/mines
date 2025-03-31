@@ -1,33 +1,33 @@
+version: "2"
 run:
   timeout: 2m
   tests: false
   go: "1.24"
   concurrency: 4
 linters:
-  enable-all: true
+  default: all
   disable:
     - depguard
-    - varnamelen
-    - mnd
-    - gochecknoglobals
-    - godot
-    - exhaustruct
-    - ireturn
     - err113
+    - gochecknoglobals
     - godox
-    - tenv
+    - mnd
+    - varnamelen
+    - exhaustruct
+  settings:
+    revive:
+      rules:
+        - name: var-naming
+          arguments:
+            - ["ID"]
+    staticcheck:
+      initialisms: ["Id"]
 output:
-  print-issued-lines: true
-  print-linter-name: true
   show-stats: false
-  sort-results: true
+  formats:
+    text:
+      print-linter-name: true
+      print-issued-lines: true
+      colors: true
 issues:
   uniq-by-line: false
-linters-settings:
-  revive:
-    rules:
-      - name: var-naming
-        arguments:
-          - ["ID"]
-  stylecheck:
-    initialisms: ["Id"]

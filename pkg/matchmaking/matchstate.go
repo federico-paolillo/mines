@@ -7,14 +7,14 @@ import (
 
 type Cells = [][]Cell
 
-// Simplified Cell view of a Minesweeper board
+// Simplified Cell view of a Minesweeper board.
 type Cell struct {
 	X, Y  int
 	Mined bool
 	State board.Cellstate
 }
 
-// Summary of how a Match is doing
+// Summary of how a Match is doing.
 type Matchstate struct {
 	Id        string
 	Version   Matchversion

@@ -42,9 +42,10 @@ func hydrateCell(
 		_ = bb.PlaceSafe(cell.X, cell.Y)
 	}
 
-	if cell.State == board.OpenCell {
+	switch cell.State {
+	case board.OpenCell:
 		_ = bb.MarkOpen(cell.X, cell.Y)
-	} else if cell.State == board.FlaggedCell {
+	case board.FlaggedCell:
 		_ = bb.MarkFlagged(cell.X, cell.Y)
 	}
 }

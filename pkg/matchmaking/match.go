@@ -17,7 +17,7 @@ var (
 	ErrGameHasEnded = errors.New("game has ended")
 )
 
-// A Match is a particular instance of a Game that is addressable by an unique identifier
+// A Match is a particular instance of a Game that is addressable by an unique identifier.
 type Match struct {
 	Id        string
 	Version   Matchversion
