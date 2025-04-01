@@ -11,6 +11,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// NewGame starts a new Match
+//
+//	@id			new-match
+//	@summary	Starts a new Match that will last roughly 2h
+//	@router		/match [post]
+//	@param		request	body		req.NewGameDto		true	"Match configuration"
+//	@success	200		{object}	res.MatchstateDto	"Updated Match state"
+//	@failure	400		"Match configuration format is not correct"
+//	@failure	500		"Something went horribly wrong when making the new Match"
 func NewGame(mines *mines.Mines) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var newGameDto req.NewGameDto

@@ -52,9 +52,3 @@ func setupMiddlewares(
 	e.Use(middlewares.LoggingMiddleware(mines))
 }
 
-func setupHandlers(
-	mines *mines.Mines,
-	e *gin.Engine,
-) {
-	attachGameRoutes(mines, e)
-}

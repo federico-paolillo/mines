@@ -6,6 +6,22 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+//	@title			Minewsweeper As a Service API
+//	@version		1.0
+//	@description	All the endpoints necessary to play Minesweeper matches
+//	@accept			json
+//	@produce		json
+// @licence.name BSD 3-Clause License
+// @licence.url https://github.com/federico-paolillo/mines/blob/main/LICENSE
+// @contact.name federico-paolillo
+// @contact.url https://github.com/federico-paolillo/mines/
+func setupHandlers(
+	mines *mines.Mines,
+	e *gin.Engine,
+) {
+	attachGameRoutes(mines, e)
+}
+
 func attachGameRoutes(
 	mines *mines.Mines,
 	e *gin.Engine,

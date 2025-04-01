@@ -12,6 +12,19 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// MakeMove applies a Move to an existing Match
+//
+//	@id			make-move
+//	@summary	Applies a Move to an existing Match
+//	@router		/match/{matchId}/move [post]
+//	@param		matchId	path		string				true	"Match identifier"
+//	@param		request	body		req.MoveDto			true	"Move to apply"
+//	@success	200		{object}	res.MatchstateDto	"Updated Match state"
+//	@failure	400		"Move format is not correct"
+//	@failure	404		"Match does not exist"
+//	@failure	409		"Your update was superseded by another concurrent update"
+//	@failure	422		"The Match has concluded"
+//	@failure	500		"Something went horribly wrong when applying the Move to the Match"
 func MakeMove(mines *mines.Mines) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		matchId := ctx.Param(req.MatchIdParameterName)
@@ -48,6 +61,12 @@ func MakeMove(mines *mines.Mines) gin.HandlerFunc {
 
 		if errors.Is(err, matchmaking.ErrGameHasEnded) {
 			ctx.Status(http.StatusUnprocessableEntity)
+
+			return
+		}
+
+		if errors.Is(err, matchmaking.ErrConcurrentUpdate) {
+			ctx.Status(http.StatusConflict)
 
 			return
 		}

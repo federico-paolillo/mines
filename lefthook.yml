@@ -12,6 +12,8 @@ format:
   commands:
     golangci:
       run: go tool golangci-lint run --fix
+    swag:
+      run: go tool swag fmt -g routes.go --dir internal/server,pkg/
 
 cover:
   commands:
@@ -22,6 +24,11 @@ build:
   commands:
     gobuild:
       run: go build -v ./...
+
+swagger:
+  commands:
+    swag:
+      run: go tool swag init -g routes.go --outputTypes yaml --output docs/ --dir internal/server/,pkg/ --generatedTime
 
 pre-push:
   commands:

@@ -1,0 +1,175 @@
+consumes:
+- application/json
+definitions:
+  board.Cellstate:
+    enum:
+    - open
+    - closed
+    - flagged
+    - unfathomable
+    type: string
+    x-enum-varnames:
+    - OpenCell
+    - ClosedCell
+    - FlaggedCell
+    - unfathomableCell
+  game.Difficulty:
+    enum:
+    - beginner
+    - intermediate
+    - expert
+    type: string
+    x-enum-varnames:
+    - BeginnerDifficulty
+    - IntermediateDifficulty
+    - ExpertDifficulty
+  game.Gamestate:
+    enum:
+    - playing
+    - lost
+    - won
+    type: string
+    x-enum-varnames:
+    - PlayingGame
+    - LostGame
+    - WonGame
+  matchmaking.Movetype:
+    enum:
+    - open
+    - flag
+    - chord
+    type: string
+    x-enum-varnames:
+    - MoveOpen
+    - MoveFlag
+    - MoveChord
+  req.MoveDto:
+    properties:
+      type:
+        $ref: '#/definitions/matchmaking.Movetype'
+      x:
+        type: integer
+      "y":
+        type: integer
+    required:
+    - type
+    - x
+    - "y"
+    type: object
+  req.NewGameDto:
+    properties:
+      difficulty:
+        $ref: '#/definitions/game.Difficulty'
+    required:
+    - difficulty
+    type: object
+  res.CellDto:
+    properties:
+      state:
+        $ref: '#/definitions/board.Cellstate'
+      x:
+        type: integer
+      "y":
+        type: integer
+    type: object
+  res.MatchstateDto:
+    properties:
+      cells:
+        items:
+          items:
+            $ref: '#/definitions/res.CellDto'
+          type: array
+        type: array
+      height:
+        type: integer
+      id:
+        type: string
+      lives:
+        type: integer
+      state:
+        $ref: '#/definitions/game.Gamestate'
+      width:
+        type: integer
+    type: object
+info:
+  contact:
+    name: federico-paolillo
+    url: https://github.com/federico-paolillo/mines/
+  description: All the endpoints necessary to play Minesweeper matches
+  title: Minewsweeper As a Service API
+  version: "1.0"
+paths:
+  /match:
+    post:
+      operationId: new-match
+      parameters:
+      - description: Match configuration
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/req.NewGameDto'
+      responses:
+        "200":
+          description: Updated Match state
+          schema:
+            $ref: '#/definitions/res.MatchstateDto'
+        "400":
+          description: Match configuration format is not correct
+        "500":
+          description: Something went horribly wrong when making the new Match
+      summary: Starts a new Match that will last roughly 2h
+  /match/{matchId}:
+    get:
+      operationId: get-match
+      parameters:
+      - description: Match identifier
+        in: path
+        name: matchId
+        required: true
+        type: string
+      responses:
+        "200":
+          description: Current Match state
+          schema:
+            $ref: '#/definitions/res.MatchstateDto'
+        "404":
+          description: Match does not exist
+        "500":
+          description: Something went horribly wrong when retrieving the Match
+      summary: Gets a Match with the identifier specified
+  /match/{matchId}/move:
+    post:
+      operationId: make-move
+      parameters:
+      - description: Match identifier
+        in: path
+        name: matchId
+        required: true
+        type: string
+      - description: Move to apply
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/req.MoveDto'
+      responses:
+        "200":
+          description: Updated Match state
+          schema:
+            $ref: '#/definitions/res.MatchstateDto'
+        "400":
+          description: Move format is not correct
+        "404":
+          description: Match does not exist
+        "409":
+          description: Your update was superseded by another concurrent update
+        "422":
+          description: The Match has concluded
+        "500":
+          description: Something went horribly wrong when applying the Move to the
+            Match
+      summary: Applies a Move to an existing Match
+produces:
+- application/json
+swagger: "2.0"

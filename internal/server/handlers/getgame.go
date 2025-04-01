@@ -12,6 +12,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// GetGame retrieves an existing Match
+//
+//	@id			get-match
+//	@summary	Gets a Match with the identifier specified
+//	@router		/match/{matchId} [get]
+//	@param		matchId	path		string				true	"Match identifier"
+//	@success	200		{object}	res.MatchstateDto	"Current Match state"
+//	@failure	404		"Match does not exist"
+//	@failure	500		"Something went horribly wrong when retrieving the Match"
 func GetGame(mines *mines.Mines) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		matchId := ctx.Param(req.MatchIdParameterName)
