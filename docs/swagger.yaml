@@ -76,9 +76,7 @@ definitions:
     properties:
       cells:
         items:
-          items:
-            $ref: '#/definitions/res.CellDto'
-          type: array
+          $ref: '#/definitions/res.CellDto'
         type: array
       height:
         type: integer
