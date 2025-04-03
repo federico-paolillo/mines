@@ -31,7 +31,7 @@ func TestMakeMoveHandlerReturnsNewMatchstate(t *testing.T) {
 		1,
 	)
 
-	currentState := matchstate.Cells[0][0].State // Remember that in Dto board origin is 0,0
+	currentState := matchstate.Cells[0].State // Remember that in Dto board origin is 0,0
 	expectedState := board.FlaggedCell
 
 	if currentState != expectedState {

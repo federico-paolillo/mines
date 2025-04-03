@@ -11,23 +11,19 @@ type MatchstateDto struct {
 	State  game.Gamestate `json:"state"`
 	Width  int            `json:"width"`
 	Height int            `json:"height"`
-	Cells  [][]CellDto    `json:"cells"`
+	Cells  []CellDto    	`json:"cells"`
 }
 
 func ToMatchstateDto(matchstate *matchmaking.Matchstate) MatchstateDto {
-	rows := make([][]CellDto, 0, len(matchstate.Cells))
+	cells := make([]CellDto, 0, matchstate.Width * matchstate.Height)
 
 	for _, row := range matchstate.Cells {
-		cols := make([]CellDto, 0, len(row))
-
 		for _, cell := range row {
-			cols = append(
-				cols,
+			cells = append(
+				cells,
 				ToCellDto(cell),
 			)
 		}
-
-		rows = append(rows, cols)
 	}
 
 	return MatchstateDto{
@@ -36,6 +32,6 @@ func ToMatchstateDto(matchstate *matchmaking.Matchstate) MatchstateDto {
 		State:  matchstate.State,
 		Width:  matchstate.Width,
 		Height: matchstate.Height,
-		Cells:  rows,
+		Cells:  cells,
 	}
 }
