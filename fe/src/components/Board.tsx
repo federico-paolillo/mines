@@ -11,16 +11,14 @@ export function Board({ width, height, cells }: BoardProps) {
   const grid = asGrid(width, height, cells);
 
   return (
-    <div className="flex flex-row gap-0">
-      {grid.map((row, i) => {
-        return (
-          <div className="flex flex-col gap-0" key={`row-${i}`}>
-            {row.map((cell, i) => {
-              return <Cell cell={cell} key={`col-${i}`}></Cell>;
-            })}
-          </div>
-        );
-      })}
+    <div className="flex flex-col gap-0">
+      {grid.map((row, rowIndex) => (
+        <div className="flex flex-row gap-0" key={`row-${rowIndex}`}>
+          {row.map((cell, colIndex) => (
+            <Cell cell={cell} key={`${colIndex}`} onMakeMove={() => {}}></Cell>
+          ))}
+        </div>
+      ))}
     </div>
   );
 }

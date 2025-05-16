@@ -8,10 +8,10 @@ function App() {
         width={2}
         height={2}
         cells={[
-          { x: 0, y: 0, state: "closed" },
-          { x: 1, y: 0, state: "closed" },
-          { x: 0, y: 0, state: "closed" },
-          { x: 1, y: 1, state: "closed" },
+          { x: 0, y: 0, state: "open" },
+          { x: 1, y: 0, state: "flagged" },
+          { x: 0, y: 1, state: "closed" },
+          { x: 1, y: 1, state: "unfathomable" },
         ]}
       />
     </main>
