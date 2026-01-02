@@ -42,34 +42,10 @@ export function Game() {
 
   const handleCellClick = (x: number, y: number) => {
     console.log(`Clicked cell at ${x}, ${y}`);
-    // Here we would call the API to open the cell
-    // For visual feedback in this demo, let's toggle state locally
-    setGameState((prev) => {
-      if (!prev || !prev.cells) return prev;
-      const newCells = prev.cells.map((c) => {
-        if (c.x === x && c.y === y) {
-          return { ...c, state: CellstateObject.Open };
-        }
-        return c;
-      });
-      return { ...prev, cells: newCells };
-    });
   };
 
   const handleCellRightClick = (x: number, y: number) => {
     console.log(`Right clicked cell at ${x}, ${y}`);
-    // Here we would call the API to flag the cell
-    setGameState((prev) => {
-        if (!prev || !prev.cells) return prev;
-        const newCells = prev.cells.map((c) => {
-          if (c.x === x && c.y === y) {
-             const newState = c.state === CellstateObject.Closed ? CellstateObject.Flagged : (c.state === CellstateObject.Flagged ? CellstateObject.Closed : c.state);
-            return { ...c, state: newState };
-          }
-          return c;
-        });
-        return { ...prev, cells: newCells };
-      });
   };
 
   return (
