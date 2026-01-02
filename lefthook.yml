@@ -44,7 +44,7 @@ swagger:
       run: go tool swag init -g routes.go --outputTypes yaml --output docs/ --dir internal/server/,pkg/ --generatedTime
     kiota:
       priority: 2
-      run: ./bin/kiota/kiota-1.29.0 generate -l typescript -d docs/swagger.yaml -c MinesClient -o fe/src/client
+      run: ./bin/kiota/kiota-1.29.0-arm64 generate -l typescript -d docs/swagger.yaml -c MinesClient -o fe/src/client
 
 pre-push:
   commands:

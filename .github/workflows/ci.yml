@@ -24,6 +24,9 @@ jobs:
         run: npm ci
         working-directory: fe/
 
+      - name: Swagger
+        run: go tool lefthook run swagger
+
       - name: Build
         run: go tool lefthook run build
 
