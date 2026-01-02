@@ -28,6 +28,8 @@ function makeGrid(cells: CellDto[], width: number, height: number): CellDto[][] 
 
         if (rowIdx >= 0 && rowIdx < height && colIdx >= 0 && colIdx < width) {
             grid[rowIdx][colIdx] = cell;
+        } else {
+            throw new Error(`Cell out of bounds: ${cell.x}, ${cell.y}`);
         }
     }
   });
