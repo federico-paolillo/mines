@@ -7,27 +7,14 @@ interface MinesweeperBoardProps {
   onCellRightClick: (x: number, y: number) => void;
 }
 
-export function MinesweeperBoard({
-  gameState,
-  onCellClick,
-  onCellRightClick,
-}: MinesweeperBoardProps) {
-  const { cells, width, height } = gameState;
-
-  if (!cells || !width || !height) {
-    return <div>Loading board...</div>;
-  }
-
+function makeGrid(cells: CellDto[], width: number, height: number): CellDto[][] {
   // Create a grid structure
   const grid: CellDto[][] = [];
   for (let i = 0; i < height; i++) {
     const row: CellDto[] = [];
     for (let j = 0; j < width; j++) {
-      // Find cell at (j+1, i+1) because 1-based indexing in backend but let's check.
-      // The CellDto has x and y. Let's rely on finding the cell with matching x,y.
-      // However, iterating the cells array is O(N). Doing it for every cell is O(N^2).
-      // A map would be better.
-      row.push({ state: "closed", x: j + 1, y: i + 1 } as unknown as CellDto); // Placeholder
+      // Placeholder
+      row.push({ state: "closed", x: j + 1, y: i + 1 } as unknown as CellDto);
     }
     grid.push(row);
   }
@@ -40,8 +27,7 @@ export function MinesweeperBoard({
       cell.x !== undefined &&
       cell.y !== undefined
     ) {
-        // Backend seems to use 1-based indexing based on loop in export.go: location := dimensions.Location{X: x + 1, Y: y + 1}
-        // So we adjust to 0-based for array access.
+        // Backend seems to use 1-based indexing
         const rowIdx = cell.y - 1;
         const colIdx = cell.x - 1;
 
@@ -50,6 +36,22 @@ export function MinesweeperBoard({
         }
     }
   });
+
+  return grid;
+}
+
+export function MinesweeperBoard({
+  gameState,
+  onCellClick,
+  onCellRightClick,
+}: MinesweeperBoardProps) {
+  const { cells, width, height } = gameState;
+
+  if (!cells || !width || !height) {
+    return <div>Loading board...</div>;
+  }
+
+  const grid = makeGrid(cells, width, height);
 
   return (
     <div
