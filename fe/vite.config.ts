@@ -1,3 +1,5 @@
+/// <reference types="vitest/config" />
+
 import preact from "@preact/preset-vite";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "vite";

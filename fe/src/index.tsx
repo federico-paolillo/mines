@@ -1,9 +1,11 @@
+import "preact/debug";
 import { render } from "preact";
-import { LocationProvider, Route, Router } from "preact-iso";
+import { LocationProvider, Router, Route } from "preact-iso";
 
 import { Header } from "./components/Header.tsx";
-import { NotFound } from "./pages/_404.tsx";
+import { Game } from "./pages/Game/index.tsx";
 import { Home } from "./pages/Home/index.tsx";
+import { NotFound } from "./pages/_404.tsx";
 import "./style.css";
 
 export function App() {
@@ -13,6 +15,7 @@ export function App() {
       <main>
         <Router>
           <Route path="/" component={Home} />
+          <Route path="/game" component={Game} />
           <Route default component={NotFound} />
         </Router>
       </main>
