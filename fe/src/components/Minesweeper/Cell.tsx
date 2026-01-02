@@ -7,6 +7,9 @@ interface CellProps {
   onContextMenu: (x: number, y: number, e: MouseEvent) => void;
 }
 
+const baseClasses =
+  "w-6 h-6 flex items-center justify-center text-xs font-bold select-none cursor-default";
+
 function getCellStyle(state?: Cellstate | null): string {
   switch (state) {
     case CellstateObject.Closed:
@@ -48,9 +51,6 @@ export function Cell({ cell, onClick, onContextMenu }: CellProps) {
       onContextMenu(x, y, e);
     }
   };
-
-  const baseClasses =
-    "w-6 h-6 flex items-center justify-center text-xs font-bold select-none cursor-default";
 
   const specificClasses = getCellStyle(state);
   const content = getCellContent(state);
