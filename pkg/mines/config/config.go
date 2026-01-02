@@ -13,11 +13,6 @@ func (c *Server) Endpoint() string {
 	return net.JoinHostPort(c.Host, c.Port)
 }
 
-type Reaper struct {
-	FrequencySeconds int
-	TimeoutSeconds   int
-}
-
 type Memcached struct {
 	Servers []string
 }
@@ -25,7 +20,6 @@ type Memcached struct {
 type Root struct {
 	Seed      int
 	Server    Server
-	Reaper    Reaper
 	Memcached Memcached
 }
 
@@ -35,10 +29,6 @@ func Default() *Root {
 		Server: Server{
 			Host: "",
 			Port: "65000",
-		},
-		Reaper: Reaper{
-			FrequencySeconds: 60,
-			TimeoutSeconds:   10,
 		},
 		Memcached: Memcached{
 			Servers: []string{},

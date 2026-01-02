@@ -1,6 +1,9 @@
 package testutils
 
 import (
+	"testing"
+	"time"
+
 	"github.com/federico-paolillo/mines/internal/id"
 	"github.com/federico-paolillo/mines/pkg/board"
 	"github.com/federico-paolillo/mines/pkg/dimensions"
@@ -52,4 +55,12 @@ func SomeCustomMatch(
 	)
 
 	return m
+}
+
+func NewMatchState(t *testing.T, id string, version uint64) *matchmaking.Matchstate {
+	t.Helper()
+
+	match := SomeCustomMatch(id, version, time.Now().Unix())
+
+	return match.Status()
 }

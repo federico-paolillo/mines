@@ -2,7 +2,6 @@ package memory
 
 import (
 	"fmt"
-	"iter"
 	"sync"
 
 	"github.com/federico-paolillo/mines/internal/storage"
@@ -68,32 +67,6 @@ func (m *InMemoryStore) Save(matchstate *matchmaking.Matchstate) error {
 	m.states[newEntry.Id] = newEntry
 
 	return nil
-}
-
-func (m *InMemoryStore) All() iter.Seq[*matchmaking.Matchstate] {
-	return func(yield func(s *matchmaking.Matchstate) bool) {
-		m.mu.RLock()
-
-		defer m.mu.RUnlock()
-
-		// TODO: What if yield blocks indefinitely and RLock never gets released ?
-
-		for _, v := range m.states {
-			if !yield(v) {
-				break
-			}
-		}
-	}
-}
-
-func (m *InMemoryStore) Delete(ids ...string) {
-	m.mu.Lock()
-
-	defer m.mu.Unlock()
-
-	for _, v := range ids {
-		delete(m.states, v)
-	}
 }
 
 func cloneMatchstate(matchstate *matchmaking.Matchstate) *matchmaking.Matchstate {

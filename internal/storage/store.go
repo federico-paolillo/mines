@@ -2,7 +2,6 @@ package storage
 
 import (
 	"errors"
-	"iter"
 
 	"github.com/federico-paolillo/mines/pkg/matchmaking"
 )
@@ -14,10 +13,5 @@ var (
 
 type Store interface {
 	Fetch(id string) (*matchmaking.Matchstate, error)
-
 	Save(matchstate *matchmaking.Matchstate) error
-
-	All() iter.Seq[*matchmaking.Matchstate]
-
-	Delete(ids ...string)
 }

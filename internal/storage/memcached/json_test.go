@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/federico-paolillo/mines/internal/storage/memcached"
+	"github.com/federico-paolillo/mines/internal/testutils"
 	"github.com/federico-paolillo/mines/pkg/board"
 	"github.com/federico-paolillo/mines/pkg/game"
 	"github.com/federico-paolillo/mines/pkg/matchmaking"
@@ -59,11 +60,11 @@ func TestMatchstateToJson(t *testing.T) {
 
 func TestJsonToMatchstate(t *testing.T) {
 	jsonState := &memcached.MatchstateJSON{
-		Id:      "test-id",
-		Lives:   3,
-		State:   string(game.PlayingGame),
-		Width:   2,
-		Height:  2,
+		Id:     "test-id",
+		Lives:  3,
+		State:  string(game.PlayingGame),
+		Width:  2,
+		Height: 2,
 		Cells: []memcached.CellJSON{
 			{X: 0, Y: 0, Mined: false, State: string(board.OpenCell)},
 			{X: 1, Y: 0, Mined: true, State: string(board.ClosedCell)},
@@ -119,4 +120,12 @@ func TestJsonToMatchstate(t *testing.T) {
 	assert.Equal(t, jsonState.Height, unmarshaled.Height)
 	assert.Equal(t, jsonState.StartTime, unmarshaled.StartTime)
 	assert.ElementsMatch(t, jsonState.Cells, unmarshaled.Cells)
+}
+
+func TestJsonToMatchstateNoCells(t *testing.T) {
+	match := testutils.NewMatchState(t, "new-match", 0)
+
+	matchToJSON := memcached.MatchstateToJSON(match)
+
+	_ = memcached.JSONToMatchstate(matchToJSON)
 }

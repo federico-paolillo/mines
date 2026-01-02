@@ -20,7 +20,7 @@ type CellJSON struct {
 }
 
 func MatchstateToJSON(match *matchmaking.Matchstate) *MatchstateJSON {
-	cells := make([]CellJSON, 0, len(match.Cells)*len(match.Cells[0]))
+	cells := make([]CellJSON, 0, match.Height*match.Width)
 
 	for _, row := range match.Cells {
 		for _, cell := range row {
@@ -50,8 +50,11 @@ func JSONToMatchstate(json *MatchstateJSON) *matchmaking.Matchstate {
 		cells[i] = make([]matchmaking.Cell, json.Width)
 	}
 
-	for _, cellJSON := range json.Cells {
-		cells[cellJSON.Y][cellJSON.X] = matchmaking.Cell{
+	for i, cellJSON := range json.Cells {
+		yIndex := i / json.Width
+		xIndex := i % json.Width
+
+		cells[yIndex][xIndex] = matchmaking.Cell{
 			X:     cellJSON.X,
 			Y:     cellJSON.Y,
 			Mined: cellJSON.Mined,

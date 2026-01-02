@@ -24,6 +24,4 @@ func TestCompositionRootBoostrapsDependencies(t *testing.T) {
 	require.NotNil(t, mines.Matchmaker)
 	require.NotNil(t, mines.MatchStore)
 	require.NotNil(t, mines.Generator)
-	require.NotNil(t, mines.ReaperStore)
-	require.NotNil(t, mines.Reaper)
 }
