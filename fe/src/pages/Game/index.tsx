@@ -16,52 +16,28 @@ export function Game() {
 
   useEffect(() => {
     // Simulate fetching data
-    if (gameId) {
-      // Mock data
-      const width = 9;
-      const height = 9;
-      const cells: CellDto[] = [];
-      for (let y = 1; y <= height; y++) {
-        for (let x = 1; x <= width; x++) {
-          cells.push({
-            state: CellstateObject.Closed,
-            x,
-            y,
-          });
-        }
+    // Mock data
+    const width = 9;
+    const height = 9;
+    const cells: CellDto[] = [];
+    for (let y = 1; y <= height; y++) {
+      for (let x = 1; x <= width; x++) {
+        cells.push({
+          state: CellstateObject.Closed,
+          x,
+          y,
+        });
       }
-
-      setGameState({
-        id: gameId,
-        lives: 3,
-        state: GamestateObject.Playing,
-        width,
-        height,
-        cells,
-      });
-    } else {
-        // Just for demo if no ID provided
-       const width = 9;
-       const height = 9;
-       const cells: CellDto[] = [];
-       for (let y = 1; y <= height; y++) {
-         for (let x = 1; x <= width; x++) {
-           cells.push({
-             state: CellstateObject.Closed,
-             x,
-             y,
-           });
-         }
-       }
-       setGameState({
-         id: "demo",
-         lives: 3,
-         state: GamestateObject.Playing,
-         width,
-         height,
-         cells,
-       });
     }
+
+    setGameState({
+      id: gameId ?? "demo",
+      lives: 3,
+      state: GamestateObject.Playing,
+      width,
+      height,
+      cells,
+    });
   }, [gameId]);
 
   const handleCellClick = (x: number, y: number) => {
