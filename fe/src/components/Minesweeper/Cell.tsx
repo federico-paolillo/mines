@@ -11,14 +11,14 @@ export function Cell({ cell, onClick, onContextMenu }: CellProps) {
   const { state, x, y } = cell;
 
   const handleClick = () => {
-    if (x !== undefined && y !== undefined && x !== null && y !== null) {
+    if (x && y) {
       onClick(x, y);
     }
   };
 
   const handleContextMenu = (e: MouseEvent) => {
     e.preventDefault();
-    if (x !== undefined && y !== undefined && x !== null && y !== null) {
+    if (x && y) {
       onContextMenu(x, y, e);
     }
   };
