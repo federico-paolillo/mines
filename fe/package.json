@@ -1,0 +1,22 @@
+{
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "biome check --write"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.1.18",
+    "preact": "^10.26.9",
+    "preact-iso": "^2.11.1",
+    "tailwindcss": "^4.1.18"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.3.10",
+    "@preact/preset-vite": "^2.10.2",
+    "typescript": "^5.9.3",
+    "vite": "^7.0.4"
+  }
+}
