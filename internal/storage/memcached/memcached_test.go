@@ -2,6 +2,7 @@ package memcached
 
 import (
 	"context"
+	"os"
 	"testing"
 	"time"
 
@@ -13,10 +14,32 @@ import (
 	"github.com/testcontainers/testcontainers-go/modules/memcached"
 )
 
-func spinMemcached(t *testing.T) *Memcached {
-	t.Helper()
+var MemcachedImageVersion = "memcached:1.6.40"
 
-	ctx := context.Background()
+func spinMemcachedCI(ctx context.Context, t *testing.T) *memcached.Container {
+	t.Helper()
+	t.Log("Spinning Memcached for CI env.")
+
+	container, err := memcached.Run(
+		ctx,
+		MemcachedImageVersion,
+	)
+	if err != nil {
+		t.Fatalf("Could not start memcached: %s", err)
+	}
+
+	t.Cleanup(func() {
+		if err := testcontainers.TerminateContainer(container); err != nil {
+			t.Fatalf("Could not stop memcached: %s", err)
+		}
+	})
+
+	return container
+}
+
+func spinMemcachedLocal(ctx context.Context, t *testing.T) *memcached.Container {
+	t.Helper()
+	t.Log("Spinning Memcached for MacOS/Podman env.")
 
 	// See: https://golang.testcontainers.org/system_requirements/using_podman/#macos
 
@@ -24,7 +47,7 @@ func spinMemcached(t *testing.T) *Memcached {
 
 	container, err := memcached.Run(
 		ctx,
-		"memcached:1.6.40",
+		MemcachedImageVersion,
 		testcontainers.WithProvider(
 			testcontainers.ProviderPodman,
 		),
@@ -38,6 +61,22 @@ func spinMemcached(t *testing.T) *Memcached {
 			t.Fatalf("Could not stop memcached: %s", err)
 		}
 	})
+
+	return container
+}
+
+func spinMemcached(t *testing.T) *Memcached {
+	t.Helper()
+
+	ctx := context.Background()
+
+	var container *memcached.Container
+
+	if os.Getenv("CI") == "true" {
+		container = spinMemcachedCI(ctx, t)
+	} else {
+		container = spinMemcachedLocal(ctx, t)
+	}
 
 	endpoint, err := container.HostPort(ctx)
 
