@@ -21,12 +21,7 @@ function makeGrid(cells: CellDto[], width: number, height: number): CellDto[][] 
 
   // Populate grid from flat cells array
   cells.forEach((cell) => {
-    if (
-      cell.x !== null &&
-      cell.y !== null &&
-      cell.x !== undefined &&
-      cell.y !== undefined
-    ) {
+    if (cell.x && cell.y) {
         // Backend seems to use 1-based indexing
         const rowIdx = cell.y - 1;
         const colIdx = cell.x - 1;
