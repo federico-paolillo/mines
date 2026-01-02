@@ -20,6 +20,10 @@ jobs:
         with:
           node-version: "25.1.0"
 
+      - name: npm ci
+        run: npm ci
+        working-directory: fe/
+
       - name: Build
         run: go tool lefthook run build
 
