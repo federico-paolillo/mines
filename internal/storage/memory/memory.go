@@ -1,20 +1,15 @@
-package storage
+package memory
 
 import (
-	"errors"
 	"fmt"
 	"iter"
 	"sync"
 
+	"github.com/federico-paolillo/mines/internal/storage"
 	"github.com/federico-paolillo/mines/pkg/matchmaking"
 )
 
 type MatchstatesMap = map[string]*matchmaking.Matchstate
-
-var (
-	ErrNoSuchItem       = errors.New("memstore: item not found")
-	ErrConcurrentUpdate = errors.New("memstore: concurrent update detected")
-)
 
 type InMemoryStore struct {
 	mu     sync.RWMutex
@@ -40,7 +35,7 @@ func (m *InMemoryStore) Fetch(id string) (*matchmaking.Matchstate, error) {
 	return nil, fmt.Errorf(
 		"memstore: could not find matchstate '%s'. %w",
 		id,
-		ErrNoSuchItem,
+		storage.ErrNoSuchItem,
 	)
 }
 
@@ -61,14 +56,14 @@ func (m *InMemoryStore) Save(matchstate *matchmaking.Matchstate) error {
 				newEntry.Id,
 				newEntry.Version,
 				existingEntry.Version,
-				ErrConcurrentUpdate,
+				storage.ErrConcurrentUpdate,
 			)
 		}
 	}
 
 	// Change the version before storing
 
-	newEntry.Version = matchmaking.NextVersion()
+	newEntry.Version = NextVersion()
 
 	m.states[newEntry.Id] = newEntry
 

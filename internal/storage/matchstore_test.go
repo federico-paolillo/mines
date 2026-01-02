@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/federico-paolillo/mines/internal/storage"
+	"github.com/federico-paolillo/mines/internal/storage/memory"
 	"github.com/federico-paolillo/mines/internal/testutils"
 	"github.com/federico-paolillo/mines/pkg/game"
 	"github.com/federico-paolillo/mines/pkg/matchmaking"
@@ -24,7 +25,7 @@ func TestMatchStoreFetchesMatch(t *testing.T) {
 	m := testutils.SomeMatch()
 
 	memstore := storage.NewMatchStore(
-		storage.NewInMemoryStore(),
+		memory.NewInMemoryStore(),
 	)
 
 	err := memstore.Save(m)
@@ -80,7 +81,7 @@ func TestMatchStoreFetchesMatch(t *testing.T) {
 
 func TestMatchStoreReturnsErrorWhenMatchDoesNotExist(t *testing.T) {
 	memstore := storage.NewMatchStore(
-		storage.NewInMemoryStore(),
+		memory.NewInMemoryStore(),
 	)
 	_, err := memstore.Fetch(testutils.SomeMatchId)
 
@@ -96,7 +97,7 @@ func TestMatchStoreRefusesToSaveMatchWithDifferentVersionThanStored(t *testing.T
 	m := testutils.SomeMatch()
 
 	memstore := storage.NewMatchStore(
-		storage.NewInMemoryStore(),
+		memory.NewInMemoryStore(),
 	)
 
 	err := memstore.Save(m)
@@ -145,6 +146,8 @@ func TestMatchStoreRefusesToSaveMatchWithDifferentVersionThanStored(t *testing.T
 	)
 
 	err = memstore.Save(matchFromStore)
+
+	t.Log(matchFromStore.Version)
 
 	if !errors.Is(err, matchmaking.ErrConcurrentUpdate) {
 		t.Fatalf(

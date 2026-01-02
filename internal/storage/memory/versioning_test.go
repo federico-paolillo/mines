@@ -1,14 +1,14 @@
-package matchmaking_test
+package memory_test
 
 import (
 	"testing"
 
-	"github.com/federico-paolillo/mines/pkg/matchmaking"
+	"github.com/federico-paolillo/mines/internal/storage/memory"
 )
 
 func TestMatchVersionsAreIncremental(t *testing.T) {
-	v1 := matchmaking.NextVersion()
-	v2 := matchmaking.NextVersion()
+	v1 := memory.NextVersion()
+	v2 := memory.NextVersion()
 
 	if v1 > v2 {
 		t.Fatalf(

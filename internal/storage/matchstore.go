@@ -8,12 +8,12 @@ import (
 )
 
 type MatchStore struct {
-	memstore *InMemoryStore
+	memstore Store
 }
 
-func NewMatchStore(memstore *InMemoryStore) *MatchStore {
+func NewMatchStore(store Store) *MatchStore {
 	return &MatchStore{
-		memstore,
+		store,
 	}
 }
 

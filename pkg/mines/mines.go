@@ -6,6 +6,7 @@ import (
 	"github.com/federico-paolillo/mines/internal/generators"
 	"github.com/federico-paolillo/mines/internal/reaper"
 	"github.com/federico-paolillo/mines/internal/storage"
+	"github.com/federico-paolillo/mines/internal/storage/memory"
 	"github.com/federico-paolillo/mines/pkg/matchmaking"
 	"github.com/federico-paolillo/mines/pkg/mines/config"
 )
@@ -13,7 +14,7 @@ import (
 // The composition root.
 type Mines struct {
 	Logger      *slog.Logger
-	MemoryStore *storage.InMemoryStore
+	MemoryStore storage.Store
 	MatchStore  matchmaking.Store
 	Matchmaker  *matchmaking.Matchmaker
 	Generator   matchmaking.BoardGenerator
@@ -44,7 +45,7 @@ func initGenerator(mines *Mines, cfg *config.Root) {
 }
 
 func initStores(mines *Mines) {
-	mines.MemoryStore = storage.NewInMemoryStore()
+	mines.MemoryStore = memory.NewInMemoryStore()
 
 	mines.MatchStore = storage.NewMatchStore(
 		mines.MemoryStore,

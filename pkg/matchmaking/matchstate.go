@@ -17,11 +17,11 @@ type Cell struct {
 // Summary of how a Match is doing.
 type Matchstate struct {
 	Id        string
-	Version   Matchversion
+	Version   uint64
 	Lives     int
 	State     game.Gamestate
 	Width     int
 	Height    int
 	Cells     Cells
-	StartTime Matchstamp
+	StartTime int64
 }

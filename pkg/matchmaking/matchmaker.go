@@ -23,7 +23,7 @@ func NewMatchmaker(
 }
 
 func (m *Matchmaker) New(
-	startTime Matchstamp,
+	startTime int64,
 	difficulty game.Difficulty,
 ) (*Matchstate, error) {
 	settings := game.GetDifficultySettings(difficulty)
@@ -34,11 +34,9 @@ func (m *Matchmaker) New(
 
 	game := game.NewGame(settings.Lives, board)
 
-	version := NextVersion()
-
 	match := NewMatch(
 		matchId,
-		version,
+		0,
 		startTime,
 		board,
 		game,

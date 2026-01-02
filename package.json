@@ -1,0 +1,13 @@
+{
+  "name": "mines",
+  "private": true,
+  "version": "1.0.0",
+  "description": "mines NPM tools",
+  "license": "BSD-3-Clause",
+  "author": "federico-paolillo",
+  "type": "commonjs",
+  "main": "index.js",
+  "devDependencies": {
+    "@google/gemini-cli": "^0.22.5"
+  }
+}

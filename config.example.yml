@@ -5,3 +5,6 @@ seed: 54039
 server:
   host:
   port: 50000
+memcached:
+  servers:
+    - localhost:11211

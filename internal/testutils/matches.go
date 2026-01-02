@@ -26,8 +26,8 @@ func SomeRandomMatch() *matchmaking.Match {
 
 func SomeCustomMatch(
 	id string,
-	version matchmaking.Matchversion,
-	startTime matchmaking.Matchstamp,
+	version uint64,
+	startTime int64,
 ) *matchmaking.Match {
 	bb := board.NewBuilder(
 		dimensions.Size{

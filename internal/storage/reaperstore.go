@@ -8,12 +8,12 @@ import (
 )
 
 type ReaperStore struct {
-	memstore *InMemoryStore
+	memstore Store
 }
 
-func NewReaperStore(memstore *InMemoryStore) *ReaperStore {
+func NewReaperStore(store Store) *ReaperStore {
 	return &ReaperStore{
-		memstore,
+		store,
 	}
 }
 

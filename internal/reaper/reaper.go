@@ -1,9 +1,5 @@
 package reaper
 
-import (
-	"github.com/federico-paolillo/mines/pkg/matchmaking"
-)
-
 type Reaper struct {
 	store Store
 }
@@ -15,7 +11,7 @@ func NewReaper(store Store) *Reaper {
 }
 
 func (r *Reaper) Reap(
-	now matchmaking.Matchstamp,
+	now int64,
 ) ReapStats {
 	var stats ReapStats
 

@@ -1,4 +1,4 @@
-package storage_test
+package memory_test
 
 import (
 	"errors"
@@ -6,13 +6,14 @@ import (
 	"testing"
 
 	"github.com/federico-paolillo/mines/internal/storage"
+	"github.com/federico-paolillo/mines/internal/storage/memory"
 	"github.com/federico-paolillo/mines/internal/testutils"
 )
 
 func TestMemoryStoreDeletesMatchstate(t *testing.T) {
 	m := testutils.SomeMatch()
 
-	memstore := storage.NewInMemoryStore()
+	memstore := memory.NewInMemoryStore()
 
 	s := m.Status()
 
@@ -52,7 +53,7 @@ func TestMemoryStoreRangesOverAllMatchstates(t *testing.T) {
 	m1 := testutils.SomeCustomMatch("blabla", 1234, 4567)
 	m2 := testutils.SomeCustomMatch("gnegne", 1234, 4567)
 
-	memstore := storage.NewInMemoryStore()
+	memstore := memory.NewInMemoryStore()
 
 	s1 := m1.Status()
 	s2 := m2.Status()
@@ -106,7 +107,7 @@ func TestMemoryStoreRangesOverAllMatchstates(t *testing.T) {
 func TestMemoryStoreSavesMatchstate(t *testing.T) {
 	m := testutils.SomeMatch()
 
-	memstore := storage.NewInMemoryStore()
+	memstore := memory.NewInMemoryStore()
 
 	s := m.Status()
 
@@ -142,7 +143,7 @@ func TestMemoryStoreForbidsConcurrentUpdates(t *testing.T) {
 
 	// Save once, change the same instance and save again
 
-	memstore := storage.NewInMemoryStore()
+	memstore := memory.NewInMemoryStore()
 
 	s1 := m1.Status()
 
@@ -174,7 +175,7 @@ func TestMemoryStoreForbidsConcurrentUpdates(t *testing.T) {
 }
 
 func TestMemoryStoreErrorsWhenMatchstateIsMissing(t *testing.T) {
-	memstore := storage.NewInMemoryStore()
+	memstore := memory.NewInMemoryStore()
 
 	fm, err := memstore.Fetch("doesnotexist")
 

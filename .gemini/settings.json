@@ -1,0 +1,8 @@
+{
+  "privacy": {
+    "usageStatisticsEnabled": false
+  },
+  "security": {
+    "disableYoloMode": true
+  }
+}

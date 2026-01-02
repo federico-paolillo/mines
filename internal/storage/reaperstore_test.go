@@ -4,12 +4,13 @@ import (
 	"testing"
 
 	"github.com/federico-paolillo/mines/internal/storage"
+	"github.com/federico-paolillo/mines/internal/storage/memory"
 	"github.com/federico-paolillo/mines/internal/testutils"
 	"github.com/stretchr/testify/require"
 )
 
 func TestGcStoreReturnsAllMatchstates(t *testing.T) {
-	memstore := storage.NewInMemoryStore()
+	memstore := memory.NewInMemoryStore()
 
 	gcstore := storage.NewReaperStore(
 		memstore,
@@ -40,7 +41,7 @@ func TestGcStoreReturnsAllMatchstates(t *testing.T) {
 }
 
 func TestGcDeletesMatchstates(t *testing.T) {
-	memstore := storage.NewInMemoryStore()
+	memstore := memory.NewInMemoryStore()
 
 	gcstore := storage.NewReaperStore(
 		memstore,

@@ -18,10 +18,15 @@ type Reaper struct {
 	TimeoutSeconds   int
 }
 
+type Memcached struct {
+	Servers []string
+}
+
 type Root struct {
-	Seed   int
-	Server Server
-	Reaper Reaper
+	Seed      int
+	Server    Server
+	Reaper    Reaper
+	Memcached Memcached
 }
 
 func Default() *Root {
@@ -34,6 +39,9 @@ func Default() *Root {
 		Reaper: Reaper{
 			FrequencySeconds: 60,
 			TimeoutSeconds:   10,
+		},
+		Memcached: Memcached{
+			Servers: []string{},
 		},
 	}
 }

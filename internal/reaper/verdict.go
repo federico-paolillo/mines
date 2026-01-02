@@ -16,7 +16,7 @@ var (
 )
 
 func emitVerdict(
-	now matchmaking.Matchstamp,
+	now int64,
 	m *matchmaking.Matchstate,
 ) ReapingVerdict {
 	if isExpired(now, m) {
@@ -30,7 +30,7 @@ func emitVerdict(
 	return Ok
 }
 
-func isExpired(now matchmaking.Matchstamp, m *matchmaking.Matchstate) bool {
+func isExpired(now int64, m *matchmaking.Matchstate) bool {
 	return (now - m.StartTime) > TwoHoursInSeconds
 }
 

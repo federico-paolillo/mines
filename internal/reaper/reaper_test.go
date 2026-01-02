@@ -5,13 +5,14 @@ import (
 
 	"github.com/federico-paolillo/mines/internal/reaper"
 	"github.com/federico-paolillo/mines/internal/storage"
+	"github.com/federico-paolillo/mines/internal/storage/memory"
 	"github.com/federico-paolillo/mines/internal/testutils"
 	"github.com/federico-paolillo/mines/pkg/game"
 	"github.com/stretchr/testify/require"
 )
 
 func TestReaperReapsCompletedMatches(t *testing.T) {
-	memstore := storage.NewInMemoryStore()
+	memstore := memory.NewInMemoryStore()
 
 	r := reaper.NewReaper(
 		storage.NewReaperStore(
