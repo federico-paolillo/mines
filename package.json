@@ -9,8 +9,5 @@
   "main": "index.js",
   "devDependencies": {
     "@google/gemini-cli": "^0.22.5"
-  },
-  "dependencies": {
-    "@microsoft/kiota-bundle": "^1.0.0-preview.99"
   }
 }
