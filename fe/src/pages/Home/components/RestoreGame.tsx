@@ -1,6 +1,6 @@
+import type { FunctionalComponent } from "preact";
 import { useState } from "preact/hooks";
 import { useLocation } from "preact-iso";
-import type { FunctionalComponent } from "preact";
 
 const RestoreGame: FunctionalComponent = () => {
   const [gameId, setGameId] = useState("");

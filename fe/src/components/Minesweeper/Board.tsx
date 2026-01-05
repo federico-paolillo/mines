@@ -1,4 +1,4 @@
-import { MatchstateDto, CellDto } from "../../client/models/res";
+import type { CellDto, MatchstateDto } from "../../client/models/res";
 import { Cell } from "./Cell";
 
 interface MinesweeperBoardProps {
@@ -7,32 +7,35 @@ interface MinesweeperBoardProps {
   onCellRightClick: (x: number, y: number) => void;
 }
 
-function makeGrid(cells: CellDto[], width: number, height: number): CellDto[][] {
-  // Create a grid structure
+function makeGrid(
+  cells: CellDto[],
+  width: number,
+  height: number,
+): CellDto[][] {
   const grid: CellDto[][] = [];
+
   for (let i = 0; i < height; i++) {
     const row: CellDto[] = [];
+
     for (let j = 0; j < width; j++) {
-      // Placeholder
       row.push({ state: "closed", x: j + 1, y: i + 1 } as unknown as CellDto);
     }
+
     grid.push(row);
   }
 
-  // Populate grid from flat cells array
-  cells.forEach((cell) => {
+  for (const cell of cells) {
     if (cell.x && cell.y) {
-        // Backend seems to use 1-based indexing
-        const rowIdx = cell.y - 1;
-        const colIdx = cell.x - 1;
+      const rowIdx = cell.y - 1;
+      const colIdx = cell.x - 1;
 
-        if (rowIdx >= 0 && rowIdx < height && colIdx >= 0 && colIdx < width) {
-            grid[rowIdx][colIdx] = cell;
-        } else {
-            throw new Error(`Cell out of bounds: ${cell.x}, ${cell.y}`);
-        }
+      if (rowIdx >= 0 && rowIdx < height && colIdx >= 0 && colIdx < width) {
+        grid[rowIdx][colIdx] = cell;
+      } else {
+        throw new Error(`Cell out of bounds: ${cell.x}, ${cell.y}`);
+      }
     }
-  });
+  }
 
   return grid;
 }
@@ -52,22 +55,22 @@ export function MinesweeperBoard({
 
   return (
     <div
-      class="inline-block border-l-4 border-t-4 border-white border-r-4 border-b-4 border-[#808080] bg-[#c0c0c0] p-1"
+      class="inline-block border-l-4 border-t-4 border-r-4 border-b-4 border-[#808080] bg-[#c0c0c0] p-1"
       style={{
         display: "grid",
         gridTemplateColumns: `repeat(${width}, 1.5rem)`, // 1.5rem = 24px (w-6)
         gap: "0",
       }}
     >
-      {grid.map((row, rowIndex) =>
-        row.map((cell, colIndex) => (
+      {grid.map((row) =>
+        row.map((cell) => (
           <Cell
             key={`${cell.x}-${cell.y}`}
             cell={cell}
             onClick={onCellClick}
-            onContextMenu={(x, y, e) => onCellRightClick(x, y)}
+            onContextMenu={(x, y) => onCellRightClick(x, y)}
           />
-        ))
+        )),
       )}
     </div>
   );

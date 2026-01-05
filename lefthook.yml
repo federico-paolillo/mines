@@ -1,7 +1,11 @@
 lint:
+  parallel: true
   commands:
     golangci:
       run: go tool golangci-lint run
+    biome:
+      root: fe/
+      run: npm run lint
 
 test:
   commands:
@@ -17,10 +21,6 @@ format:
     swag:
       priority: 2
       run: go tool swag fmt -g routes.go --dir internal/server,pkg/
-    biome:
-      priority: 3
-      root: fe/
-      run: npm run lint
 
 cover:
   commands:

@@ -1,8 +1,8 @@
-import { render, fireEvent, screen, cleanup } from "@testing-library/preact";
-import { describe, it, expect, vi, afterEach } from "vitest";
-import { Cell } from "./Cell";
+import { cleanup, fireEvent, render, screen } from "@testing-library/preact";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { CellstateObject } from "../../client/models/board";
-import { CellDto } from "../../client/models/res";
+import type { CellDto } from "../../client/models/res";
+import { Cell } from "./Cell";
 
 describe("Cell Component", () => {
   afterEach(() => {
@@ -24,7 +24,7 @@ describe("Cell Component", () => {
         cell={{ ...defaultCell, state: CellstateObject.Closed }}
         onClick={onClick}
         onContextMenu={onContextMenu}
-      />
+      />,
     );
 
     const cellElement = screen.getByRole("button");
@@ -38,7 +38,7 @@ describe("Cell Component", () => {
         cell={{ ...defaultCell, state: CellstateObject.Flagged }}
         onClick={vi.fn()}
         onContextMenu={vi.fn()}
-      />
+      />,
     );
 
     expect(screen.getByText("🚩")).toBeDefined();
@@ -50,7 +50,7 @@ describe("Cell Component", () => {
         cell={{ ...defaultCell, state: CellstateObject.Unfathomable }}
         onClick={vi.fn()}
         onContextMenu={vi.fn()}
-      />
+      />,
     );
 
     expect(screen.getByText("💣")).toBeDefined();
@@ -65,7 +65,7 @@ describe("Cell Component", () => {
         cell={defaultCell}
         onClick={onClick}
         onContextMenu={onContextMenu}
-      />
+      />,
     );
 
     const cellElement = screen.getByRole("button");
@@ -84,7 +84,7 @@ describe("Cell Component", () => {
         cell={defaultCell}
         onClick={onClick}
         onContextMenu={onContextMenu}
-      />
+      />,
     );
 
     const cellElement = screen.getByRole("button");
@@ -104,7 +104,7 @@ describe("Cell Component", () => {
         cell={incompleteCell}
         onClick={onClick}
         onContextMenu={onContextMenu}
-      />
+      />,
     );
 
     const cellElement = screen.getByRole("button");

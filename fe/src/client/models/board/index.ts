@@ -4,10 +4,10 @@
 
 export type Cellstate = (typeof CellstateObject)[keyof typeof CellstateObject];
 export const CellstateObject = {
-    Open: "open",
-    Closed: "closed",
-    Flagged: "flagged",
-    Unfathomable: "unfathomable",
+  Open: "open",
+  Closed: "closed",
+  Flagged: "flagged",
+  Unfathomable: "unfathomable",
 } as const;
 /* tslint:enable */
 /* eslint-enable */

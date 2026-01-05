@@ -4,9 +4,9 @@
 
 export type Movetype = (typeof MovetypeObject)[keyof typeof MovetypeObject];
 export const MovetypeObject = {
-    Open: "open",
-    Flag: "flag",
-    Chord: "chord",
+  Open: "open",
+  Flag: "flag",
+  Chord: "chord",
 } as const;
 /* tslint:enable */
 /* eslint-enable */

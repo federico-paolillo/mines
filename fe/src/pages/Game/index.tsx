@@ -1,9 +1,9 @@
-import { useLocation, useRoute } from "preact-iso";
-import { useState, useEffect } from "preact/hooks";
-import { MinesweeperBoard } from "../../components/Minesweeper";
-import { MatchstateDto, CellDto } from "../../client/models/res";
+import { useEffect, useState } from "preact/hooks";
+import { useRoute } from "preact-iso";
 import { CellstateObject } from "../../client/models/board";
 import { GamestateObject } from "../../client/models/game";
+import type { CellDto, MatchstateDto } from "../../client/models/res";
+import { MinesweeperBoard } from "../../components/Minesweeper";
 
 export function Game() {
   const { query } = useRoute();
@@ -51,7 +51,7 @@ export function Game() {
   return (
     <div class="flex flex-col items-center justify-center min-h-screen bg-[#008080]">
       <div class="mb-4 text-white text-xl font-bold">
-          {gameId ? `Game: ${gameId}` : "Minesweeper Demo"}
+        {gameId ? `Game: ${gameId}` : "Minesweeper Demo"}
       </div>
       {gameState ? (
         <MinesweeperBoard

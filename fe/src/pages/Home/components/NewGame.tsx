@@ -1,5 +1,5 @@
-import { useLocation } from "preact-iso";
 import type { FunctionalComponent } from "preact";
+import { useLocation } from "preact-iso";
 
 const NewGame: FunctionalComponent = () => {
   const { route } = useLocation();

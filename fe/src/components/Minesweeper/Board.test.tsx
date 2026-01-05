@@ -1,8 +1,8 @@
-import { render, fireEvent, screen, cleanup } from "@testing-library/preact";
-import { describe, it, expect, vi, afterEach } from "vitest";
-import { MinesweeperBoard } from "./Board";
-import { MatchstateDto, CellDto } from "../../client/models/res";
+import { cleanup, fireEvent, render, screen } from "@testing-library/preact";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { CellstateObject } from "../../client/models/board";
+import type { CellDto, MatchstateDto } from "../../client/models/res";
+import { MinesweeperBoard } from "./Board";
 
 describe("MinesweeperBoard Component", () => {
   afterEach(() => {
@@ -34,7 +34,7 @@ describe("MinesweeperBoard Component", () => {
         gameState={{}}
         onCellClick={onCellClick}
         onCellRightClick={onCellRightClick}
-      />
+      />,
     );
 
     expect(screen.getByText("Loading board...")).toBeDefined();
@@ -49,7 +49,7 @@ describe("MinesweeperBoard Component", () => {
         gameState={defaultGameState}
         onCellClick={onCellClick}
         onCellRightClick={onCellRightClick}
-      />
+      />,
     );
 
     const cells = screen.getAllByRole("button");
@@ -65,7 +65,7 @@ describe("MinesweeperBoard Component", () => {
         gameState={defaultGameState}
         onCellClick={onCellClick}
         onCellRightClick={onCellRightClick}
-      />
+      />,
     );
 
     const cells = screen.getAllByRole("button");
@@ -87,7 +87,7 @@ describe("MinesweeperBoard Component", () => {
         gameState={defaultGameState}
         onCellClick={onCellClick}
         onCellRightClick={onCellRightClick}
-      />
+      />,
     );
 
     const cells = screen.getAllByRole("button");

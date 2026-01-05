@@ -1,5 +1,5 @@
-import { CellDto } from "../../client/models/res";
-import { Cellstate, CellstateObject } from "../../client/models/board";
+import { type Cellstate, CellstateObject } from "../../client/models/board";
+import type { CellDto } from "../../client/models/res";
 
 interface CellProps {
   cell: CellDto;

@@ -1,11 +1,11 @@
-import "preact/debug";
 import { render } from "preact";
-import { LocationProvider, Router, Route } from "preact-iso";
+import { LocationProvider, Route, Router } from "preact-iso";
+import "preact/debug";
 
 import { Header } from "./components/Header.tsx";
+import { NotFound } from "./pages/_404.tsx";
 import { Game } from "./pages/Game/index.tsx";
 import { Home } from "./pages/Home/index.tsx";
-import { NotFound } from "./pages/_404.tsx";
 import "./style.css";
 
 export function App() {
