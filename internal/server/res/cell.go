@@ -6,15 +6,17 @@ import (
 )
 
 type CellDto struct {
-	State board.Cellstate `json:"state"`
-	X     int             `json:"x"`
-	Y     int             `json:"y"`
+	State         board.Cellstate `json:"state"`
+	X             int             `json:"x"`
+	Y             int             `json:"y"`
+	AdjacentMines int             `json:"adjacentMines"`
 }
 
 func ToCellDto(cell matchmaking.Cell) CellDto {
 	return CellDto{
-		State: cell.State,
-		X:     cell.X,
-		Y:     cell.Y,
+		State:         cell.State,
+		X:             cell.X,
+		Y:             cell.Y,
+		AdjacentMines: cell.AdjacentMines,
 	}
 }

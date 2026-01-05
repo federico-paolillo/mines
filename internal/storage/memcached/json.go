@@ -13,10 +13,11 @@ type MatchstateJSON struct {
 }
 
 type CellJSON struct {
-	X     int    `json:"x"`
-	Y     int    `json:"y"`
-	Mined bool   `json:"mined"`
-	State string `json:"state"`
+	X             int    `json:"x"`
+	Y             int    `json:"y"`
+	Mined         bool   `json:"mined"`
+	State         string `json:"state"`
+	AdjacentMines int    `json:"adjacentMines"`
 }
 
 func MatchstateToJSON(match *matchmaking.Matchstate) *MatchstateJSON {
@@ -29,6 +30,10 @@ func MatchstateToJSON(match *matchmaking.Matchstate) *MatchstateJSON {
 				Y:     cell.Y,
 				Mined: cell.Mined,
 				State: cell.State,
+				// This is for completeness' sake. AdjacentMines is calculated dynamically by game logic.
+				// Given that Matchstate is a complete snapshot of the match we carry it around.
+				// When the Match is hydrated from the Matchstate this field is ignored.
+				AdjacentMines: cell.AdjacentMines,
 			})
 		}
 	}
@@ -59,6 +64,10 @@ func JSONToMatchstate(json *MatchstateJSON) *matchmaking.Matchstate {
 			Y:     cellJSON.Y,
 			Mined: cellJSON.Mined,
 			State: cellJSON.State,
+			// This is for completeness' sake. AdjacentMines is calculated dynamically by game logic.
+			// Given that Matchstate is a complete snapshot of the match we carry it around.
+			// When the Match is hydrated from the Matchstate this field is ignored.
+			AdjacentMines: cellJSON.AdjacentMines,
 		}
 	}
 

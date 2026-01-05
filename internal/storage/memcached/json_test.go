@@ -23,12 +23,12 @@ func TestMatchstateToJson(t *testing.T) {
 		Height:  2,
 		Cells: matchmaking.Cells{
 			{
-				{X: 0, Y: 0, Mined: false, State: board.OpenCell},
-				{X: 1, Y: 0, Mined: true, State: board.ClosedCell},
+				{X: 0, Y: 0, Mined: false, State: board.OpenCell, AdjacentMines: 18},
+				{X: 1, Y: 0, Mined: true, State: board.ClosedCell, AdjacentMines: 19},
 			},
 			{
-				{X: 0, Y: 1, Mined: false, State: board.FlaggedCell},
-				{X: 1, Y: 1, Mined: false, State: board.OpenCell},
+				{X: 0, Y: 1, Mined: false, State: board.FlaggedCell, AdjacentMines: 20},
+				{X: 1, Y: 1, Mined: false, State: board.OpenCell, AdjacentMines: 21},
 			},
 		},
 		StartTime: time.Now().Unix(),
@@ -45,10 +45,10 @@ func TestMatchstateToJson(t *testing.T) {
 	assert.Equal(t, matchstate.StartTime, jsonState.StartTime)
 
 	expectedCells := []memcached.CellJSON{
-		{X: 0, Y: 0, Mined: false, State: string(board.OpenCell)},
-		{X: 1, Y: 0, Mined: true, State: string(board.ClosedCell)},
-		{X: 0, Y: 1, Mined: false, State: string(board.FlaggedCell)},
-		{X: 1, Y: 1, Mined: false, State: string(board.OpenCell)},
+		{X: 0, Y: 0, Mined: false, State: string(board.OpenCell), AdjacentMines: 18},
+		{X: 1, Y: 0, Mined: true, State: string(board.ClosedCell), AdjacentMines: 19},
+		{X: 0, Y: 1, Mined: false, State: string(board.FlaggedCell), AdjacentMines: 20},
+		{X: 1, Y: 1, Mined: false, State: string(board.OpenCell), AdjacentMines: 21},
 	}
 
 	assert.ElementsMatch(t, expectedCells, jsonState.Cells)
@@ -66,10 +66,10 @@ func TestJsonToMatchstate(t *testing.T) {
 		Width:  2,
 		Height: 2,
 		Cells: []memcached.CellJSON{
-			{X: 0, Y: 0, Mined: false, State: string(board.OpenCell)},
-			{X: 1, Y: 0, Mined: true, State: string(board.ClosedCell)},
-			{X: 0, Y: 1, Mined: false, State: string(board.FlaggedCell)},
-			{X: 1, Y: 1, Mined: false, State: string(board.OpenCell)},
+			{X: 0, Y: 0, Mined: false, State: string(board.OpenCell), AdjacentMines: 20},
+			{X: 1, Y: 0, Mined: true, State: string(board.ClosedCell), AdjacentMines: 21},
+			{X: 0, Y: 1, Mined: false, State: string(board.FlaggedCell), AdjacentMines: 22},
+			{X: 1, Y: 1, Mined: false, State: string(board.OpenCell), AdjacentMines: 23},
 		},
 		StartTime: time.Now().Unix(),
 	}
@@ -87,12 +87,12 @@ func TestJsonToMatchstate(t *testing.T) {
 	// Reconstruct the expected Cells array in matchmaking.Cells format
 	expectedCells := matchmaking.Cells{
 		{
-			{X: 0, Y: 0, Mined: false, State: board.OpenCell},
-			{X: 1, Y: 0, Mined: true, State: board.ClosedCell},
+			{X: 0, Y: 0, Mined: false, State: board.OpenCell, AdjacentMines: 20},
+			{X: 1, Y: 0, Mined: true, State: board.ClosedCell, AdjacentMines: 21},
 		},
 		{
-			{X: 0, Y: 1, Mined: false, State: board.FlaggedCell},
-			{X: 1, Y: 1, Mined: false, State: board.OpenCell},
+			{X: 0, Y: 1, Mined: false, State: board.FlaggedCell, AdjacentMines: 22},
+			{X: 1, Y: 1, Mined: false, State: board.OpenCell, AdjacentMines: 23},
 		},
 	}
 

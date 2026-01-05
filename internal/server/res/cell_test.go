@@ -11,9 +11,10 @@ import (
 
 func TestCellDtoMarshalsCorrectly(t *testing.T) {
 	cellDto := &res.CellDto{
-		State: board.FlaggedCell,
-		X:     12,
-		Y:     23,
+		State:         board.FlaggedCell,
+		X:             12,
+		Y:             23,
+		AdjacentMines: 100,
 	}
 
 	b, err := json.MarshalIndent(cellDto, "", "  ")
@@ -28,7 +29,8 @@ func TestCellDtoMarshalsCorrectly(t *testing.T) {
 	expectedString := `{
   "state": "flagged",
   "x": 12,
-  "y": 23
+  "y": 23,
+  "adjacentMines": 100
 }`
 
 	actualString := string(b)
@@ -44,18 +46,20 @@ func TestCellDtoMarshalsCorrectly(t *testing.T) {
 
 func TestCellDtoMapsCorrectlyFromMatchmakingCell(t *testing.T) {
 	cell := matchmaking.Cell{
-		X:     1,
-		Y:     2,
-		Mined: true,
-		State: board.FlaggedCell,
+		X:             1,
+		Y:             2,
+		Mined:         true,
+		State:         board.FlaggedCell,
+		AdjacentMines: 14,
 	}
 
 	cellDto := res.ToCellDto(cell)
 
 	expectedCellDto := res.CellDto{
-		X:     1,
-		Y:     2,
-		State: board.FlaggedCell,
+		X:             1,
+		Y:             2,
+		State:         board.FlaggedCell,
+		AdjacentMines: 14,
 	}
 
 	if cellDto != expectedCellDto {

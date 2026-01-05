@@ -9,6 +9,7 @@ import (
 	"github.com/federico-paolillo/mines/pkg/dimensions"
 	"github.com/federico-paolillo/mines/pkg/game"
 	"github.com/federico-paolillo/mines/pkg/matchmaking"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestHydrationRestoresMatchProperly(t *testing.T) {
@@ -54,4 +55,59 @@ func TestHydrationRestoresMatchProperly(t *testing.T) {
 			rebornState,
 		)
 	}
+}
+
+func TestHydrationIgnoresAdjacentMines(t *testing.T) {
+	state := &matchmaking.Matchstate{
+		Id:        "abc",
+		Version:   123,
+		StartTime: 456,
+		Lives:     12,
+		State:     game.PlayingGame,
+		Width:     2,
+		Height:    2,
+		Cells: [][]matchmaking.Cell{
+			{
+				{
+					X:             1,
+					Y:             1,
+					State:         board.ClosedCell,
+					Mined:         false,
+					AdjacentMines: 10000,
+				},
+				{
+					X:             2,
+					Y:             1,
+					State:         board.ClosedCell,
+					Mined:         false,
+					AdjacentMines: 20000,
+				},
+			},
+			{
+				{
+					X:             1,
+					Y:             2,
+					State:         board.ClosedCell,
+					Mined:         false,
+					AdjacentMines: 30000,
+				},
+				{
+					X:             2,
+					Y:             2,
+					State:         board.ClosedCell,
+					Mined:         false,
+					AdjacentMines: 40000,
+				},
+			},
+		},
+	}
+
+	mReborn := storage.HydrateMatch(state)
+
+	rebornState := mReborn.Status()
+
+	assert.Zero(t, rebornState.Cells[0][0].AdjacentMines)
+	assert.Zero(t, rebornState.Cells[0][1].AdjacentMines)
+	assert.Zero(t, rebornState.Cells[1][0].AdjacentMines)
+	assert.Zero(t, rebornState.Cells[1][1].AdjacentMines)
 }

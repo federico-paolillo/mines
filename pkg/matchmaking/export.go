@@ -21,10 +21,11 @@ func ExportCells(b *board.Board) Cells {
 			position := bCell.Position()
 
 			cell := Cell{
-				X:     position.X,
-				Y:     position.Y,
-				State: bCell.Status(),
-				Mined: bCell.Mined(),
+				X:             position.X,
+				Y:             position.Y,
+				State:         bCell.Status(),
+				Mined:         bCell.Mined(),
+				AdjacentMines: bCell.AdjacentMines(),
 			}
 
 			cols = append(cols, cell)

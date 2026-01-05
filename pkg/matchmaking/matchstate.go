@@ -9,9 +9,10 @@ type Cells = [][]Cell
 
 // Simplified Cell view of a Minesweeper board.
 type Cell struct {
-	X, Y  int
-	Mined bool
-	State board.Cellstate
+	X, Y          int
+	Mined         bool
+	State         board.Cellstate
+	AdjacentMines int
 }
 
 // Summary of how a Match is doing.
