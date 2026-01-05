@@ -10,6 +10,10 @@ import { type AdditionalDataHolder, type Parsable, type ParseNode, type Serializ
 
 export interface CellDto extends AdditionalDataHolder, Parsable {
     /**
+     * The adjacentMines property
+     */
+    adjacentMines?: number | null;
+    /**
      * The state property
      */
     state?: Cellstate | null;
@@ -48,6 +52,7 @@ export function createMatchstateDtoFromDiscriminatorValue(parseNode: ParseNode |
 // @ts-ignore
 export function deserializeIntoCellDto(cellDto: Partial<CellDto> | undefined = {}) : Record<string, (node: ParseNode) => void> {
     return {
+        "adjacentMines": n => { cellDto.adjacentMines = n.getNumberValue(); },
         "state": n => { cellDto.state = n.getEnumValue<Cellstate>(CellstateObject); },
         "x": n => { cellDto.x = n.getNumberValue(); },
         "y": n => { cellDto.y = n.getNumberValue(); },
@@ -104,6 +109,7 @@ export interface MatchstateDto extends AdditionalDataHolder, Parsable {
 // @ts-ignore
 export function serializeCellDto(writer: SerializationWriter, cellDto: Partial<CellDto> | undefined | null = {}, isSerializingDerivedType: boolean = false) : void {
     if (!cellDto || isSerializingDerivedType) { return; }
+    writer.writeNumberValue("adjacentMines", cellDto.adjacentMines);
     writer.writeEnumValue<Cellstate>("state", cellDto.state);
     writer.writeNumberValue("x", cellDto.x);
     writer.writeNumberValue("y", cellDto.y);
