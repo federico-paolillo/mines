@@ -32,4 +32,4 @@ dist/
 .DS_Store
 
 # Swagger document
-docs/swagger.yaml
+docs/swagger.yamlfe/coverage/
