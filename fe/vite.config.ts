@@ -6,4 +6,13 @@ import { defineConfig } from "vite";
 
 export default defineConfig({
   plugins: [preact(), tailwindcss()],
+  test: {
+    environment: "jsdom",
+    coverage: {
+      provider: "v8",
+      reporter: ["text", "lcovonly"],
+      reportsDirectory: "coverage",
+      clean: true,
+    },
+  },
 });

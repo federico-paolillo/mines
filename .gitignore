@@ -33,3 +33,5 @@ dist/
 
 # Swagger document
 docs/swagger.yaml
+
+fe/coverage/
