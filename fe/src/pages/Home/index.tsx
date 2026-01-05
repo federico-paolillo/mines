@@ -1,7 +1,30 @@
+import { useLocation } from "preact-iso";
+import { makeNewApiClient } from "../../api";
+import { DifficultyObject } from "../../client/models/game";
 import { NewGame } from "./components/NewGame";
 import { RestoreGame } from "./components/RestoreGame";
 
 export function Home() {
+  const { route } = useLocation();
+
+  const handleNewGame = async () => {
+    // You will not have a backend running for this task.
+    // The user instructed to use the client available in src/fe/api.ts
+    // We use a dummy URL since we don't have a real backend.
+    const client = makeNewApiClient("http://localhost:8080");
+    const result = await client.startNewGame({
+      difficulty: DifficultyObject.Beginner,
+    });
+
+    if (result.success) {
+      const matchId = result.value.id;
+      // Navigate to the game page with the new game id
+      route(`/game?id=${matchId}`);
+    } else {
+      console.error(result.error);
+    }
+  };
+
   return (
     <div class="container mx-auto p-4 text-center">
       <h1 class="text-4xl font-bold">Welcome to Mines</h1>
@@ -19,7 +42,7 @@ export function Home() {
             Click the button below to start a fresh game of Minesweeper. The
             board will be generated for you.
           </p>
-          <NewGame />
+          <NewGame onNewGame={handleNewGame} />
         </div>
 
         <div class="p-6 border rounded-lg">
