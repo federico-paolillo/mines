@@ -1,11 +1,11 @@
-import { createContext } from "preact";
+import { type ComponentChildren, createContext } from "preact";
 import { useContext, useRef } from "preact/hooks";
 import { type MinesApiClient, makeNewApiClient } from "./api";
 
 const ClientContext = createContext<MinesApiClient | undefined>(undefined);
 
 interface ClientProviderProps {
-  children: any;
+  children: ComponentChildren;
 }
 
 export function ClientProvider({ children }: ClientProviderProps) {

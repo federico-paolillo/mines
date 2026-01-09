@@ -1,6 +1,6 @@
 import { useLocation } from "preact-iso";
-import { useApiClient } from "../../clientContext";
 import { DifficultyObject } from "../../client/models/game";
+import { useApiClient } from "../../clientContext";
 import { NewGame } from "./components/NewGame";
 import { RestoreGame } from "./components/RestoreGame";
 
