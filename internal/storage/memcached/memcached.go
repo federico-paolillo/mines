@@ -95,10 +95,14 @@ func (m *Memcached) Save(matchstate *matchmaking.Matchstate) error {
 func (m *Memcached) Healthy() error {
 	err := m.client.Ping()
 
-	return fmt.Errorf(
-		"memcached: failed to ping: %w",
-		err,
-	)
+	if err != nil {
+		return fmt.Errorf(
+			"memcached: failed to ping: %w",
+			err,
+		)
+	}
+
+	return nil
 }
 
 var _ storage.Store = (*Memcached)(nil)
