@@ -8,9 +8,13 @@ lint:
       run: npm run lint
 
 test:
+  parallel: true
   commands:
     gotest:
       run: go test -race -shuffle=on ./...
+    vitest:
+      root: fe/
+      run: npm run test
 
 format:
   parallel: false
@@ -49,11 +53,11 @@ swagger:
 pre-push:
   commands:
     test:
-      glob: "*.go"
+      glob: "*.go|.tsx?"
       run: go tool lefthook run test
 
 pre-commit:
   commands:
     lint:
-      glob: "*.go"
+      glob: "*.go|.tsx?"
       run: go tool lefthook run lint
