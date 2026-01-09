@@ -15,6 +15,26 @@ func Program(
 	mines *mines.Mines,
 	cfg *config.Root,
 ) error {
+	if cfg.Memcached.Enabled {
+		mines.Logger.Info(
+			"server: we are using memcached",
+			slog.String("endpoints", cfg.Memcached.Endpoints()),
+		)
+	} else {
+		mines.Logger.Info(
+			"server: we are using memory store",
+		)
+	}
+
+	err := mines.Store.Healthy()
+
+	if err != nil {
+		return fmt.Errorf(
+			"server: store health check failed. %w",
+			err,
+		)
+	}
+
 	gin.SetMode(gin.ReleaseMode)
 
 	server := NewServer(
@@ -26,8 +46,6 @@ func Program(
 		"server: listening",
 		slog.String("endpoint", cfg.Server.Endpoint()),
 	)
-
-	var err error
 
 	go func() {
 		err = server.ListenAndServe()

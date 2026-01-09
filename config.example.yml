@@ -1,10 +1,10 @@
-reaper:
-  intervalSeconds: 60
-  timeoutSeconds: 10
 seed: 54039
+ttl: 2
 server:
   host:
-  port: 50000
+  port: 65000
 memcached:
+  enabled: false
   servers:
-    - localhost:11211
+    - localhost:60001
+    - localhost:60002

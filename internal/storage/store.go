@@ -14,4 +14,5 @@ var (
 type Store interface {
 	Fetch(id string) (*matchmaking.Matchstate, error)
 	Save(matchstate *matchmaking.Matchstate) error
+	Healthy() error
 }

@@ -1,0 +1,28 @@
+services:
+  memcached-1:
+    image: memcached:1.6.40
+    command:
+      - --memory-limit=512
+      - --verbose
+      - -p 60001
+    expose:
+      - "60001"
+    ports:
+      - "60001:60001"
+    networks:
+      - minesnet
+  memcached-2:
+    image: memcached:1.6.40
+    command:
+      - --memory-limit=512
+      - --verbose
+      - -p 60002
+    expose:
+      - "60002"
+    ports:
+      - "60002:60002"
+    networks:
+      - minesnet
+networks:
+  minesnet:
+    driver: bridge

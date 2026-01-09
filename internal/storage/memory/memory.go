@@ -69,6 +69,10 @@ func (m *InMemoryStore) Save(matchstate *matchmaking.Matchstate) error {
 	return nil
 }
 
+func (m *InMemoryStore) Healthy() error {
+	return nil
+}
+
 func cloneMatchstate(matchstate *matchmaking.Matchstate) *matchmaking.Matchstate {
 	cells := make(matchmaking.Cells, 0, len(matchstate.Cells))
 
@@ -101,3 +105,5 @@ func cloneMatchstate(matchstate *matchmaking.Matchstate) *matchmaking.Matchstate
 		StartTime: matchstate.StartTime,
 	}
 }
+
+var _ storage.Store = (*InMemoryStore)(nil)

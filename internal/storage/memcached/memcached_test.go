@@ -1,4 +1,4 @@
-package memcached
+package memcached_test
 
 import (
 	"context"
@@ -8,19 +8,20 @@ import (
 
 	"github.com/bradfitz/gomemcache/memcache"
 	"github.com/federico-paolillo/mines/internal/storage"
+	"github.com/federico-paolillo/mines/internal/storage/memcached"
 	"github.com/federico-paolillo/mines/internal/testutils"
 	"github.com/stretchr/testify/require"
 	"github.com/testcontainers/testcontainers-go"
-	"github.com/testcontainers/testcontainers-go/modules/memcached"
+	tmemcached "github.com/testcontainers/testcontainers-go/modules/memcached"
 )
 
 var MemcachedImageVersion = "memcached:1.6.40"
 
-func spinMemcachedCI(ctx context.Context, t *testing.T) *memcached.Container {
+func spinMemcachedCI(ctx context.Context, t *testing.T) *tmemcached.Container {
 	t.Helper()
 	t.Log("Spinning Memcached for CI env.")
 
-	container, err := memcached.Run(
+	container, err := tmemcached.Run(
 		ctx,
 		MemcachedImageVersion,
 	)
@@ -37,7 +38,7 @@ func spinMemcachedCI(ctx context.Context, t *testing.T) *memcached.Container {
 	return container
 }
 
-func spinMemcachedLocal(ctx context.Context, t *testing.T) *memcached.Container {
+func spinMemcachedLocal(ctx context.Context, t *testing.T) *tmemcached.Container {
 	t.Helper()
 	t.Log("Spinning Memcached for MacOS/Podman env.")
 
@@ -45,7 +46,7 @@ func spinMemcachedLocal(ctx context.Context, t *testing.T) *memcached.Container 
 
 	t.Setenv("TESTCONTAINERS_RYUK_CONTAINER_PRIVILEGED", "true")
 
-	container, err := memcached.Run(
+	container, err := tmemcached.Run(
 		ctx,
 		MemcachedImageVersion,
 		testcontainers.WithProvider(
@@ -65,12 +66,12 @@ func spinMemcachedLocal(ctx context.Context, t *testing.T) *memcached.Container 
 	return container
 }
 
-func spinMemcached(t *testing.T) *Memcached {
+func spinMemcached(t *testing.T) *memcached.Memcached {
 	t.Helper()
 
 	ctx := context.Background()
 
-	var container *memcached.Container
+	var container *tmemcached.Container
 
 	if os.Getenv("CI") == "true" {
 		container = spinMemcachedCI(ctx, t)
@@ -88,7 +89,7 @@ func spinMemcached(t *testing.T) *Memcached {
 
 	require.NoError(t, err)
 
-	return NewMemcached(client, 2*time.Hour)
+	return memcached.NewMemcached(client, 2*time.Hour)
 }
 
 func TestMemcached(t *testing.T) {
