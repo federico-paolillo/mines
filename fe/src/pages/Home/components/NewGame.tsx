@@ -1,10 +1,12 @@
 import type { FunctionalComponent } from "preact";
-import { useLocation } from "preact-iso";
 
-const NewGame: FunctionalComponent = () => {
-  const { route } = useLocation();
+interface NewGameProps {
+  onNewGame: () => void;
+}
+
+const NewGame: FunctionalComponent<NewGameProps> = ({ onNewGame }) => {
   const handleClick = () => {
-    route("/game");
+    onNewGame();
   };
 
   return (
