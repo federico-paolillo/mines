@@ -5,6 +5,7 @@ import { ClientProvider } from "./clientContext.tsx";
 import { Header } from "./components/Header.tsx";
 import { NotFound } from "./pages/_404.tsx";
 import { Game } from "./pages/Game/index.tsx";
+import { GameOver } from "./pages/GameOver/index.tsx";
 import { Home } from "./pages/Home/index.tsx";
 
 import "./style.css";
@@ -20,6 +21,7 @@ export function App() {
           <Router>
             <Route path="/" component={Home} />
             <Route path="/game" component={Game} />
+            <Route path="/game-over" component={GameOver} />
             <Route default component={NotFound} />
           </Router>
         </main>

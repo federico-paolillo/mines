@@ -1,11 +1,13 @@
 import { useEffect, useState } from "preact/hooks";
-import { useRoute } from "preact-iso";
+import { useLocation, useRoute } from "preact-iso";
 import type { MatchstateDto } from "../../client/models/res";
 import { useApiClient } from "../../clientContext";
+import { Countdown } from "../../components/Countdown";
 import { MinesweeperBoard } from "../../components/Minesweeper";
 import { Spinner } from "../../components/Spinner";
 
 export function Game() {
+  const { route } = useLocation();
   const { query } = useRoute();
   const params = new URLSearchParams(query);
   const gameId = params.get("id");
@@ -43,11 +45,21 @@ export function Game() {
     console.log(`Right clicked cell at ${x}, ${y}`);
   };
 
+  const handleExpired = () => {
+    route("/game-over");
+  };
+
   return (
     <div class="flex flex-col items-center justify-center min-h-screen bg-[#008080]">
       <Spinner isOpen={loading} />
-      <div class="mb-4 text-white text-xl font-bold">
-        {gameId ? `Game: ${gameId}` : "Minesweeper Demo"}
+      <div class="mb-4 text-white text-xl font-bold flex flex-col items-center gap-2">
+        <span>{gameId ? `Game: ${gameId}` : "Minesweeper Demo"}</span>
+        {gameState?.startTime && (
+          <Countdown
+            startTime={gameState.startTime}
+            onExpired={handleExpired}
+          />
+        )}
       </div>
       {gameState ? (
         <MinesweeperBoard

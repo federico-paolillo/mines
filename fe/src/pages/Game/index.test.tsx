@@ -16,6 +16,9 @@ vi.mock("preact-iso", () => ({
   useRoute: () => ({
     query: mockRouteQuery,
   }),
+  useLocation: () => ({
+    route: vi.fn(),
+  }),
 }));
 
 vi.mock("../../components/Spinner", () => ({
