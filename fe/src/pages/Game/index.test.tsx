@@ -1,5 +1,5 @@
 import { render, screen, waitFor } from "@testing-library/preact";
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { Game } from "./index";
 
 // Mock dependencies
@@ -19,7 +19,8 @@ vi.mock("preact-iso", () => ({
 }));
 
 vi.mock("../../components/Spinner", () => ({
-  Spinner: ({ isOpen }: { isOpen: boolean }) => (isOpen ? <div data-testid="spinner">Loading...</div> : null),
+  Spinner: ({ isOpen }: { isOpen: boolean }) =>
+    isOpen ? <div data-testid="spinner">Loading...</div> : null,
 }));
 
 vi.mock("../../components/Minesweeper", () => ({
@@ -29,10 +30,12 @@ vi.mock("../../components/Minesweeper", () => ({
 describe("Game", () => {
   it("fetches game data and shows spinner", async () => {
     // Return a promise that doesn't resolve immediately to check spinner
-    let resolvePromise: (value: any) => void;
+    let resolvePromise: (value: unknown) => void = () => {};
+
     const promise = new Promise((resolve) => {
       resolvePromise = resolve;
     });
+
     mockFetchMatch.mockReturnValue(promise);
 
     render(<Game />);
@@ -41,9 +44,15 @@ describe("Game", () => {
     expect(screen.getByTestId("spinner")).not.toBeNull();
 
     // Resolve promise
-    resolvePromise!({
+    resolvePromise({
       success: true,
-      value: { id: "test-game-id", cells: [], width: 9, height: 9, state: "Playing" },
+      value: {
+        id: "test-game-id",
+        cells: [],
+        width: 9,
+        height: 9,
+        state: "Playing",
+      },
     });
 
     // Wait for spinner to disappear and board to appear

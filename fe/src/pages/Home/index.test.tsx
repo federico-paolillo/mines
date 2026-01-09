@@ -20,28 +20,35 @@ vi.mock("preact-iso", () => ({
 
 // Mock Spinner to easily check if it's rendered
 vi.mock("../../components/Spinner", () => ({
-  Spinner: ({ isOpen }: { isOpen: boolean }) => (isOpen ? <div data-testid="spinner">Loading...</div> : null),
+  Spinner: ({ isOpen }: { isOpen: boolean }) =>
+    isOpen ? <div data-testid="spinner">Loading...</div> : null,
 }));
 
 describe("Home", () => {
   it("shows spinner while loading and navigates on success", async () => {
-     let resolvePromise: (value: any) => void;
-     const promise = new Promise((resolve) => {
-       resolvePromise = resolve;
-     });
-     mockStartNewGame.mockReturnValue(promise);
+    let resolvePromise: (value: unknown) => void = () => {};
 
-     render(<Home />);
-     fireEvent.click(screen.getByText("New Game"));
+    const promise = new Promise((resolve) => {
+      resolvePromise = resolve;
+    });
 
-     expect(screen.getByTestId("spinner")).not.toBeNull();
+    mockStartNewGame.mockReturnValue(promise);
 
-     resolvePromise!({
-       success: true,
-       value: { id: "new-game-id" },
-     });
+    render(<Home />);
 
-    await waitFor(() => expect(mockRoute).toHaveBeenCalledWith("/game?id=new-game-id"));
+    fireEvent.click(screen.getByText("New Game"));
+
+    expect(screen.getByTestId("spinner")).not.toBeNull();
+
+    resolvePromise({
+      success: true,
+      value: { id: "new-game-id" },
+    });
+
+    await waitFor(() =>
+      expect(mockRoute).toHaveBeenCalledWith("/game?id=new-game-id"),
+    );
+
     expect(mockStartNewGame).toHaveBeenCalled();
   });
 });
