@@ -6,6 +6,16 @@ import { defineConfig } from "vite";
 
 export default defineConfig({
   plugins: [preact(), tailwindcss()],
+  server: {
+    proxy: {
+      "/api": {
+        target: "http://localhost:65000",
+        changeOrigin: true,
+        secure: false,
+        rewrite: (path) => path.replace(/^\/api/, ""),
+      },
+    },
+  },
   test: {
     environment: "jsdom",
     coverage: {

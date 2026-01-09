@@ -6,13 +6,11 @@ const ClientContext = createContext<MinesApiClient | undefined>(undefined);
 
 interface ClientProviderProps {
   children: ComponentChildren;
+  apiBaseUrl: string;
 }
 
-export function ClientProvider({ children }: ClientProviderProps) {
-  // Use a dummy URL as per previous instructions since we don't have a real backend
-  const clientRef = useRef<MinesApiClient>(
-    makeNewApiClient("http://localhost:8080"),
-  );
+export function ClientProvider({ children, apiBaseUrl }: ClientProviderProps) {
+  const clientRef = useRef<MinesApiClient>(makeNewApiClient(apiBaseUrl));
 
   return (
     <ClientContext.Provider value={clientRef.current}>
@@ -23,8 +21,10 @@ export function ClientProvider({ children }: ClientProviderProps) {
 
 export function useApiClient(): MinesApiClient {
   const context = useContext(ClientContext);
+
   if (context === undefined) {
     throw new Error("useApiClient must be used within a ClientProvider");
   }
+
   return context;
 }
