@@ -13,11 +13,12 @@ import (
 
 func TestStateDtoMarshalsCorrectly(t *testing.T) {
 	stateDto := res.MatchstateDto{
-		Id:     "abc",
-		Lives:  13,
-		State:  game.LostGame,
-		Width:  123,
-		Height: 321,
+		Id:        "abc",
+		Lives:     13,
+		State:     game.LostGame,
+		Width:     123,
+		Height:    321,
+		StartTime: 1700000000,
 		Cells: []res.CellDto{
 			{
 				State:         board.FlaggedCell,
@@ -74,7 +75,8 @@ func TestStateDtoMarshalsCorrectly(t *testing.T) {
       "y": 1,
       "adjacentMines": 3
     }
-  ]
+  ],
+  "startTime": 1700000000
 }`
 
 	actualString := string(b)
@@ -90,12 +92,13 @@ func TestStateDtoMarshalsCorrectly(t *testing.T) {
 
 func TestStateDtoMapsCorrectlyFromMatchmakingMatchstate(t *testing.T) {
 	matchstate := &matchmaking.Matchstate{
-		Id:      "abc",
-		Version: 1234,
-		Lives:   13,
-		State:   game.LostGame,
-		Width:   3,
-		Height:  1,
+		Id:        "abc",
+		Version:   1234,
+		Lives:     13,
+		State:     game.LostGame,
+		Width:     3,
+		Height:    1,
+		StartTime: 1700000000,
 		Cells: [][]matchmaking.Cell{
 			{
 				matchmaking.Cell{
@@ -126,11 +129,12 @@ func TestStateDtoMapsCorrectlyFromMatchmakingMatchstate(t *testing.T) {
 	matchstateDto := res.ToMatchstateDto(matchstate)
 
 	expectedStateDto := res.MatchstateDto{
-		Id:     "abc",
-		Lives:  13,
-		State:  game.LostGame,
-		Width:  3,
-		Height: 1,
+		Id:        "abc",
+		Lives:     13,
+		State:     game.LostGame,
+		Width:     3,
+		Height:    1,
+		StartTime: 1700000000,
 		Cells: []res.CellDto{
 			{
 				State:         board.FlaggedCell,
