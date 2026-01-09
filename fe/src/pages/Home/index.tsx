@@ -1,14 +1,18 @@
+import { useState } from "preact/hooks";
 import { useLocation } from "preact-iso";
 import { DifficultyObject } from "../../client/models/game";
 import { useApiClient } from "../../clientContext";
+import { Spinner } from "../../components/Spinner";
 import { NewGame } from "./components/NewGame";
 import { RestoreGame } from "./components/RestoreGame";
 
 export function Home() {
   const { route } = useLocation();
   const client = useApiClient();
+  const [loading, setLoading] = useState(false);
 
   const handleNewGame = async () => {
+    setLoading(true);
     const result = await client.startNewGame({
       difficulty: DifficultyObject.Beginner,
     });
@@ -19,11 +23,13 @@ export function Home() {
       route(`/game?id=${matchId}`);
     } else {
       console.error(result.error);
+      setLoading(false);
     }
   };
 
   return (
     <div class="container mx-auto p-4 text-center">
+      <Spinner isOpen={loading} />
       <h1 class="text-4xl font-bold">Welcome to Mines</h1>
       <p class="mt-4 text-lg">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus.
