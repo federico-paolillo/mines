@@ -13,7 +13,7 @@ export default defineConfig({
       reporter: ["text", "lcovonly"],
       reportsDirectory: "coverage",
       clean: true,
-      exclude: ["client/**/*"],
+      exclude: ["src/client/**/*.{ts,tsx}"],
     },
   },
 });
