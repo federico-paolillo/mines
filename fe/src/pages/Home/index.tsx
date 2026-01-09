@@ -1,17 +1,14 @@
 import { useLocation } from "preact-iso";
-import { makeNewApiClient } from "../../api";
+import { useApiClient } from "../../clientContext";
 import { DifficultyObject } from "../../client/models/game";
 import { NewGame } from "./components/NewGame";
 import { RestoreGame } from "./components/RestoreGame";
 
 export function Home() {
   const { route } = useLocation();
+  const client = useApiClient();
 
   const handleNewGame = async () => {
-    // You will not have a backend running for this task.
-    // The user instructed to use the client available in src/fe/api.ts
-    // We use a dummy URL since we don't have a real backend.
-    const client = makeNewApiClient("http://localhost:8080");
     const result = await client.startNewGame({
       difficulty: DifficultyObject.Beginner,
     });
