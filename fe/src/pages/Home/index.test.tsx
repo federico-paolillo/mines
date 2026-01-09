@@ -34,7 +34,7 @@ describe("Home", () => {
      render(<Home />);
      fireEvent.click(screen.getByText("New Game"));
 
-     expect(screen.getByTestId("spinner")).toBeInTheDocument();
+     expect(screen.getByTestId("spinner")).not.toBeNull();
 
      resolvePromise!({
        success: true,

@@ -42,7 +42,7 @@ describe("Game", () => {
     render(<Game />);
 
     // Check spinner is visible
-    expect(screen.getByTestId("spinner")).toBeInTheDocument();
+    expect(screen.getByTestId("spinner")).not.toBeNull();
 
     // Resolve promise
     resolvePromise!({
@@ -51,8 +51,8 @@ describe("Game", () => {
     });
 
     // Wait for spinner to disappear and board to appear
-    await waitFor(() => expect(screen.queryByTestId("spinner")).not.toBeInTheDocument());
-    expect(screen.getByTestId("board")).toBeInTheDocument();
+    await waitFor(() => expect(screen.queryByTestId("spinner")).toBeNull());
+    expect(screen.getByTestId("board")).not.toBeNull();
     expect(mockFetchMatch).toHaveBeenCalledWith("test-game-id");
   });
 });
