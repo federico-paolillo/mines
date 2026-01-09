@@ -27,10 +27,6 @@ vi.mock("../../components/Minesweeper", () => ({
 }));
 
 describe("Game", () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   it("fetches game data and shows spinner", async () => {
     // Return a promise that doesn't resolve immediately to check spinner
     let resolvePromise: (value: any) => void;

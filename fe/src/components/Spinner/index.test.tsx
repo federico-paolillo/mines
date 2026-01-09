@@ -1,10 +1,6 @@
-import { cleanup, render, screen } from "@testing-library/preact";
-import { afterEach, describe, expect, it } from "vitest";
+import { render, screen } from "@testing-library/preact";
+import { describe, expect, it } from "vitest";
 import { Spinner } from "./index";
-
-afterEach(() => {
-  cleanup();
-});
 
 describe("Spinner", () => {
   it("renders when isOpen is true", () => {
