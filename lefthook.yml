@@ -53,11 +53,17 @@ swagger:
 pre-push:
   commands:
     test:
-      glob: "*.go|.tsx?"
+      glob:
+        - "*.go"
+        - "*.tsx"
+        - "*.ts"
       run: go tool lefthook run test
 
 pre-commit:
   commands:
     lint:
-      glob: "*.go|.tsx?"
+      glob:
+        - "*.go"
+        - "*.tsx"
+        - "*.ts"
       run: go tool lefthook run lint
