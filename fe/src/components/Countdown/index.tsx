@@ -1,5 +1,5 @@
 import { useEffect, useState } from "preact/hooks";
-import { formatSecondsToHhMmSs, toUnixTimestamp } from "../../time";
+import { calculateTimeLeftInSeconds, formatSecondsToHhMmSs, toUnixTimestamp } from "../../time";
 
 interface CountdownProps {
   startTime: number; // Unix timestamp in seconds
@@ -8,44 +8,32 @@ interface CountdownProps {
 }
 
 export function Countdown({ startTime, durationSeconds, onExpired }: CountdownProps) {
-  // startTime is in seconds, convert to milliseconds for date-fns if needed
-  // or just work with seconds since we are counting down seconds.
-
-  // We want to count down from (startTime + duration) - now.
-
-  const [timeLeft, setTimeLeft] = useState<number>(0);
+  // Initialize with current calculation to avoid flash of 00:00:00
+  const [timeLeft, setTimeLeft] = useState<number>(() =>
+    calculateTimeLeftInSeconds(startTime, durationSeconds, toUnixTimestamp(new Date()))
+  );
 
   useEffect(() => {
-    const calculateTimeLeft = () => {
-      const now = toUnixTimestamp(new Date()); // Current time in seconds
-      const endTime = startTime + durationSeconds;
-      const remaining = endTime - now;
+    // Check immediately on mount/update
+    const currentRemaining = calculateTimeLeftInSeconds(startTime, durationSeconds, toUnixTimestamp(new Date()));
+    setTimeLeft(currentRemaining);
 
-      if (remaining <= 0) {
-        setTimeLeft(0);
+    if (currentRemaining === 0) {
+      onExpired();
+      return;
+    }
+
+    const intervalHandle = setInterval(() => {
+      const remaining = calculateTimeLeftInSeconds(startTime, durationSeconds, toUnixTimestamp(new Date()));
+      setTimeLeft(remaining);
+
+      if (remaining === 0) {
+        clearInterval(intervalHandle);
         onExpired();
-        return 0;
-      }
-      return remaining;
-    };
-
-    // Initial calculation
-    const initialRemaining = calculateTimeLeft();
-    setTimeLeft(initialRemaining);
-
-    // If expired immediately, no need for interval (handled in calculateTimeLeft)
-    if (initialRemaining <= 0) return;
-
-    const intervalId = setInterval(() => {
-      const remaining = calculateTimeLeft();
-      if (remaining <= 0) {
-        clearInterval(intervalId);
-      } else {
-        setTimeLeft(remaining);
       }
     }, 1000);
 
-    return () => clearInterval(intervalId);
+    return () => clearInterval(intervalHandle);
   }, [startTime, durationSeconds, onExpired]);
 
   return (

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatSecondsToHhMmSs, toUnixTimestamp } from "./time";
+import { calculateTimeLeftInSeconds, formatSecondsToHhMmSs, toUnixTimestamp } from "./time";
 
 describe("time", () => {
   describe("toUnixTimestamp", () => {
@@ -31,6 +31,36 @@ describe("time", () => {
 
     it("should format hours, minutes and seconds", () => {
       expect(formatSecondsToHhMmSs(3665)).toBe("01:01:05");
+    });
+  });
+
+  describe("calculateTimeLeftInSeconds", () => {
+    it("should calculate remaining time correctly", () => {
+      const start = 1000;
+      const duration = 100;
+      const now = 1050;
+      expect(calculateTimeLeftInSeconds(start, duration, now)).toBe(50);
+    });
+
+    it("should return 0 if time is up", () => {
+      const start = 1000;
+      const duration = 100;
+      const now = 1100;
+      expect(calculateTimeLeftInSeconds(start, duration, now)).toBe(0);
+    });
+
+    it("should return 0 if time is passed", () => {
+      const start = 1000;
+      const duration = 100;
+      const now = 1200;
+      expect(calculateTimeLeftInSeconds(start, duration, now)).toBe(0);
+    });
+
+    it("should return duration if now is start time", () => {
+      const start = 1000;
+      const duration = 100;
+      const now = 1000;
+      expect(calculateTimeLeftInSeconds(start, duration, now)).toBe(100);
     });
   });
 });

@@ -25,3 +25,20 @@ export function formatSecondsToHhMmSs(seconds: number): string {
 
   return `${padWithTwoZeros(h.toString())}:${padWithTwoZeros(m.toString())}:${padWithTwoZeros(s.toString())}`;
 }
+
+/**
+ * Calculates the remaining time in seconds.
+ * @param startTimeInSeconds The start time in UNIX seconds.
+ * @param durationInSeconds The duration in seconds.
+ * @param nowInSeconds The current time in UNIX seconds.
+ * @returns The remaining time in seconds, or 0 if expired.
+ */
+export function calculateTimeLeftInSeconds(
+  startTimeInSeconds: number,
+  durationInSeconds: number,
+  nowInSeconds: number,
+): number {
+  const endTimeInSeconds = startTimeInSeconds + durationInSeconds;
+  const remainingTimeInSeconds = endTimeInSeconds - nowInSeconds;
+  return Math.max(0, remainingTimeInSeconds);
+}
