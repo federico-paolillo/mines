@@ -1,8 +1,16 @@
 import { render, screen, waitFor } from "@testing-library/preact";
-import { describe, expect, it, vi, beforeEach, afterEach, Mock } from "vitest";
-import { Game } from "./index";
-import { useRoute, useLocation } from "preact-iso";
+import { useLocation, useRoute } from "preact-iso";
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  type Mock,
+  vi,
+} from "vitest";
 import { useApiClient } from "../../clientContext";
+import { Game } from "./index";
 
 // Mock dependencies
 vi.mock("preact-iso", () => ({
@@ -19,14 +27,25 @@ vi.mock("../../components/Minesweeper", () => ({
 }));
 
 vi.mock("../../components/Spinner", () => ({
-  Spinner: ({ isOpen }: { isOpen: boolean }) => (isOpen ? <div data-testid="spinner">Loading...</div> : null),
+  Spinner: ({ isOpen }: { isOpen: boolean }) =>
+    isOpen ? <div data-testid="spinner">Loading...</div> : null,
 }));
 
 vi.mock("../../components/Countdown", () => ({
-  Countdown: ({ startTime, durationSeconds, onExpired }: { startTime: number; durationSeconds: number; onExpired: () => void }) => (
+  Countdown: ({
+    startTime,
+    durationSeconds,
+    onExpired,
+  }: {
+    startTime: number;
+    durationSeconds: number;
+    onExpired: () => void;
+  }) => (
     <div data-testid="countdown">
       Countdown: {startTime} - Duration: {durationSeconds}
-      <button onClick={onExpired} data-testid="expire-button">Expire</button>
+      <button onClick={onExpired} data-testid="expire-button">
+        Expire
+      </button>
     </div>
   ),
 }));
@@ -75,7 +94,9 @@ describe("Game Page", () => {
     });
 
     expect(screen.getByTestId("minesweeper-board")).not.toBeNull();
-    expect(screen.getByTestId("countdown").textContent).toContain(`Countdown: ${startTime} - Duration: ${2 * 60 * 60}`);
+    expect(screen.getByTestId("countdown").textContent).toContain(
+      `Countdown: ${startTime} - Duration: ${2 * 60 * 60}`,
+    );
   });
 
   it("should navigate to game over when countdown expires", async () => {
@@ -119,7 +140,9 @@ describe("Game Page", () => {
       expect(screen.queryByTestId("spinner")).toBeNull();
     });
 
-    expect(screen.getByText("Game not found or failed to load.")).not.toBeNull();
+    expect(
+      screen.getByText("Game not found or failed to load."),
+    ).not.toBeNull();
     consoleSpy.mockRestore();
   });
 });

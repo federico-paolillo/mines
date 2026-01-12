@@ -8,9 +8,9 @@
 	"files": {
 		"ignoreUnknown": false,
 		"includes": [
-			"**/src/**/*.ts",
-			"**/src/**/*.tsx",
-			"!!**/src/client/**/*.ts"
+			"**/*.ts",
+			"**/*.tsx",
+			"!**/src/client/**"
 		]
 	},
 	"formatter": {
@@ -22,7 +22,9 @@
 		"enabled": true,
 		"rules": {
 			"recommended": true,
-			"a11y": "off"
+			"a11y": {
+				"recommended": false
+			}
 		}
 	},
 	"javascript": {

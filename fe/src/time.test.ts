@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { calculateTimeLeftInSeconds, formatSecondsToHhMmSs, toUnixTimestamp } from "./time";
+import {
+  calculateTimeLeftInSeconds,
+  formatSecondsToHhMmSs,
+  toUnixTimestamp,
+} from "./time";
 
 describe("time", () => {
   describe("toUnixTimestamp", () => {
