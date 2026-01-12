@@ -1,5 +1,6 @@
 import { intervalToDuration } from "date-fns";
 import { useEffect, useState } from "preact/hooks";
+import { padWithTwoZeros } from "../../strings";
 import { toUnixTimestamp } from "../../time";
 
 interface CountdownProps {
@@ -58,8 +59,7 @@ export function Countdown({ startTime, durationSeconds, onExpired }: CountdownPr
     const m = duration.minutes || 0;
     const s = duration.seconds || 0;
 
-    const pad = (n: number) => n.toString().padStart(2, "0");
-    return `${pad(h)}:${pad(m)}:${pad(s)}`;
+    return `${padWithTwoZeros(h.toString())}:${padWithTwoZeros(m.toString())}:${padWithTwoZeros(s.toString())}`;
   };
 
   return (
