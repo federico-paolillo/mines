@@ -23,9 +23,9 @@ vi.mock("../../components/Spinner", () => ({
 }));
 
 vi.mock("../../components/Countdown", () => ({
-  Countdown: ({ startTime, onExpired }: { startTime: number; onExpired: () => void }) => (
+  Countdown: ({ startTime, durationSeconds, onExpired }: { startTime: number; durationSeconds: number; onExpired: () => void }) => (
     <div data-testid="countdown">
-      Countdown: {startTime}
+      Countdown: {startTime} - Duration: {durationSeconds}
       <button onClick={onExpired} data-testid="expire-button">Expire</button>
     </div>
   ),
@@ -75,7 +75,7 @@ describe("Game Page", () => {
     });
 
     expect(screen.getByTestId("minesweeper-board")).not.toBeNull();
-    expect(screen.getByTestId("countdown").textContent).toContain(`Countdown: ${startTime}`);
+    expect(screen.getByTestId("countdown").textContent).toContain(`Countdown: ${startTime} - Duration: ${2 * 60 * 60}`);
   });
 
   it("should navigate to game over when countdown expires", async () => {

@@ -57,6 +57,7 @@ export function Game() {
         {gameState?.startTime && (
           <Countdown
             startTime={gameState.startTime}
+            durationSeconds={2 * 60 * 60}
             onExpired={handleExpired}
           />
         )}

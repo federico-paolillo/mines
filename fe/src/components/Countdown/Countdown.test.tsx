@@ -4,6 +4,8 @@ import { toUnixTimestamp } from "../../time";
 import { Countdown } from "./index";
 
 describe("Countdown", () => {
+  const DURATION_SECONDS = 2 * 60 * 60; // 2 hours
+
   beforeEach(() => {
     vi.useFakeTimers();
   });
@@ -15,7 +17,7 @@ describe("Countdown", () => {
   it("should display initial time correctly", () => {
     const startTime = toUnixTimestamp(new Date());
     const onExpired = vi.fn();
-    render(<Countdown startTime={startTime} onExpired={onExpired} />);
+    render(<Countdown startTime={startTime} durationSeconds={DURATION_SECONDS} onExpired={onExpired} />);
 
     // 2 hours = 02:00:00
     expect(screen.getByTestId("countdown").textContent).toBe("02:00:00");
@@ -24,7 +26,7 @@ describe("Countdown", () => {
   it("should countdown correctly", () => {
     const startTime = toUnixTimestamp(new Date());
     const onExpired = vi.fn();
-    render(<Countdown startTime={startTime} onExpired={onExpired} />);
+    render(<Countdown startTime={startTime} durationSeconds={DURATION_SECONDS} onExpired={onExpired} />);
 
     act(() => {
       vi.advanceTimersByTime(1000);
@@ -40,11 +42,11 @@ describe("Countdown", () => {
   it("should call onExpired when time is up", () => {
     const startTime = toUnixTimestamp(new Date());
     const onExpired = vi.fn();
-    render(<Countdown startTime={startTime} onExpired={onExpired} />);
+    render(<Countdown startTime={startTime} durationSeconds={DURATION_SECONDS} onExpired={onExpired} />);
 
     // Advance 2 hours + 1 second
     act(() => {
-      vi.advanceTimersByTime(2 * 60 * 60 * 1000 + 1000);
+      vi.advanceTimersByTime(DURATION_SECONDS * 1000 + 1000);
     });
 
     expect(screen.getByTestId("countdown").textContent).toBe("00:00:00");
@@ -52,9 +54,9 @@ describe("Countdown", () => {
   });
 
   it("should handle already expired start time", () => {
-    const startTime = toUnixTimestamp(new Date()) - (2 * 60 * 60 + 100); // Expired 100s ago
+    const startTime = toUnixTimestamp(new Date()) - (DURATION_SECONDS + 100); // Expired 100s ago
     const onExpired = vi.fn();
-    render(<Countdown startTime={startTime} onExpired={onExpired} />);
+    render(<Countdown startTime={startTime} durationSeconds={DURATION_SECONDS} onExpired={onExpired} />);
 
     expect(screen.getByTestId("countdown").textContent).toBe("00:00:00");
     expect(onExpired).toHaveBeenCalled();

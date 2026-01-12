@@ -4,23 +4,22 @@ import { toUnixTimestamp } from "../../time";
 
 interface CountdownProps {
   startTime: number; // Unix timestamp in seconds
+  durationSeconds: number; // Duration in seconds
   onExpired: () => void;
 }
 
-const MATCH_DURATION_SECONDS = 2 * 60 * 60; // 2 hours
-
-export function Countdown({ startTime, onExpired }: CountdownProps) {
+export function Countdown({ startTime, durationSeconds, onExpired }: CountdownProps) {
   // startTime is in seconds, convert to milliseconds for date-fns if needed
   // or just work with seconds since we are counting down seconds.
 
-  // We want to count down from (startTime + 2h) - now.
+  // We want to count down from (startTime + duration) - now.
 
   const [timeLeft, setTimeLeft] = useState<number>(0);
 
   useEffect(() => {
     const calculateTimeLeft = () => {
       const now = toUnixTimestamp(new Date()); // Current time in seconds
-      const endTime = startTime + MATCH_DURATION_SECONDS;
+      const endTime = startTime + durationSeconds;
       const remaining = endTime - now;
 
       if (remaining <= 0) {
@@ -48,13 +47,13 @@ export function Countdown({ startTime, onExpired }: CountdownProps) {
     }, 1000);
 
     return () => clearInterval(intervalId);
-  }, [startTime, onExpired]);
+  }, [startTime, durationSeconds, onExpired]);
 
   const formatTime = (seconds: number) => {
     const duration = intervalToDuration({ start: 0, end: seconds * 1000 });
 
     // intervalToDuration returns years, months, days, hours, minutes, seconds
-    // Since we only care about HH:MM:SS and the total is max 2 hours:
+    // Since we only care about HH:MM:SS:
     const h = duration.hours || 0;
     const m = duration.minutes || 0;
     const s = duration.seconds || 0;
