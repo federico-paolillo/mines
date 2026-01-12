@@ -18,7 +18,7 @@ describe("Countdown", () => {
     render(<Countdown startTime={startTime} onExpired={onExpired} />);
 
     // 2 hours = 02:00:00
-    expect(screen.getByTestId("countdown")).toHaveTextContent("02:00:00");
+    expect(screen.getByTestId("countdown").textContent).toBe("02:00:00");
   });
 
   it("should countdown correctly", () => {
@@ -29,12 +29,12 @@ describe("Countdown", () => {
     act(() => {
       vi.advanceTimersByTime(1000);
     });
-    expect(screen.getByTestId("countdown")).toHaveTextContent("01:59:59");
+    expect(screen.getByTestId("countdown").textContent).toBe("01:59:59");
 
     act(() => {
       vi.advanceTimersByTime(1000);
     });
-    expect(screen.getByTestId("countdown")).toHaveTextContent("01:59:58");
+    expect(screen.getByTestId("countdown").textContent).toBe("01:59:58");
   });
 
   it("should call onExpired when time is up", () => {
@@ -47,7 +47,7 @@ describe("Countdown", () => {
       vi.advanceTimersByTime(2 * 60 * 60 * 1000 + 1000);
     });
 
-    expect(screen.getByTestId("countdown")).toHaveTextContent("00:00:00");
+    expect(screen.getByTestId("countdown").textContent).toBe("00:00:00");
     expect(onExpired).toHaveBeenCalled();
   });
 
@@ -56,7 +56,7 @@ describe("Countdown", () => {
     const onExpired = vi.fn();
     render(<Countdown startTime={startTime} onExpired={onExpired} />);
 
-    expect(screen.getByTestId("countdown")).toHaveTextContent("00:00:00");
+    expect(screen.getByTestId("countdown").textContent).toBe("00:00:00");
     expect(onExpired).toHaveBeenCalled();
   });
 });

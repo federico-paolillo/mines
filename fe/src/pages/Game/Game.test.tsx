@@ -51,7 +51,7 @@ describe("Game Page", () => {
     mockFetchMatch.mockReturnValue(new Promise(() => {})); // Never resolves
 
     render(<Game />);
-    expect(screen.getByTestId("spinner")).toBeInTheDocument();
+    expect(screen.getByTestId("spinner")).not.toBeNull();
   });
 
   it("should render game board and countdown when loaded", async () => {
@@ -71,11 +71,11 @@ describe("Game Page", () => {
     render(<Game />);
 
     await waitFor(() => {
-      expect(screen.queryByTestId("spinner")).not.toBeInTheDocument();
+      expect(screen.queryByTestId("spinner")).toBeNull();
     });
 
-    expect(screen.getByTestId("minesweeper-board")).toBeInTheDocument();
-    expect(screen.getByTestId("countdown")).toHaveTextContent(`Countdown: ${startTime}`);
+    expect(screen.getByTestId("minesweeper-board")).not.toBeNull();
+    expect(screen.getByTestId("countdown").textContent).toContain(`Countdown: ${startTime}`);
   });
 
   it("should navigate to game over when countdown expires", async () => {
@@ -95,7 +95,7 @@ describe("Game Page", () => {
     render(<Game />);
 
     await waitFor(() => {
-      expect(screen.queryByTestId("spinner")).not.toBeInTheDocument();
+      expect(screen.queryByTestId("spinner")).toBeNull();
     });
 
     const expireButton = screen.getByTestId("expire-button");
@@ -116,10 +116,10 @@ describe("Game Page", () => {
     render(<Game />);
 
     await waitFor(() => {
-      expect(screen.queryByTestId("spinner")).not.toBeInTheDocument();
+      expect(screen.queryByTestId("spinner")).toBeNull();
     });
 
-    expect(screen.getByText("Game not found or failed to load.")).toBeInTheDocument();
+    expect(screen.getByText("Game not found or failed to load.")).not.toBeNull();
     consoleSpy.mockRestore();
   });
 });
