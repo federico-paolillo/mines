@@ -1,5 +1,6 @@
 import { intervalToDuration } from "date-fns";
 import { useEffect, useState } from "preact/hooks";
+import { toUnixTimestamp } from "../../time";
 
 interface CountdownProps {
   startTime: number; // Unix timestamp in seconds
@@ -18,7 +19,7 @@ export function Countdown({ startTime, onExpired }: CountdownProps) {
 
   useEffect(() => {
     const calculateTimeLeft = () => {
-      const now = Math.floor(Date.now() / 1000); // Current time in seconds
+      const now = toUnixTimestamp(new Date()); // Current time in seconds
       const endTime = startTime + MATCH_DURATION_SECONDS;
       const remaining = endTime - now;
 

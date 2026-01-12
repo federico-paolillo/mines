@@ -1,5 +1,6 @@
 import { render, screen, act } from "@testing-library/preact";
 import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
+import { toUnixTimestamp } from "../../time";
 import { Countdown } from "./index";
 
 describe("Countdown", () => {
@@ -12,7 +13,7 @@ describe("Countdown", () => {
   });
 
   it("should display initial time correctly", () => {
-    const startTime = Math.floor(Date.now() / 1000);
+    const startTime = toUnixTimestamp(new Date());
     const onExpired = vi.fn();
     render(<Countdown startTime={startTime} onExpired={onExpired} />);
 
@@ -21,7 +22,7 @@ describe("Countdown", () => {
   });
 
   it("should countdown correctly", () => {
-    const startTime = Math.floor(Date.now() / 1000);
+    const startTime = toUnixTimestamp(new Date());
     const onExpired = vi.fn();
     render(<Countdown startTime={startTime} onExpired={onExpired} />);
 
@@ -37,7 +38,7 @@ describe("Countdown", () => {
   });
 
   it("should call onExpired when time is up", () => {
-    const startTime = Math.floor(Date.now() / 1000);
+    const startTime = toUnixTimestamp(new Date());
     const onExpired = vi.fn();
     render(<Countdown startTime={startTime} onExpired={onExpired} />);
 
@@ -51,7 +52,7 @@ describe("Countdown", () => {
   });
 
   it("should handle already expired start time", () => {
-    const startTime = Math.floor(Date.now() / 1000) - (2 * 60 * 60 + 100); // Expired 100s ago
+    const startTime = toUnixTimestamp(new Date()) - (2 * 60 * 60 + 100); // Expired 100s ago
     const onExpired = vi.fn();
     render(<Countdown startTime={startTime} onExpired={onExpired} />);
 
