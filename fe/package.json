@@ -13,6 +13,7 @@
   "dependencies": {
     "@microsoft/kiota-bundle": "^1.0.0-preview.99",
     "@tailwindcss/vite": "^4.1.18",
+    "date-fns": "^4.1.0",
     "preact": "^10.26.9",
     "preact-iso": "^2.11.1",
     "tailwindcss": "^4.1.18"
