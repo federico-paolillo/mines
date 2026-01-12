@@ -1,7 +1,5 @@
-import { intervalToDuration } from "date-fns";
 import { useEffect, useState } from "preact/hooks";
-import { padWithTwoZeros } from "../../strings";
-import { toUnixTimestamp } from "../../time";
+import { formatSecondsToHhMmSs, toUnixTimestamp } from "../../time";
 
 interface CountdownProps {
   startTime: number; // Unix timestamp in seconds
@@ -50,21 +48,9 @@ export function Countdown({ startTime, durationSeconds, onExpired }: CountdownPr
     return () => clearInterval(intervalId);
   }, [startTime, durationSeconds, onExpired]);
 
-  const formatTime = (seconds: number) => {
-    const duration = intervalToDuration({ start: 0, end: seconds * 1000 });
-
-    // intervalToDuration returns years, months, days, hours, minutes, seconds
-    // Since we only care about HH:MM:SS:
-    const h = duration.hours || 0;
-    const m = duration.minutes || 0;
-    const s = duration.seconds || 0;
-
-    return `${padWithTwoZeros(h.toString())}:${padWithTwoZeros(m.toString())}:${padWithTwoZeros(s.toString())}`;
-  };
-
   return (
     <div data-testid="countdown">
-      {formatTime(timeLeft)}
+      {formatSecondsToHhMmSs(timeLeft)}
     </div>
   );
 }
