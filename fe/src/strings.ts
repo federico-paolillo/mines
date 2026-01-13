@@ -6,3 +6,10 @@
 export function padWithTwoZeros(input: string): string {
   return input.padStart(2, "0");
 }
+
+export function maybeToString(val: unknown): string {
+  if (val) {
+    return String(val);
+  }
+  return "";
+}

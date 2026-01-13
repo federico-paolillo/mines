@@ -1,5 +1,6 @@
 import { type Cellstate, CellstateObject } from "../../client/models/board";
 import type { CellDto } from "../../client/models/res";
+import { maybeToString } from "../../strings";
 
 interface CellProps {
   cell: CellDto;
@@ -32,9 +33,7 @@ function getCellContent(cell: CellDto): string | null {
     case CellstateObject.Unfathomable:
       return "💣";
     case CellstateObject.Open:
-      return cell.adjacentMines && cell.adjacentMines > 0
-        ? cell.adjacentMines.toString()
-        : null;
+      return maybeToString(cell.adjacentMines) || null;
     default:
       return null;
   }
