@@ -1,5 +1,7 @@
+import { DefaultApiError } from "@microsoft/kiota-abstractions";
 import { useEffect, useState } from "preact/hooks";
 import { useLocation, useRoute } from "preact-iso";
+import { MovetypeObject } from "../../client/models/matchmaking";
 import type { MatchstateDto } from "../../client/models/res";
 import { useApiClient } from "../../clientContext";
 import { Countdown } from "../../components/Countdown";
@@ -37,8 +39,29 @@ export function Game() {
     fetchGame();
   }, [gameId, client]);
 
-  const handleCellClick = (x: number, y: number) => {
-    console.log(`Clicked cell at ${x}, ${y}`);
+  const handleCellClick = async (x: number, y: number) => {
+    if (!gameId) return;
+
+    const result = await client.makeMove(gameId, {
+      x,
+      y,
+      type: MovetypeObject.Open,
+    });
+
+    if (result.success) {
+      setGameState(result.value);
+      if (result.value.lives === 0) {
+        route("/game-over");
+      }
+    } else {
+      console.error(result.error);
+      if (
+        result.error.cause instanceof DefaultApiError &&
+        result.error.cause.responseStatusCode === 422
+      ) {
+        route("/game-over");
+      }
+    }
   };
 
   const handleCellRightClick = (x: number, y: number) => {

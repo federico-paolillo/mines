@@ -1,5 +1,6 @@
 import { type Cellstate, CellstateObject } from "../../client/models/board";
 import type { CellDto } from "../../client/models/res";
+import { maybeToString } from "../../strings";
 
 interface CellProps {
   cell: CellDto;
@@ -25,14 +26,16 @@ function getCellStyle(state?: Cellstate | null): string {
   }
 }
 
-function getCellContent(state?: Cellstate | null): string | null {
-  switch (state) {
+function getCellContent(cell: CellDto): string {
+  switch (cell.state) {
     case CellstateObject.Flagged:
       return "🚩";
     case CellstateObject.Unfathomable:
       return "💣";
+    case CellstateObject.Open:
+      return maybeToString(cell.adjacentMines);
     default:
-      return null;
+      return "?";
   }
 }
 
@@ -53,7 +56,7 @@ export function Cell({ cell, onClick, onContextMenu }: CellProps) {
   };
 
   const specificClasses = getCellStyle(state);
-  const content = getCellContent(state);
+  const content = getCellContent(cell);
 
   return (
     <div
