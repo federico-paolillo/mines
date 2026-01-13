@@ -26,10 +26,16 @@ export function Game() {
 
     const fetchGame = async () => {
       setLoading(true);
+
       const result = await client.fetchMatch(gameId);
+
       setLoading(false);
 
       if (result.success) {
+        if (result.value.lives === 0) {
+          route('/game-over')
+          return;
+        }
         setGameState(result.value);
       } else {
         console.error(result.error);
@@ -54,12 +60,13 @@ export function Game() {
         route("/game-over");
       }
     } else {
-      console.error(result.error);
       if (
         result.error.cause instanceof DefaultApiError &&
         result.error.cause.responseStatusCode === 422
       ) {
         route("/game-over");
+      } else {
+        console.error(result.error)
       }
     }
   };
