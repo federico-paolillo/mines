@@ -30,6 +30,7 @@ describe("Cell Component", () => {
     const cellElement = screen.getByRole("button");
     expect(cellElement).toBeDefined();
     expect(cellElement.getAttribute("aria-label")).toContain("closed");
+    expect(screen.getByText("?")).toBeDefined();
   });
 
   it("renders flagged cell correctly", () => {

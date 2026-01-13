@@ -26,16 +26,16 @@ function getCellStyle(state?: Cellstate | null): string {
   }
 }
 
-function getCellContent(cell: CellDto): string | null {
+function getCellContent(cell: CellDto): string {
   switch (cell.state) {
     case CellstateObject.Flagged:
       return "🚩";
     case CellstateObject.Unfathomable:
       return "💣";
     case CellstateObject.Open:
-      return maybeToString(cell.adjacentMines) || null;
+      return maybeToString(cell.adjacentMines);
     default:
-      return null;
+      return "?";
   }
 }
 
