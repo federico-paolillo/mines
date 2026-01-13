@@ -25,12 +25,16 @@ function getCellStyle(state?: Cellstate | null): string {
   }
 }
 
-function getCellContent(state?: Cellstate | null): string | null {
-  switch (state) {
+function getCellContent(cell: CellDto): string | null {
+  switch (cell.state) {
     case CellstateObject.Flagged:
       return "🚩";
     case CellstateObject.Unfathomable:
       return "💣";
+    case CellstateObject.Open:
+      return cell.adjacentMines && cell.adjacentMines > 0
+        ? cell.adjacentMines.toString()
+        : null;
     default:
       return null;
   }
@@ -53,7 +57,7 @@ export function Cell({ cell, onClick, onContextMenu }: CellProps) {
   };
 
   const specificClasses = getCellStyle(state);
-  const content = getCellContent(state);
+  const content = getCellContent(cell);
 
   return (
     <div
