@@ -183,4 +183,119 @@ describe("Game Page", () => {
     expect(mockRoute).not.toHaveBeenCalled();
     consoleSpy.mockRestore();
   });
+
+  it("handles cell right-click and calls makeMove with Flag type", async () => {
+    (mockClient.fetchMatch as any).mockResolvedValue({
+      success: true,
+      value: mockGameState,
+    });
+
+    const updatedGameState = {
+      ...mockGameState,
+      cells: [
+        { x: 1, y: 1, state: CellstateObject.Flagged },
+        ...mockGameState.cells.slice(1),
+      ],
+    };
+
+    (mockClient.makeMove as any).mockResolvedValue({
+      success: true,
+      value: updatedGameState,
+    });
+
+    renderGame();
+
+    await waitFor(() => screen.getAllByRole("button"));
+
+    const cell = screen.getAllByRole("button")[0]; // x=1, y=1
+    fireEvent.contextMenu(cell);
+
+    expect(mockClient.makeMove).toHaveBeenCalledWith("test-game-id", {
+      x: 1,
+      y: 1,
+      type: MovetypeObject.Flag,
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText("🚩")).not.toBeNull();
+    });
+  });
+
+  it("redirects to game over if lives are 0 after right-click", async () => {
+    (mockClient.fetchMatch as any).mockResolvedValue({
+      success: true,
+      value: mockGameState,
+    });
+
+    const lostGameState = {
+      ...mockGameState,
+      lives: 0,
+      state: "lost",
+    };
+
+    (mockClient.makeMove as any).mockResolvedValue({
+      success: true,
+      value: lostGameState,
+    });
+
+    renderGame();
+
+    await waitFor(() => screen.getAllByRole("button"));
+    fireEvent.contextMenu(screen.getAllByRole("button")[0]);
+
+    await waitFor(() => {
+      expect(mockRoute).toHaveBeenCalledWith("/game-over");
+    });
+  });
+
+  it("redirects to game over on 422 error from right-click", async () => {
+    (mockClient.fetchMatch as any).mockResolvedValue({
+      success: true,
+      value: mockGameState,
+    });
+
+    const error = new DefaultApiError("Match over");
+    error.responseStatusCode = 422;
+
+    (mockClient.makeMove as any).mockResolvedValue({
+      success: false,
+      error: { cause: error },
+    });
+
+    renderGame();
+
+    await waitFor(() => screen.getAllByRole("button"));
+    fireEvent.contextMenu(screen.getAllByRole("button")[0]);
+
+    await waitFor(() => {
+      expect(mockRoute).toHaveBeenCalledWith("/game-over");
+    });
+  });
+
+  it("logs error on general error from right-click", async () => {
+    (mockClient.fetchMatch as any).mockResolvedValue({
+      success: true,
+      value: mockGameState,
+    });
+
+    const error = new DefaultApiError("General error");
+    error.responseStatusCode = 500;
+    const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+
+    (mockClient.makeMove as any).mockResolvedValue({
+      success: false,
+      error: { cause: error },
+    });
+
+    renderGame();
+
+    await waitFor(() => screen.getAllByRole("button"));
+    fireEvent.contextMenu(screen.getAllByRole("button")[0]);
+
+    await waitFor(() => {
+      expect(consoleSpy).toHaveBeenCalled();
+    });
+    expect(mockRoute).not.toHaveBeenCalled();
+    consoleSpy.mockRestore();
+  });
 });

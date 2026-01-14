@@ -33,7 +33,7 @@ export function Game() {
 
       if (result.success) {
         if (result.value.lives === 0) {
-          route('/game-over')
+          route("/game-over");
           return;
         }
         setGameState(result.value);
@@ -66,13 +66,35 @@ export function Game() {
       ) {
         route("/game-over");
       } else {
-        console.error(result.error)
+        console.error(result.error);
       }
     }
   };
 
-  const handleCellRightClick = (x: number, y: number) => {
-    console.log(`Right clicked cell at ${x}, ${y}`);
+  const handleCellRightClick = async (x: number, y: number) => {
+    if (!gameId) return;
+
+    const result = await client.makeMove(gameId, {
+      x,
+      y,
+      type: MovetypeObject.Flag,
+    });
+
+    if (result.success) {
+      setGameState(result.value);
+      if (result.value.lives === 0) {
+        route("/game-over");
+      }
+    } else {
+      if (
+        result.error.cause instanceof DefaultApiError &&
+        result.error.cause.responseStatusCode === 422
+      ) {
+        route("/game-over");
+      } else {
+        console.error(result.error);
+      }
+    }
   };
 
   const handleExpired = () => {
