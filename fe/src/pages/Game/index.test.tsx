@@ -23,7 +23,6 @@ describe("Game Page", () => {
   let mockClient: MinesApiClient;
 
   beforeEach(() => {
-    vi.clearAllMocks();
     mockClient = {
       fetchMatch: vi.fn(),
       startNewGame: vi.fn(),
@@ -53,7 +52,34 @@ describe("Game Page", () => {
       { x: 2, y: 2, state: CellstateObject.Closed },
     ],
     state: "playing",
+    startTime: new Date().getTime() / 1000 + 10000, // Seconds
   };
+
+  it("should render loading state initially", async () => {
+    (mockClient.fetchMatch as any).mockReturnValue(new Promise(() => {})); // Never resolves
+    renderGame();
+    expect(screen.getByRole("progressbar")).not.toBeNull();
+  });
+
+  it("should display error message if game load fails", async () => {
+    (mockClient.fetchMatch as any).mockResolvedValue({
+      success: false,
+      error: "Failed to fetch",
+    });
+
+    const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+
+    renderGame();
+
+    await waitFor(() => {
+      expect(screen.queryByRole("progressbar")).toBeNull();
+    });
+
+    expect(
+      screen.getByText("Game not found or failed to load."),
+    ).not.toBeNull();
+    consoleSpy.mockRestore();
+  });
 
   it("fetches and displays game state on load", async () => {
     (mockClient.fetchMatch as any).mockResolvedValue({
@@ -66,7 +92,37 @@ describe("Game Page", () => {
     expect(mockClient.fetchMatch).toHaveBeenCalledWith("test-game-id");
     await waitFor(() => {
       expect(screen.getAllByRole("button")).toHaveLength(4);
+      expect(screen.getByTestId("countdown")).not.toBeNull();
     });
+  });
+
+  it("should navigate to game over when countdown expires", async () => {
+    vi.useFakeTimers();
+    const now = Math.floor(new Date().getTime() / 1000);
+    // Start time 1 hour ago. Duration 2 hours (default in Game component).
+    // To expire, we need to pass 1 hour.
+    const startTime = now - 3600;
+
+    const expiringGameState = {
+      ...mockGameState,
+      startTime: startTime,
+    };
+
+    (mockClient.fetchMatch as any).mockResolvedValue({
+      success: true,
+      value: expiringGameState,
+    });
+
+    renderGame();
+
+    await waitFor(() => screen.getByTestId("countdown"));
+
+    // Advance time by 1 hour + a bit
+    await vi.advanceTimersByTimeAsync((3600 + 5) * 1000);
+
+    expect(mockRoute).toHaveBeenCalledWith("/game-over");
+
+    vi.useRealTimers();
   });
 
   it("handles cell click and calls makeMove", async () => {
@@ -280,6 +336,7 @@ describe("Game Page", () => {
 
     const error = new DefaultApiError("General error");
     error.responseStatusCode = 500;
+
     const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 
     (mockClient.makeMove as any).mockResolvedValue({
@@ -290,12 +347,15 @@ describe("Game Page", () => {
     renderGame();
 
     await waitFor(() => screen.getAllByRole("button"));
+
     fireEvent.contextMenu(screen.getAllByRole("button")[0]);
 
     await waitFor(() => {
       expect(consoleSpy).toHaveBeenCalled();
     });
+
     expect(mockRoute).not.toHaveBeenCalled();
+
     consoleSpy.mockRestore();
   });
 });

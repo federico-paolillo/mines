@@ -118,6 +118,8 @@ Use `go tool lefthook run <task>` to execute workflows defined in `lefthook.yml`
 
 - **Integration Tests**: Require a running container environment (Podman/Docker).
 - **Unit Tests**: `testify` for Go, `vitest` for Preact.
+- Avoid needless mocks. Strive to use real implementations. 
+- Read `test-setup.ts` for `vitest` tests and use it to avoid repeating common setup and teardown.
 
 ## 6. Key Files
 

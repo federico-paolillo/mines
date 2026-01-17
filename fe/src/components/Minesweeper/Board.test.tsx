@@ -1,14 +1,10 @@
-import { cleanup, fireEvent, render, screen } from "@testing-library/preact";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { fireEvent, render, screen } from "@testing-library/preact";
+import { describe, expect, it, vi } from "vitest";
 import { CellstateObject } from "../../client/models/board";
 import type { CellDto, MatchstateDto } from "../../client/models/res";
 import { MinesweeperBoard } from "./Board";
 
 describe("MinesweeperBoard Component", () => {
-  afterEach(() => {
-    cleanup();
-  });
-
   const defaultGameState: MatchstateDto = {
     width: 3,
     height: 3,
