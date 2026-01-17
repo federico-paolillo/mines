@@ -5,6 +5,7 @@ import { MovetypeObject } from "../../client/models/matchmaking";
 import type { MatchstateDto } from "../../client/models/res";
 import { useApiClient } from "../../clientContext";
 import { Countdown } from "../../components/Countdown";
+import { LifeContainer } from "../../components/LifeContainer";
 import { MinesweeperBoard } from "../../components/Minesweeper";
 import { Spinner } from "../../components/Spinner";
 
@@ -113,6 +114,7 @@ export function Game() {
             onExpired={handleExpired}
           />
         )}
+        {gameState && <LifeContainer lives={gameState.lives ?? 0} />}
       </div>
       {gameState ? (
         <MinesweeperBoard
