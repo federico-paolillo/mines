@@ -73,7 +73,7 @@ export function useGameState(gameId: string | null) {
     await handleMove(x, y, MovetypeObject.Flag);
   };
 
-  const handleExpired = () => {
+  const onExpired = () => {
     route("/game-over");
   };
 
@@ -82,6 +82,6 @@ export function useGameState(gameId: string | null) {
     loading,
     onOpenCell,
     onFlagCell,
-    onExpired: handleExpired,
+    onExpired,
   };
 }
