@@ -10,7 +10,7 @@ export function useGameState(gameId: string | null) {
   const client = useApiClient();
 
   const [gameState, setGameState] = useState<MatchstateDto | null>(null);
-  const [loading, setLoading] = useState(!!gameId);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!gameId) {
