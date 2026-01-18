@@ -39,13 +39,13 @@ export function useGameState(gameId: string | null) {
     fetchGame();
   }, [gameId, client, route]);
 
-  const handleCellClick = async (x: number, y: number) => {
+  const handleMove = async (x: number, y: number, type: MovetypeObject) => {
     if (!gameId) return;
 
     const result = await client.makeMove(gameId, {
       x,
       y,
-      type: MovetypeObject.Open,
+      type,
     });
 
     if (result.success) {
@@ -65,30 +65,12 @@ export function useGameState(gameId: string | null) {
     }
   };
 
+  const handleCellClick = async (x: number, y: number) => {
+    await handleMove(x, y, MovetypeObject.Open);
+  };
+
   const handleCellRightClick = async (x: number, y: number) => {
-    if (!gameId) return;
-
-    const result = await client.makeMove(gameId, {
-      x,
-      y,
-      type: MovetypeObject.Flag,
-    });
-
-    if (result.success) {
-      setGameState(result.value);
-      if (result.value.lives === 0) {
-        route("/game-over");
-      }
-    } else {
-      if (
-        result.error.cause instanceof DefaultApiError &&
-        result.error.cause.responseStatusCode === 422
-      ) {
-        route("/game-over");
-      } else {
-        console.error(result.error);
-      }
-    }
+    await handleMove(x, y, MovetypeObject.Flag);
   };
 
   const handleExpired = () => {
