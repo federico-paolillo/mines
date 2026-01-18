@@ -68,7 +68,7 @@ export function MinesweeperBoard({
             key={`${cell.x}-${cell.y}`}
             cell={cell}
             onClick={onOpenCell}
-            onContextMenu={(x, y) => onFlagCell(x, y)}
+            onContextMenu={onFlagCell}
           />
         )),
       )}
