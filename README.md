@@ -13,3 +13,18 @@
 It's Minesweeper in Go.
 
 This project has a server that let's you play matches of Minesweeper through an HTTP REST-like API. You will be able to request a match and play them until you win, lose or 2 hours pass and the game is automatically destroyed. The server component is written in Go using Gin, while the client component is a Single Page Application written in React using Vite as the bundler of choice.
+
+## Design Decisions
+
+### useGameState
+
+The `useGameState` hook encapsulates the game state management and interaction logic. I decided to include the data fetching responsibility within this hook.
+
+While separating data fetching from interaction logic can sometimes provide better separation of concerns (e.g., using a dedicated data fetching hook and a separate logic hook), in this specific case, the game state is tightly coupled with the interactions. Every interaction (click) results in a server call that updates the game state.
+
+By bundling fetching and interactions together:
+1.  **Simplicity**: The consuming component (`Game`) becomes truly "dumb", only responsible for rendering the state it receives. It doesn't need to coordinate between a fetching hook and a logic hook.
+2.  **Consistency**: The hook ensures that the `gameState` returned is always in sync with the latest server response, whether it comes from the initial fetch or a subsequent move.
+3.  **Encapsulation**: All API error handling, redirect logic (e.g., game over), and loading states are contained in one place, reducing code duplication and potential bugs in the consumer.
+
+If the application were to grow significantly, or if we needed to reuse the fetching logic in a context where interactions are not needed (e.g., a read-only spectator mode), we might reconsider this decision and split the responsibilities.
