@@ -65,11 +65,11 @@ export function useGameState(gameId: string | null) {
     }
   };
 
-  const handleCellClick = async (x: number, y: number) => {
+  const onOpenCell = async (x: number, y: number) => {
     await handleMove(x, y, MovetypeObject.Open);
   };
 
-  const handleCellRightClick = async (x: number, y: number) => {
+  const onFlagCell = async (x: number, y: number) => {
     await handleMove(x, y, MovetypeObject.Flag);
   };
 
@@ -80,8 +80,8 @@ export function useGameState(gameId: string | null) {
   return {
     gameState,
     loading,
-    onCellClick: handleCellClick,
-    onCellRightClick: handleCellRightClick,
+    onOpenCell,
+    onFlagCell,
     onExpired: handleExpired,
   };
 }

@@ -3,8 +3,8 @@ import { Cell } from "./Cell";
 
 interface MinesweeperBoardProps {
   gameState: MatchstateDto;
-  onCellClick: (x: number, y: number) => void;
-  onCellRightClick: (x: number, y: number) => void;
+  onOpenCell: (x: number, y: number) => void;
+  onFlagCell: (x: number, y: number) => void;
 }
 
 function makeGrid(
@@ -42,8 +42,8 @@ function makeGrid(
 
 export function MinesweeperBoard({
   gameState,
-  onCellClick,
-  onCellRightClick,
+  onOpenCell,
+  onFlagCell,
 }: MinesweeperBoardProps) {
   const { cells, width, height } = gameState;
 
@@ -67,8 +67,8 @@ export function MinesweeperBoard({
           <Cell
             key={`${cell.x}-${cell.y}`}
             cell={cell}
-            onClick={onCellClick}
-            onContextMenu={(x, y) => onCellRightClick(x, y)}
+            onClick={onOpenCell}
+            onContextMenu={(x, y) => onFlagCell(x, y)}
           />
         )),
       )}

@@ -10,7 +10,7 @@ export function Game() {
   const params = new URLSearchParams(query);
   const gameId = params.get("id");
 
-  const { gameState, loading, onCellClick, onCellRightClick, onExpired } =
+  const { gameState, loading, onOpenCell, onFlagCell, onExpired } =
     useGameState(gameId);
 
   if (loading) {
@@ -31,8 +31,8 @@ export function Game() {
         </div>
         <MinesweeperBoard
           gameState={gameState}
-          onCellClick={onCellClick}
-          onCellRightClick={onCellRightClick}
+          onOpenCell={onOpenCell}
+          onFlagCell={onFlagCell}
         />
       </div>
     );

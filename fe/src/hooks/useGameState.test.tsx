@@ -101,7 +101,7 @@ describe("useGameState", () => {
       expect(result.current.loading).toBe(false);
     });
 
-    await result.current.onCellClick(1, 1);
+    await result.current.onOpenCell(1, 1);
 
     expect(mockClient.makeMove).toHaveBeenCalledWith(gameId, {
       x: 1,
@@ -136,7 +136,7 @@ describe("useGameState", () => {
       expect(result.current.loading).toBe(false);
     });
 
-    await result.current.onCellRightClick(2, 2);
+    await result.current.onFlagCell(2, 2);
 
     expect(mockClient.makeMove).toHaveBeenCalledWith(gameId, {
       x: 2,
@@ -171,7 +171,7 @@ describe("useGameState", () => {
       expect(result.current.loading).toBe(false);
     });
 
-    await result.current.onCellClick(1, 1);
+    await result.current.onOpenCell(1, 1);
 
     expect(mockRoute).toHaveBeenCalledWith("/game-over");
   });
@@ -201,7 +201,7 @@ describe("useGameState", () => {
         expect(result.current.loading).toBe(false);
     });
 
-    await result.current.onCellClick(1, 1);
+    await result.current.onOpenCell(1, 1);
 
     expect(mockRoute).toHaveBeenCalledWith("/game-over");
   });
