@@ -22,14 +22,14 @@ describe("MinesweeperBoard Component", () => {
   };
 
   it("renders loading state when data is incomplete", () => {
-    const onCellClick = vi.fn();
-    const onCellRightClick = vi.fn();
+    const onOpenCell = vi.fn();
+    const onFlagCell = vi.fn();
 
     render(
       <MinesweeperBoard
         gameState={{}}
-        onCellClick={onCellClick}
-        onCellRightClick={onCellRightClick}
+        onOpenCell={onOpenCell}
+        onFlagCell={onFlagCell}
       />,
     );
 
@@ -37,14 +37,14 @@ describe("MinesweeperBoard Component", () => {
   });
 
   it("renders the correct grid of cells", () => {
-    const onCellClick = vi.fn();
-    const onCellRightClick = vi.fn();
+    const onOpenCell = vi.fn();
+    const onFlagCell = vi.fn();
 
     render(
       <MinesweeperBoard
         gameState={defaultGameState}
-        onCellClick={onCellClick}
-        onCellRightClick={onCellRightClick}
+        onOpenCell={onOpenCell}
+        onFlagCell={onFlagCell}
       />,
     );
 
@@ -52,43 +52,43 @@ describe("MinesweeperBoard Component", () => {
     expect(cells.length).toBe(9); // 3x3 grid
   });
 
-  it("handles cell clicks and propagates to onCellClick", () => {
-    const onCellClick = vi.fn();
-    const onCellRightClick = vi.fn();
+  it("handles cell clicks and propagates to onOpenCell", () => {
+    const onOpenCell = vi.fn();
+    const onFlagCell = vi.fn();
 
     render(
       <MinesweeperBoard
         gameState={defaultGameState}
-        onCellClick={onCellClick}
-        onCellRightClick={onCellRightClick}
+        onOpenCell={onOpenCell}
+        onFlagCell={onFlagCell}
       />,
     );
 
     const cells = screen.getAllByRole("button");
     // Click the first cell (1, 1)
     fireEvent.click(cells[0]);
-    expect(onCellClick).toHaveBeenCalledWith(1, 1);
+    expect(onOpenCell).toHaveBeenCalledWith(1, 1);
 
     // Click the middle cell (2, 2) which should be index 4
     fireEvent.click(cells[4]);
-    expect(onCellClick).toHaveBeenCalledWith(2, 2);
+    expect(onOpenCell).toHaveBeenCalledWith(2, 2);
   });
 
-  it("handles cell right-clicks and propagates to onCellRightClick", () => {
-    const onCellClick = vi.fn();
-    const onCellRightClick = vi.fn();
+  it("handles cell right-clicks and propagates to onFlagCell", () => {
+    const onOpenCell = vi.fn();
+    const onFlagCell = vi.fn();
 
     render(
       <MinesweeperBoard
         gameState={defaultGameState}
-        onCellClick={onCellClick}
-        onCellRightClick={onCellRightClick}
+        onOpenCell={onOpenCell}
+        onFlagCell={onFlagCell}
       />,
     );
 
     const cells = screen.getAllByRole("button");
     // Right-click the last cell (3, 3) which should be index 8
     fireEvent.contextMenu(cells[8]);
-    expect(onCellRightClick).toHaveBeenCalledWith(3, 3);
+    expect(onFlagCell).toHaveBeenCalledWith(3, 3, expect.any(MouseEvent));
   });
 });
