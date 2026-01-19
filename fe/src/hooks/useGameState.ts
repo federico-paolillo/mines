@@ -42,11 +42,15 @@ export function useGameState(gameId: string | null) {
   const handleMove = async (x: number, y: number, type: MovetypeObject) => {
     if (!gameId) return;
 
+    setLoading(true);
+
     const result = await client.makeMove(gameId, {
       x,
       y,
       type,
     });
+
+    setLoading(false);
 
     if (result.success) {
       setGameState(result.value);
