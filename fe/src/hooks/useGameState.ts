@@ -31,8 +31,6 @@ export function useGameState(gameId: string | null) {
           return;
         }
         setGameState(result.value);
-      } else {
-        console.error(result.error);
       }
     };
 
@@ -57,15 +55,11 @@ export function useGameState(gameId: string | null) {
       if (result.value.lives === 0) {
         route("/game-over");
       }
-    } else {
-      if (
-        result.error.cause instanceof DefaultApiError &&
-        result.error.cause.responseStatusCode === 422
-      ) {
-        route("/game-over");
-      } else {
-        console.error(result.error);
-      }
+    } else if (
+      result.error.cause instanceof DefaultApiError &&
+      result.error.cause.responseStatusCode === 422
+    ) {
+      route("/game-over");
     }
   };
 

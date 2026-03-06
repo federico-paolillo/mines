@@ -213,7 +213,7 @@ describe("Game Page", () => {
     });
   });
 
-  it("logs error on 409 and does not redirect", async () => {
+  it("does not redirect on 409 error", async () => {
     (mockClient.fetchMatch as any).mockResolvedValue({
       success: true,
       value: mockGameState,
@@ -221,7 +221,6 @@ describe("Game Page", () => {
 
     const error = new DefaultApiError("Concurrent update");
     error.responseStatusCode = 409;
-    const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 
     (mockClient.makeMove as any).mockResolvedValue({
       success: false,
@@ -234,10 +233,9 @@ describe("Game Page", () => {
     fireEvent.click(screen.getAllByRole("button")[0]);
 
     await waitFor(() => {
-      expect(consoleSpy).toHaveBeenCalled();
+      expect(mockClient.makeMove).toHaveBeenCalled();
     });
     expect(mockRoute).not.toHaveBeenCalled();
-    consoleSpy.mockRestore();
   });
 
   it("handles cell right-click and calls makeMove with Flag type", async () => {
@@ -328,7 +326,7 @@ describe("Game Page", () => {
     });
   });
 
-  it("logs error on general error from right-click", async () => {
+  it("does not redirect on general error from right-click", async () => {
     (mockClient.fetchMatch as any).mockResolvedValue({
       success: true,
       value: mockGameState,
@@ -336,8 +334,6 @@ describe("Game Page", () => {
 
     const error = new DefaultApiError("General error");
     error.responseStatusCode = 500;
-
-    const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 
     (mockClient.makeMove as any).mockResolvedValue({
       success: false,
@@ -351,11 +347,9 @@ describe("Game Page", () => {
     fireEvent.contextMenu(screen.getAllByRole("button")[0]);
 
     await waitFor(() => {
-      expect(consoleSpy).toHaveBeenCalled();
+      expect(mockClient.makeMove).toHaveBeenCalled();
     });
 
     expect(mockRoute).not.toHaveBeenCalled();
-
-    consoleSpy.mockRestore();
   });
 });
