@@ -3,8 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 import { useGameState } from "./useGameState";
 import { ClientContext } from "../clientContext";
 import { MovetypeObject } from "../client/models/matchmaking";
-import { success, failure } from "../result";
-import { DefaultApiError } from "@microsoft/kiota-abstractions";
+import { type ApiError, success } from "../result";
 
 // Mock useLocation
 const mockRoute = vi.fn();
@@ -48,9 +47,8 @@ describe("useGameState", () => {
 
   it("should handle error when fetching game fails", async () => {
     const gameId = "game-123";
-    mockClient.fetchMatch.mockResolvedValue(
-      failure({ message: "Error fetching game" })
-    );
+    const error: ApiError = { kind: "unknown", message: "Error fetching game" };
+    mockClient.fetchMatch.mockResolvedValue({ success: false, error });
 
     const { result } = renderHook(() => useGameState(gameId), { wrapper });
 
@@ -59,7 +57,6 @@ describe("useGameState", () => {
     });
 
     expect(result.current.gameState).toBeNull();
-    // Error logging is mocked/console.error, not asserting on console.error here but verifying state
   });
 
   it("should redirect to game-over if lives are 0 on fetch", async () => {
@@ -176,7 +173,7 @@ describe("useGameState", () => {
     expect(mockRoute).toHaveBeenCalledWith("/game-over");
   });
 
-  it("should redirect to game-over on 422 error during move", async () => {
+  it("should redirect to game-over on match_over error during move", async () => {
     const gameId = "game-123";
     const initialGameState = {
         lives: 1,
@@ -186,14 +183,8 @@ describe("useGameState", () => {
 
     mockClient.fetchMatch.mockResolvedValue(success(initialGameState));
 
-    const apiError = new Error("422 Error");
-    (apiError as any).responseStatusCode = 422;
-    const defaultApiError = new DefaultApiError("422 Error");
-    defaultApiError.responseStatusCode = 422;
-
-    mockClient.makeMove.mockResolvedValue(
-        failure({ message: "Move failed", cause: defaultApiError })
-    );
+    const error: ApiError = { kind: "match_over", message: "Move failed" };
+    mockClient.makeMove.mockResolvedValue({ success: false, error });
 
     const { result } = renderHook(() => useGameState(gameId), { wrapper });
 

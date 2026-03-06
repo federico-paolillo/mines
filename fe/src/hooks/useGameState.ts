@@ -1,4 +1,3 @@
-import { DefaultApiError } from "@microsoft/kiota-abstractions";
 import { useEffect, useState } from "preact/hooks";
 import { useLocation } from "preact-iso";
 import { MovetypeObject } from "../client/models/matchmaking";
@@ -55,10 +54,7 @@ export function useGameState(gameId: string | null) {
       if (result.value.lives === 0) {
         route("/game-over");
       }
-    } else if (
-      result.error.cause instanceof DefaultApiError &&
-      result.error.cause.responseStatusCode === 422
-    ) {
+    } else if (result.error.kind === "match_over") {
       route("/game-over");
     }
   };

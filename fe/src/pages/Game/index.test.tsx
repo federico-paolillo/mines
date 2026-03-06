@@ -1,11 +1,9 @@
-import { DefaultApiError } from "@microsoft/kiota-abstractions";
 import { fireEvent, render, screen, waitFor } from "@testing-library/preact";
 import { LocationProvider } from "preact-iso";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { MinesApiClient } from "../../api";
 import { CellstateObject } from "../../client/models/board";
 import { MovetypeObject } from "../../client/models/matchmaking";
-import { ClientContext } from "../../clientContext";
+import { ClientContext, type GameClient } from "../../clientContext";
 import { Game } from "./index";
 
 // Mock dependencies
@@ -20,14 +18,14 @@ vi.mock("preact-iso", async () => {
 });
 
 describe("Game Page", () => {
-  let mockClient: MinesApiClient;
+  let mockClient: GameClient;
 
   beforeEach(() => {
     mockClient = {
       fetchMatch: vi.fn(),
       startNewGame: vi.fn(),
       makeMove: vi.fn(),
-    } as unknown as MinesApiClient;
+    } as unknown as GameClient;
   });
 
   const renderGame = () => {
@@ -64,7 +62,7 @@ describe("Game Page", () => {
   it("should display error message if game load fails", async () => {
     (mockClient.fetchMatch as any).mockResolvedValue({
       success: false,
-      error: "Failed to fetch",
+      error: { kind: "unknown", message: "Failed to fetch" },
     });
 
     const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
@@ -189,18 +187,15 @@ describe("Game Page", () => {
     });
   });
 
-  it("redirects to game over on 422 error", async () => {
+  it("redirects to game over on match_over error", async () => {
     (mockClient.fetchMatch as any).mockResolvedValue({
       success: true,
       value: mockGameState,
     });
 
-    const error = new DefaultApiError("Match over");
-    error.responseStatusCode = 422;
-
     (mockClient.makeMove as any).mockResolvedValue({
       success: false,
-      error: { cause: error },
+      error: { kind: "match_over", message: "Match over" },
     });
 
     renderGame();
@@ -213,18 +208,15 @@ describe("Game Page", () => {
     });
   });
 
-  it("does not redirect on 409 error", async () => {
+  it("does not redirect on unknown error", async () => {
     (mockClient.fetchMatch as any).mockResolvedValue({
       success: true,
       value: mockGameState,
     });
 
-    const error = new DefaultApiError("Concurrent update");
-    error.responseStatusCode = 409;
-
     (mockClient.makeMove as any).mockResolvedValue({
       success: false,
-      error: { cause: error },
+      error: { kind: "unknown", message: "Concurrent update" },
     });
 
     renderGame();
@@ -302,18 +294,15 @@ describe("Game Page", () => {
     });
   });
 
-  it("redirects to game over on 422 error from right-click", async () => {
+  it("redirects to game over on match_over error from right-click", async () => {
     (mockClient.fetchMatch as any).mockResolvedValue({
       success: true,
       value: mockGameState,
     });
 
-    const error = new DefaultApiError("Match over");
-    error.responseStatusCode = 422;
-
     (mockClient.makeMove as any).mockResolvedValue({
       success: false,
-      error: { cause: error },
+      error: { kind: "match_over", message: "Match over" },
     });
 
     renderGame();
@@ -326,18 +315,15 @@ describe("Game Page", () => {
     });
   });
 
-  it("does not redirect on general error from right-click", async () => {
+  it("does not redirect on unknown error from right-click", async () => {
     (mockClient.fetchMatch as any).mockResolvedValue({
       success: true,
       value: mockGameState,
     });
 
-    const error = new DefaultApiError("General error");
-    error.responseStatusCode = 500;
-
     (mockClient.makeMove as any).mockResolvedValue({
       success: false,
-      error: { cause: error },
+      error: { kind: "unknown", message: "General error" },
     });
 
     renderGame();
