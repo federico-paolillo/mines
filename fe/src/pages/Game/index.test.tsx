@@ -3,7 +3,8 @@ import { LocationProvider } from "preact-iso";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { CellstateObject } from "../../client/models/board";
 import { MovetypeObject } from "../../client/models/matchmaking";
-import { ClientContext, type GameClient } from "../../clientContext";
+import type { MinesApiClient } from "../../api";
+import { ClientContext } from "../../clientContext";
 import { Game } from "./index";
 
 // Mock dependencies
@@ -18,14 +19,14 @@ vi.mock("preact-iso", async () => {
 });
 
 describe("Game Page", () => {
-  let mockClient: GameClient;
+  let mockClient: MinesApiClient;
 
   beforeEach(() => {
     mockClient = {
       fetchMatch: vi.fn(),
       startNewGame: vi.fn(),
       makeMove: vi.fn(),
-    } as unknown as GameClient;
+    } as unknown as MinesApiClient;
   });
 
   const renderGame = () => {

@@ -1,4 +1,7 @@
+export type ErrorKind = "match_over" | "unknown";
+
 export interface Problem {
+  kind: ErrorKind;
   message: string;
   cause?: Error;
 }
@@ -8,19 +11,12 @@ export interface Success<T> {
   value: T;
 }
 
-export interface Failure<E = Problem> {
+export interface Failure {
   success: false;
-  error: E;
+  error: Problem;
 }
 
-export type Result<T, E = Problem> = Success<T> | Failure<E>;
-
-export type ErrorKind = "match_over" | "unknown";
-
-export interface ApiError {
-  kind: ErrorKind;
-  message: string;
-}
+export type Result<T> = Success<T> | Failure;
 
 export function success<T>(value: T): Result<T> {
   return {
@@ -29,9 +25,9 @@ export function success<T>(value: T): Result<T> {
   };
 }
 
-export function failure<T = never, E = Problem>(error: E): Result<T, E> {
+export function failure<T = never>(problem: Problem): Result<T> {
   return {
     success: false,
-    error,
+    error: problem,
   };
 }

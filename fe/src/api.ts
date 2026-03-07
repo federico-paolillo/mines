@@ -71,18 +71,20 @@ async function safeApiCall<T>(
     const response = await apiCall();
 
     if (response === undefined) {
-      return failure({ message: errorMessage });
+      return failure({ kind: "unknown", message: errorMessage });
     }
 
     return success(response);
   } catch (maybeApiError: unknown) {
     if (maybeApiError instanceof DefaultApiError) {
       return failure({
+        kind: "unknown",
         message: errorMessage,
         cause: maybeApiError,
       });
     } else {
       return failure({
+        kind: "unknown",
         message: `${errorMessage} in general`,
         cause: maybeApiError as Error,
       });

@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 import { useGameState } from "./useGameState";
 import { ClientContext } from "../clientContext";
 import { MovetypeObject } from "../client/models/matchmaking";
-import { type ApiError, success } from "../result";
+import { type Problem, success } from "../result";
 
 // Mock useLocation
 const mockRoute = vi.fn();
@@ -47,7 +47,7 @@ describe("useGameState", () => {
 
   it("should handle error when fetching game fails", async () => {
     const gameId = "game-123";
-    const error: ApiError = { kind: "unknown", message: "Error fetching game" };
+    const error: Problem = { kind: "unknown", message: "Error fetching game" };
     mockClient.fetchMatch.mockResolvedValue({ success: false, error });
 
     const { result } = renderHook(() => useGameState(gameId), { wrapper });
@@ -183,7 +183,7 @@ describe("useGameState", () => {
 
     mockClient.fetchMatch.mockResolvedValue(success(initialGameState));
 
-    const error: ApiError = { kind: "match_over", message: "Move failed" };
+    const error: Problem = { kind: "match_over", message: "Move failed" };
     mockClient.makeMove.mockResolvedValue({ success: false, error });
 
     const { result } = renderHook(() => useGameState(gameId), { wrapper });
