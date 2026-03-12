@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { failure, type Problem, type Result, success } from "./result";
+import { failure, isMatchOver, type Problem, type Result, success } from "./result";
 
 describe("Result Pattern", () => {
   it("should create a success result with a value", () => {
@@ -46,5 +46,21 @@ describe("Result Pattern", () => {
 
     expect(processResult(success("ok"))).toBe("Success: ok");
     expect(processResult(failure({ kind: "unknown", message: "fail" }))).toBe("Error: fail");
+  });
+});
+
+describe("isMatchOver", () => {
+  it("should return true for match_over failures", () => {
+    const result = failure({ kind: "match_over", message: "Game ended" });
+    if (!result.success) {
+      expect(isMatchOver(result)).toBe(true);
+    }
+  });
+
+  it("should return false for unknown failures", () => {
+    const result = failure({ kind: "unknown", message: "Server error" });
+    if (!result.success) {
+      expect(isMatchOver(result)).toBe(false);
+    }
   });
 });

@@ -3,6 +3,7 @@ import { useLocation } from "preact-iso";
 import { MovetypeObject } from "../client/models/matchmaking";
 import type { MatchstateDto } from "../client/models/res";
 import { useApiClient } from "../clientContext";
+import { isMatchOver } from "../result";
 
 export function useGameState(gameId: string | null) {
   const { route } = useLocation();
@@ -54,7 +55,7 @@ export function useGameState(gameId: string | null) {
       if (result.value.lives === 0) {
         route("/game-over");
       }
-    } else if (result.error.kind === "match_over") {
+    } else if (isMatchOver(result)) {
       route("/game-over");
     }
   };

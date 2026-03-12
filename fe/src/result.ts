@@ -31,3 +31,7 @@ export function failure<T = never>(problem: Problem): Result<T> {
     error: problem,
   };
 }
+
+export function isMatchOver(result: Failure): boolean {
+  return result.error.kind === "match_over";
+}
