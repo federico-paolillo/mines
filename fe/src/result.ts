@@ -1,4 +1,7 @@
+export type ErrorKind = "match_over" | "unknown";
+
 export interface Problem {
+  kind: ErrorKind;
   message: string;
   cause?: Error;
 }
@@ -27,4 +30,8 @@ export function failure<T = never>(problem: Problem): Result<T> {
     success: false,
     error: problem,
   };
+}
+
+export function isMatchOver(result: Failure): boolean {
+  return result.error.kind === "match_over";
 }

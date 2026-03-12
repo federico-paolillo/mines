@@ -1,7 +1,9 @@
+import { DefaultApiError } from "@microsoft/kiota-abstractions";
 import { render } from "@testing-library/preact";
-import { expect, test } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 import type { MinesApiClient } from "./api";
-import { ClientProvider, useApiClient } from "./clientContext";
+import { ClientProvider, useApiClient, wrapClient } from "./clientContext";
+import { failure, success } from "./result";
 
 test("useApiClient returns client within ClientProvider", () => {
   let client: MinesApiClient | undefined;
@@ -29,4 +31,90 @@ test("useApiClient throws error outside ClientProvider", () => {
   expect(() => render(<TestComponent />)).toThrow(
     "useApiClient must be used within a ClientProvider",
   );
+});
+
+describe("wrapClient", () => {
+  const mockClient: MinesApiClient = {
+    fetchMatch: vi.fn(),
+    startNewGame: vi.fn(),
+    makeMove: vi.fn(),
+  };
+
+  test("passes through successful results without logging", async () => {
+    const value = { id: "abc", lives: 3 };
+    vi.mocked(mockClient.fetchMatch).mockResolvedValue(success(value));
+
+    const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    const wrapped = wrapClient(mockClient);
+
+    const result = await wrapped.fetchMatch("abc");
+
+    expect(result).toEqual(success(value));
+    expect(consoleSpy).not.toHaveBeenCalled();
+
+    consoleSpy.mockRestore();
+  });
+
+  test("logs to console.error on failure and preserves unknown kind", async () => {
+    const cause = new Error("network down");
+    vi.mocked(mockClient.makeMove).mockResolvedValue(
+      failure({ kind: "unknown", message: "Move failed", cause }),
+    );
+
+    const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    const wrapped = wrapClient(mockClient);
+
+    const result = await wrapped.makeMove("abc", { x: 0, y: 0 } as any);
+
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.kind).toBe("unknown");
+    }
+    expect(consoleSpy).toHaveBeenCalledWith("Move failed", cause);
+
+    consoleSpy.mockRestore();
+  });
+
+  test("translates 422 DefaultApiError to match_over kind", async () => {
+    const apiError = new DefaultApiError("Match over");
+    apiError.responseStatusCode = 422;
+
+    vi.mocked(mockClient.makeMove).mockResolvedValue(
+      failure({ kind: "unknown", message: "Move failed", cause: apiError }),
+    );
+
+    const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    const wrapped = wrapClient(mockClient);
+
+    const result = await wrapped.makeMove("abc", { x: 0, y: 0 } as any);
+
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.kind).toBe("match_over");
+    }
+    expect(consoleSpy).toHaveBeenCalledWith("Move failed", apiError);
+
+    consoleSpy.mockRestore();
+  });
+
+  test("preserves unknown kind for non-422 DefaultApiError", async () => {
+    const apiError = new DefaultApiError("Conflict");
+    apiError.responseStatusCode = 409;
+
+    vi.mocked(mockClient.fetchMatch).mockResolvedValue(
+      failure({ kind: "unknown", message: "Fetch failed", cause: apiError }),
+    );
+
+    const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    const wrapped = wrapClient(mockClient);
+
+    const result = await wrapped.fetchMatch("abc");
+
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.kind).toBe("unknown");
+    }
+
+    consoleSpy.mockRestore();
+  });
 });

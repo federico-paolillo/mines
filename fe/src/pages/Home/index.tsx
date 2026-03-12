@@ -22,7 +22,6 @@ export function Home() {
       // Navigate to the game page with the new game id
       route(`/game?id=${matchId}`);
     } else {
-      console.error(result.error);
       setLoading(false);
     }
   };

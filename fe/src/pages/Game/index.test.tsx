@@ -1,10 +1,9 @@
-import { DefaultApiError } from "@microsoft/kiota-abstractions";
 import { fireEvent, render, screen, waitFor } from "@testing-library/preact";
 import { LocationProvider } from "preact-iso";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { MinesApiClient } from "../../api";
 import { CellstateObject } from "../../client/models/board";
 import { MovetypeObject } from "../../client/models/matchmaking";
+import type { MinesApiClient } from "../../api";
 import { ClientContext } from "../../clientContext";
 import { Game } from "./index";
 
@@ -64,7 +63,7 @@ describe("Game Page", () => {
   it("should display error message if game load fails", async () => {
     (mockClient.fetchMatch as any).mockResolvedValue({
       success: false,
-      error: "Failed to fetch",
+      error: { kind: "unknown", message: "Failed to fetch" },
     });
 
     const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
@@ -189,18 +188,15 @@ describe("Game Page", () => {
     });
   });
 
-  it("redirects to game over on 422 error", async () => {
+  it("redirects to game over on match_over error", async () => {
     (mockClient.fetchMatch as any).mockResolvedValue({
       success: true,
       value: mockGameState,
     });
 
-    const error = new DefaultApiError("Match over");
-    error.responseStatusCode = 422;
-
     (mockClient.makeMove as any).mockResolvedValue({
       success: false,
-      error: { cause: error },
+      error: { kind: "match_over", message: "Match over" },
     });
 
     renderGame();
@@ -213,19 +209,15 @@ describe("Game Page", () => {
     });
   });
 
-  it("logs error on 409 and does not redirect", async () => {
+  it("does not redirect on unknown error", async () => {
     (mockClient.fetchMatch as any).mockResolvedValue({
       success: true,
       value: mockGameState,
     });
 
-    const error = new DefaultApiError("Concurrent update");
-    error.responseStatusCode = 409;
-    const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
-
     (mockClient.makeMove as any).mockResolvedValue({
       success: false,
-      error: { cause: error },
+      error: { kind: "unknown", message: "Concurrent update" },
     });
 
     renderGame();
@@ -234,10 +226,9 @@ describe("Game Page", () => {
     fireEvent.click(screen.getAllByRole("button")[0]);
 
     await waitFor(() => {
-      expect(consoleSpy).toHaveBeenCalled();
+      expect(mockClient.makeMove).toHaveBeenCalled();
     });
     expect(mockRoute).not.toHaveBeenCalled();
-    consoleSpy.mockRestore();
   });
 
   it("handles cell right-click and calls makeMove with Flag type", async () => {
@@ -304,18 +295,15 @@ describe("Game Page", () => {
     });
   });
 
-  it("redirects to game over on 422 error from right-click", async () => {
+  it("redirects to game over on match_over error from right-click", async () => {
     (mockClient.fetchMatch as any).mockResolvedValue({
       success: true,
       value: mockGameState,
     });
 
-    const error = new DefaultApiError("Match over");
-    error.responseStatusCode = 422;
-
     (mockClient.makeMove as any).mockResolvedValue({
       success: false,
-      error: { cause: error },
+      error: { kind: "match_over", message: "Match over" },
     });
 
     renderGame();
@@ -328,20 +316,15 @@ describe("Game Page", () => {
     });
   });
 
-  it("logs error on general error from right-click", async () => {
+  it("does not redirect on unknown error from right-click", async () => {
     (mockClient.fetchMatch as any).mockResolvedValue({
       success: true,
       value: mockGameState,
     });
 
-    const error = new DefaultApiError("General error");
-    error.responseStatusCode = 500;
-
-    const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
-
     (mockClient.makeMove as any).mockResolvedValue({
       success: false,
-      error: { cause: error },
+      error: { kind: "unknown", message: "General error" },
     });
 
     renderGame();
@@ -351,11 +334,9 @@ describe("Game Page", () => {
     fireEvent.contextMenu(screen.getAllByRole("button")[0]);
 
     await waitFor(() => {
-      expect(consoleSpy).toHaveBeenCalled();
+      expect(mockClient.makeMove).toHaveBeenCalled();
     });
 
     expect(mockRoute).not.toHaveBeenCalled();
-
-    consoleSpy.mockRestore();
   });
 });
