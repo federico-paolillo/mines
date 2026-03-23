@@ -733,6 +733,82 @@ Key points:
 - Create a **fresh context with timeout** for `Shutdown()` — do not reuse the cancelled context
 - Check for `http.ErrServerClosed` which is expected after `Shutdown()`
 
+### Recipe: Web Server with Per-Request Context Propagation
+
+When using the template for a web server (e.g., with Gin), set `http.Server.BaseContext` to the
+`ctx` received by the `ProgramE`. This makes the runner's context the root of all request contexts,
+so that cancellation (SIGTERM) cascades to in-flight requests automatically.
+
+```go
+func ServerProgram(ctx context.Context, appRoot *app.App, cfg *config.Root) error {
+    gin.SetMode(gin.ReleaseMode)
+
+    e := gin.New()
+
+    // Setup routes, middlewares using appRoot...
+    e.GET("/health", func(c *gin.Context) {
+        c.JSON(http.StatusOK, gin.H{"status": "ok"})
+    })
+
+    server := &http.Server{
+        Addr:         cfg.Server.Endpoint(),
+        Handler:      e,
+        ReadTimeout:  5 * time.Second,
+        WriteTimeout: 10 * time.Second,
+        BaseContext: func(_ net.Listener) context.Context {
+            return ctx
+        },
+    }
+
+    errCh := make(chan error, 1)
+
+    go func() {
+        if err := server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+            errCh <- err
+        }
+
+        close(errCh)
+    }()
+
+    appRoot.Logger.Info("server: listening", "endpoint", cfg.Server.Endpoint())
+
+    <-ctx.Done()
+
+    appRoot.Logger.Info("server: shutting down")
+
+    shutdownCtx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+    defer cancel()
+
+    if err := server.Shutdown(shutdownCtx); err != nil {
+        return fmt.Errorf("server: shutdown failed. %w", err)
+    }
+
+    if err := <-errCh; err != nil {
+        return fmt.Errorf("server: failed to listen and serve. %w", err)
+    }
+
+    return nil
+}
+```
+
+The resulting context chain:
+
+```
+context.Background()                          ← main()
+  └─ context.WithCancel()                     ← execution.go (cancelled on SIGTERM/error)
+       └─ BaseContext(ctx)                     ← http.Server, set via ProgramE's ctx
+            └─ per-request context             ← net/http derives one per accepted conn
+                 └─ c.Request.Context()        ← what Gin handlers observe
+```
+
+When the runner cancels the context (on signal or program error), the cancellation cascades
+through `BaseContext` to every in-flight request. Gin handlers using `c.Request.Context()` will
+observe `ctx.Err() != nil` and can abort long-running work early.
+
+This is also where future OpenTelemetry integration hooks in: the base context carries the tracer
+provider, and per-request middleware extracts trace/span contexts from incoming headers to create
+child spans rooted in the application's trace.
+
 ### Bug: Missing SIGTERM Signal (`internal/runner/execution.go:29`)
 
 Only `os.Interrupt` is registered. Containers (Docker, Kubernetes) and systemd send `SIGTERM` for graceful shutdown. The template adds `syscall.SIGTERM`.
