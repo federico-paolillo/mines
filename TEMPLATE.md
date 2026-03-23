@@ -805,9 +805,26 @@ When the runner cancels the context (on signal or program error), the cancellati
 through `BaseContext` to every in-flight request. Gin handlers using `c.Request.Context()` will
 observe `ctx.Err() != nil` and can abort long-running work early.
 
-This is also where future OpenTelemetry integration hooks in: the base context carries the tracer
-provider, and per-request middleware extracts trace/span contexts from incoming headers to create
-child spans rooted in the application's trace.
+This is also where future OpenTelemetry integration hooks in. The runner stores the
+`TracerProvider` (and `MeterProvider`, etc.) in the base context via `BaseContext`. The providers
+are long-lived and shared — they are **not** spans. Per-request OTel middleware (e.g.,
+`otelgin.Middleware()` or a custom Gin middleware) then:
+
+1. Extracts any incoming trace context from W3C `traceparent`/`tracestate` headers (for distributed tracing across services)
+2. Creates a **new root span** for each request, making every request a self-contained trace
+3. Attaches the span to the request's child context so that downstream handlers and clients can create child spans under it
+
+```
+BaseContext(ctx)                                ← carries TracerProvider, MeterProvider (no span)
+  └─ per-request context                        ← net/http derives one per accepted conn
+       └─ OTel middleware injects root span     ← trace.SpanFromContext(c.Request.Context())
+            └─ handler / service calls          ← child spans created here
+```
+
+The key distinction: the base context owns the **providers** (the factories), not any span.
+Each request gets its own root span with its own trace ID. When the runner shuts down, it flushes
+and shuts down the providers (via `TracerProvider.Shutdown()`), which ensures all buffered spans
+are exported before the process exits.
 
 ### Bug: Missing SIGTERM Signal (`internal/runner/execution.go:29`)
 
