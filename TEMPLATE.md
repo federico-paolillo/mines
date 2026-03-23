@@ -14,9 +14,9 @@ The resulting template is **application-type agnostic**: it works equally well f
 cmd/app/main.go                         # Generic entrypoint
 internal/
   runner/
-    program.go                          # Program type, StatusCode (renamed from programe.go)
+    program.go                          # ProgramE type, StatusCode (renamed from programe.go)
     execution.go                        # Signal handling, goroutine orchestration
-    many.go                             # RunMany orchestrator (creates logger internally)
+    many.go                             # RunMany orchestrator (creates logger, loads config, builds deps)
     many_test.go                        # Tests
   example/
     example.go                          # Placeholder internal package
@@ -80,7 +80,9 @@ Delete frontend and related tooling:
 
 #### `internal/runner/programe.go` → Rename to `internal/runner/program.go`
 
-**Why:** The filename `programe.go` is a typo. The type `ProgramE` has an unclear `E` suffix.
+**Why:** The filename `programe.go` appears to be a typo for `program.go`.
+
+The type name `ProgramE` is kept — it follows the Cobra `Command.RunE` convention (a program that returns an error).
 
 Current code:
 
@@ -104,12 +106,17 @@ Target code:
 ```go
 package runner
 
-import "context"
+import (
+    "context"
 
-// Program is a unit of work managed by the runner.
-// Programs receive a context that is cancelled on shutdown signals.
-// To access application dependencies, close over them.
-type Program func(context.Context) error
+    "github.com/yourorg/yourproject/pkg/app"
+    "github.com/yourorg/yourproject/pkg/app/config"
+)
+
+// ProgramE is a unit of work managed by the runner.
+// Programs receive a context (cancelled on shutdown signals), the composition
+// root, and the configuration. The naming follows the Cobra RunE convention.
+type ProgramE func(context.Context, *app.App, *config.Root) error
 
 type StatusCode string
 
@@ -121,24 +128,22 @@ const (
 
 Changes:
 - [ ] Rename file from `programe.go` to `program.go`
-- [ ] Rename `ProgramE` to `Program`
-- [ ] Change from type alias (`=`) to defined type for both `Program` and `StatusCode` — this provides type safety (a bare `string` can no longer be passed as `StatusCode`)
-- [ ] Remove `*mines.Mines` and `*config.Root` parameters — programs close over their dependencies instead
-- [ ] Remove imports of `mines` and `config` packages
+- [ ] Change from type alias (`=`) to defined type for both `ProgramE` and `StatusCode` — this provides type safety (a bare `string` can no longer be passed as `StatusCode`, a bare `func` can no longer be passed as `ProgramE`)
+- [ ] Replace `*mines.Mines` with `*app.App` (generalized composition root)
 
 #### `internal/runner/execution.go`
 
 Current issues:
 1. `signal.Notify(sigtermChan, os.Interrupt)` only handles `os.Interrupt`, not `SIGTERM`. Containers (Docker, Kubernetes) and systemd send `SIGTERM` for graceful shutdown.
 2. Variable name `sigtermChan` is misleading since it only captures interrupts.
-3. Function signatures carry `*mines.Mines` and `*config.Root` coupling.
+3. Function signatures reference `*mines.Mines` instead of the generalized `*app.App`.
 
 Changes:
 - [ ] Add `syscall.SIGTERM` to `signal.Notify`: `signal.Notify(signalChan, os.Interrupt, syscall.SIGTERM)`
 - [ ] Rename `sigtermChan` to `signalChan`
-- [ ] Remove `*mines.Mines` and `*config.Root` from `runManyPrograms` and `runOneProgram` signatures
+- [ ] Replace `*mines.Mines` with `*app.App` in `runManyPrograms` and `runOneProgram` signatures
 - [ ] Add `import "syscall"`
-- [ ] Update `runOneProgram` to call `program(ctx)` instead of `program(ctx, mines, cfg)`
+- [ ] Update `runOneProgram` to call `program(ctx, appRoot, cfg)` instead of `program(ctx, mines, cfg)`
 
 Target `runManyPrograms` signature:
 
@@ -146,7 +151,9 @@ Target `runManyPrograms` signature:
 func runManyPrograms(
     ctx context.Context,
     logger *slog.Logger,
-    programs ...Program,
+    appRoot *app.App,
+    cfg *config.Root,
+    programs ...ProgramE,
 ) StatusCode
 ```
 
@@ -157,20 +164,23 @@ func runOneProgram(
     ctx context.Context,
     wg *sync.WaitGroup,
     errChan chan<- error,
-    program Program,
+    appRoot *app.App,
+    cfg *config.Root,
+    program ProgramE,
 )
 ```
 
 #### `internal/runner/many.go`
 
-Current code loads config and constructs the composition root (`mines.NewMines`) inside `RunMany`. This couples the runner to the application's specific dependency graph.
+The runner owns logger creation, config loading, and composition root construction. This is intentional:
+the runner will eventually create an OpenTelemetry-bound logger and inject tracing via context, so it must
+control the lifecycle of these cross-cutting concerns. This also guarantees one logger per execution.
 
 Changes:
-- [ ] Remove `config.Load()` call and error handling
-- [ ] Remove `mines.NewMines()` call and error handling
-- [ ] Remove imports of `mines` and `config` packages
-- [ ] Keep logger creation inside `RunMany` (the runner owns its logger)
-- [ ] Update `runManyPrograms` call to remove `mines` and `cfg` arguments
+- [ ] Replace `mines.NewMines` with `app.NewApp` (generalized composition root)
+- [ ] Replace imports of `mines` package with `app` package
+- [ ] Keep logger creation, config loading, and dep construction inside `RunMany`
+- [ ] Pass `*app.App` instead of `*mines.Mines` to `runManyPrograms`
 
 Target code:
 
@@ -182,19 +192,34 @@ import (
     "log/slog"
     "os"
     "time"
+
+    "github.com/yourorg/yourproject/pkg/app"
+    "github.com/yourorg/yourproject/pkg/app/config"
 )
 
 func RunMany(
     ctx context.Context,
-    programs ...Program,
+    programs ...ProgramE,
 ) StatusCode {
     logger := slog.New(
         slog.NewJSONHandler(os.Stdout, nil),
     )
 
+    cfg, err := config.Load()
+    if err != nil {
+        logger.Error(
+            "runner: failed to load configuration",
+            slog.Any("err", err),
+        )
+
+        return NotOk
+    }
+
+    appRoot := app.NewApp(logger, cfg)
+
     startTime := time.Now()
 
-    statusCode := runManyPrograms(ctx, logger, programs...)
+    statusCode := runManyPrograms(ctx, logger, appRoot, cfg, programs...)
 
     runtimeDuration := time.Since(startTime)
 
@@ -210,10 +235,12 @@ func RunMany(
 
 Also fix: `starTime` typo on current line 56 → `startTime`. Use `time.Since(startTime)` instead of manual `endTime.Sub(starTime)`.
 
+Note: `NewApp` receives the runner's logger so that all application components share the same logger instance (important for future OTel integration). `NewApp` does not return an error because it currently cannot fail — add an error return only when initialization can genuinely fail.
+
 #### `internal/runner/many_test.go`
 
-- [ ] Update all test program functions from `func(_ context.Context, _ *mines.Mines, _ *config.Root) error` to `func(_ context.Context) error`
-- [ ] Remove imports of `mines` and `config` packages
+- [ ] Update all test program functions from `func(_ context.Context, _ *mines.Mines, _ *config.Root) error` to `func(_ context.Context, _ *app.App, _ *config.Root) error`
+- [ ] Replace imports of `mines` package with `app` package
 - [ ] Remove `t.Helper()` from program closures (not needed — these are not test helpers, they are test subjects)
 
 #### `.golangci.yml`
@@ -397,12 +424,14 @@ app:
 
 #### `cmd/app/main.go`
 
+The entrypoint simply registers `ProgramE` functions and delegates to `RunMany`.
+Config loading, logger creation, and dependency construction happen inside the runner.
+
 ```go
 package main
 
 import (
     "context"
-    "fmt"
     "os"
 
     "github.com/yourorg/yourproject/internal/runner"
@@ -410,23 +439,34 @@ import (
     "github.com/yourorg/yourproject/pkg/app/config"
 )
 
+// ExampleProgram demonstrates a ProgramE that uses the composition root.
+// Replace this with your actual program logic.
+func ExampleProgram(
+    ctx context.Context,
+    appRoot *app.App,
+    cfg *config.Root,
+) error {
+    appRoot.Logger.Info(
+        "example program started",
+        "app_name", cfg.App.Name,
+        "debug", cfg.App.Debug,
+    )
+
+    // Do your work here. For long-running programs (servers, workers),
+    // block until ctx is cancelled. For one-shot programs (CLI commands,
+    // migrations), just do the work and return.
+
+    <-ctx.Done()
+
+    appRoot.Logger.Info("example program shutting down")
+
+    return nil
+}
+
 func main() {
-    cfg, err := config.Load()
-    if err != nil {
-        fmt.Fprintf(os.Stderr, "failed to load configuration: %v\n", err)
-        os.Exit(1)
-    }
-
-    application := app.NewApp(cfg)
-
     statusCode := runner.RunMany(
         context.Background(),
-        func(ctx context.Context) error {
-            application.Logger.Info("program started")
-            <-ctx.Done()
-            application.Logger.Info("program shutting down")
-            return nil
-        },
+        ExampleProgram,
     )
 
     if statusCode == runner.NotOk {
@@ -435,16 +475,19 @@ func main() {
 }
 ```
 
-Note: Dependencies are captured via closure. The runner does not know about `app` or `config` types.
+Note: The `ProgramE` receives the composition root and config from the runner. This ensures the logger (and future OTel tracing) is consistently wired across all programs.
 
 #### `pkg/app/app.go`
+
+The composition root receives the logger from the runner (not creating its own).
+This ensures the logger is the single instance managed by the runner, ready for
+future OpenTelemetry integration.
 
 ```go
 package app
 
 import (
     "log/slog"
-    "os"
 
     "github.com/yourorg/yourproject/pkg/app/config"
 )
@@ -455,11 +498,7 @@ type App struct {
     Config *config.Root
 }
 
-func NewApp(cfg *config.Root) *App {
-    logger := slog.New(
-        slog.NewJSONHandler(os.Stdout, nil),
-    )
-
+func NewApp(logger *slog.Logger, cfg *config.Root) *App {
     return &App{
         Logger: logger,
         Config: cfg,
@@ -475,6 +514,8 @@ Note: `NewApp` does not return an error because it currently cannot fail. Add an
 package app_test
 
 import (
+    "log/slog"
+    "os"
     "testing"
 
     "github.com/stretchr/testify/require"
@@ -483,12 +524,13 @@ import (
 )
 
 func TestNewAppReturnsApp(t *testing.T) {
+    logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
     cfg := config.Default()
 
-    application := app.NewApp(cfg)
+    application := app.NewApp(logger, cfg)
 
     require.NotNil(t, application)
-    require.NotNil(t, application.Logger)
+    require.Equal(t, logger, application.Logger)
     require.Equal(t, cfg, application.Config)
 }
 ```
@@ -650,14 +692,14 @@ func TestGreet(t *testing.T) {
 
 ### Bug: Data Race in `internal/server/program.go:50-65`
 
-This file is removed in the template, but the pattern is documented here as an anti-pattern to avoid when writing `Program` functions.
+This file is removed in the template, but the pattern is documented here as an anti-pattern to avoid when writing `ProgramE` functions.
 
 The current code starts `ListenAndServe` in a goroutine and writes to `err` (line 51), then reads `err` on return (line 65) without synchronization — a data race. Additionally, `server.Shutdown(ctx)` on line 63 uses the same context that triggered `ctx.Done()`, giving the shutdown zero grace period.
 
 **Correct pattern for long-running programs:**
 
 ```go
-func MyServerProgram(ctx context.Context) error {
+func MyServerProgram(ctx context.Context, appRoot *app.App, cfg *config.Root) error {
     server := &http.Server{Addr: ":8080"}
 
     errCh := make(chan error, 1)
@@ -701,19 +743,15 @@ Renamed to `program.go`.
 
 ### Type Safety: Type Aliases vs Defined Types
 
-`ProgramE` and `StatusCode` use type aliases (`=`), which provide no type safety — any `string` can be used where `StatusCode` is expected. The template uses defined types instead.
-
-### Naming: `ProgramE` → `Program`
-
-The `E` suffix has no clear meaning. Renamed to `Program`.
+`ProgramE` and `StatusCode` use type aliases (`=`), which provide no type safety — any `string` can be used where `StatusCode` is expected, and any matching `func` can be passed as `ProgramE`. The template uses defined types instead.
 
 ### Phantom Error Return: `pkg/mines/mines.go:28`
 
 `NewMines` returns `(*Mines, error)` but the error is always `nil`. The template's `NewApp` returns `*App` without an error. **Rule: do not return errors that can never occur.** Add an error return only when initialization can genuinely fail.
 
-### Coupled Runner
+### Runner Owns the Composition Root (Intentional)
 
-`RunMany` currently loads config and constructs the entire dependency graph. The template decouples this: `main()` loads config and builds dependencies; the runner only orchestrates program goroutines. Programs capture dependencies via closures.
+`RunMany` loads config and constructs the composition root. This is by design: the runner creates the logger and will eventually bind it to OpenTelemetry, so it must control the lifecycle of cross-cutting concerns. This guarantees one logger per execution and a consistent tracing setup across all programs. The template generalizes `*mines.Mines` to `*app.App` but preserves the same ownership pattern.
 
 ### Minor: `starTime` Typo (`internal/runner/many.go:56`)
 
@@ -783,6 +821,7 @@ After cloning the template:
 1. Replace the module path: `github.com/yourorg/yourproject` → your actual module path
 2. Rename the `APP` env var prefix in `pkg/app/config/load.go` to match your project
 3. Update `config.example.yml` and `pkg/app/config/config.go` with your configuration fields
-4. Replace `pkg/example/` and `internal/example/` with your actual packages
-5. Write your `Program` function(s) in `cmd/app/main.go`
-6. Run `go mod tidy`
+4. Add your dependencies to the `App` struct in `pkg/app/app.go` and wire them in `NewApp`
+5. Replace `pkg/example/` and `internal/example/` with your actual packages
+6. Replace `ExampleProgram` in `cmd/app/main.go` with your actual `ProgramE` function(s)
+7. Run `go mod tidy`
